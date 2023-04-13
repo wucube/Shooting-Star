@@ -37,7 +37,7 @@ public class StatsBar : MonoBehaviour
     /// <summary>
     /// 当前填充值
     /// </summary>
-    private float _currentFillAmount; 
+    private float currentFillAmount; 
 
     /// <summary>
     /// 目标填充值
@@ -47,12 +47,12 @@ public class StatsBar : MonoBehaviour
     /// <summary>
     /// 先前的填充值
     /// </summary>
-    private float _previousFillAmount; 
+    private float previousFillAmount; 
 
     /// <summary>
     /// 延迟填充过程的时间
     /// </summary>
-    private float _t;
+    private float t;
     /// <summary>
     /// 等待延迟填充
     /// </summary>
@@ -86,11 +86,11 @@ public class StatsBar : MonoBehaviour
     /// <param name="maxValue">对象状态的最大值</param>
     public virtual void Initialize(float currentValue,float maxValue)
     {
-        _currentFillAmount = currentValue / maxValue;
-        targetFillAmount = _currentFillAmount;
+        currentFillAmount = currentValue / maxValue;
+        targetFillAmount = currentFillAmount;
         
-        fillImageBack.fillAmount = _currentFillAmount;
-        fillImageFront.fillAmount = _currentFillAmount;  
+        fillImageBack.fillAmount = currentFillAmount;
+        fillImageFront.fillAmount = currentFillAmount;  
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class StatsBar : MonoBehaviour
             StopCoroutine(bufferedFillingCoroutine);
 
         //如果当前填充值 大于 目标填充值：状态条的值减少
-        if (_currentFillAmount > targetFillAmount)
+        if (currentFillAmount > targetFillAmount)
         {
             //状态条前景图的填充值 立即达到目标值
             fillImageFront.fillAmount = targetFillAmount;
@@ -116,7 +116,7 @@ public class StatsBar : MonoBehaviour
             bufferedFillingCoroutine = StartCoroutine(BufferedFillingCoroutine(fillImageBack));
         }
         //如果当前填充值 小于 目标填充值：状态条的值增加
-        else if(_currentFillAmount < targetFillAmount)
+        else if(currentFillAmount < targetFillAmount)
         {
             //状态条背景图填充值立即到达目标值
             fillImageBack.fillAmount = targetFillAmount;
@@ -138,18 +138,18 @@ public class StatsBar : MonoBehaviour
             yield return waitForDelayFill; //等待一定时间后开始填充
 
         //记录当前的填充值
-        _previousFillAmount = _currentFillAmount;
+        previousFillAmount = currentFillAmount;
         
-        _t = 0;
+        t = 0;
 
-        while (_t < 1f)
+        while (t < 1f)
         {
-            _t += Time.deltaTime * fillSpeed;
+            t += Time.deltaTime * fillSpeed;
 
             //当前填充值不断向目标值变化
-            _currentFillAmount = Mathf.Lerp(_previousFillAmount, targetFillAmount, _t);
+            currentFillAmount = Mathf.Lerp(previousFillAmount, targetFillAmount, t);
             //当前值赋值给图片填充值，实现状态条的变化
-            image.fillAmount = _currentFillAmount;
+            image.fillAmount = currentFillAmount;
             
             yield return null;
         }

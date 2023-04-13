@@ -8,26 +8,25 @@ public class Boss : Enemy
     /// <summary>
     /// Boss血条
     /// </summary>
-    private BossHealthBar _healthBar;
-    //HUDѪ������Ļ������
-    private Canvas _healthBarCanvas;
+    private BossHealthBar healthBar;
+
+    /// <summary>
+    /// Boss血条UI的画布
+    /// </summary>
+    private Canvas healthBarCanvas;
+
     protected override void Awake()
     {
         base.Awake();
-        //��ȡѪ������
-        _healthBar = FindObjectOfType<BossHealthBar>();
-        //��ȡHUDѪ�����󻭲�
-        _healthBarCanvas = _healthBar.GetComponentInChildren<Canvas>();
+        healthBar = FindObjectOfType<BossHealthBar>();
+        healthBarCanvas = healthBar.GetComponentInChildren<Canvas>();
     }
 
-    //��дOnEnable����
     protected override void OnEnable()
     {
         base.OnEnable();
-        //��ʼ��Boss HUDѪ��
-        _healthBar.Initialize(health,maxHealth);
-        //����HUDѪ������
-        _healthBarCanvas.enabled = true;
+        healthBar.Initialize(health,maxHealth);
+        healthBarCanvas.enabled = true;
     }
     
     //��д���������ײ����
@@ -43,7 +42,7 @@ public class Boss : Enemy
     public override void Die()
     {
         //�ر�boss HUD����
-        _healthBarCanvas.enabled = false;
+        healthBarCanvas.enabled = false;
         base.Die();
     }
 
@@ -52,7 +51,7 @@ public class Boss : Enemy
     {
         base.TakeDamage(damage);
         //boss HUDѪ����ʾ
-        _healthBar.UpdateStats(health,maxHealth);
+        healthBar.UpdateStats(health,maxHealth);
     }
 
     //��д����Ѫ�����ֵ������Boss���Ѫ��+���˲���*����ֵ����
