@@ -4,115 +4,147 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// æ•Œäººæ§åˆ¶å™¨
+/// </summary>
 public class EnemyController : MonoBehaviour
 {
+    /// <summary>
+    /// æ•ŒæœºXè½´çš„è¾¹è·
+    /// </summary>   
     [Header("---- MOVE ----")]
-    //µĞ»úÖĞĞÄµãµ½±ßÔµX¡¢YÖáµÄÆ«²îÖµ 
     protected float paddingX;
-     float _paddingY;
-    //µĞÈËÒÆ¶¯ËÙ¶È
-    [SerializeField] float moveSpeed = 2f;
-    //µĞÈËÒÆ¶¯Ğı×ª±äÁ¿
-    [SerializeField] float moveRotationAngle = 25f;
 
+    /// <summary>
+    /// æ•ŒæœºYè½´çš„è¾¹è·
+    /// </summary>
+    float paddingY;
+
+    /// <summary>
+    /// æ•Œæœºç§»åŠ¨é€Ÿåº¦
+    /// </summary>
+    [SerializeField] float moveSpeed = 2f;
+
+    /// <summary>
+    /// æ•Œæœºä¸Šä¸‹ç§»åŠ¨æ—¶æ—‹è½¬çš„è§’åº¦
+    /// </summary>
+    [SerializeField] float moveRotationAngle = 25f;
+    
+    /// <summary>
+    /// å­å¼¹å¯¹è±¡æ•°ç»„
+    /// </summary>
     [Header("---- FIRE ----")]
-    //µĞÈË×Óµ¯ÃüÖĞÊÓ¾õÌØĞ§¶ÔÏó¼¯ºÏ
     [SerializeField] protected GameObject[] projectiles;
-    //µĞÈË·¢Éä×Óµ¯µÄÒôÆµÊı¾İ¼¯ºÏ
+    
+    /// <summary>
+    /// å‘å°„å­å¼¹çš„éŸ³é¢‘æ•°æ®æ•°ç»„
+    /// </summary>
     [SerializeField] protected AudioData[] projectileLaunchSFX;
     
-    //¿ª»ğÎ»ÖÃ Ç¹¿Ú
+    /// <summary>
+    /// æªå£ä½ç½®
+    /// </summary>
     [SerializeField] protected Transform muzzle;
     
-    //Ç¹¿ÚÌØĞ§±äÁ¿
+    /// <summary>
+    /// æªå£ç²’å­ç‰¹æ•ˆ
+    /// </summary>
     [SerializeField] protected ParticleSystem muzzleVFX;
     
-    //×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+    /// <summary>
+    /// æœ€å°å¼€ç«é—´éš”
+    /// </summary>
     [SerializeField] protected float minFireInterval;
-    //×î´ó¿ª»ğ¼ä¸ôÊ±¼ä
+
+    /// <summary>
+    /// æœ€å¤§å¼€ç«é—´éš”
+    /// </summary>
     [SerializeField] protected float maxFireInterval;
     
-    //µĞÈËÄ¿±êÒÆ¶¯Î»ÖÃ
+    /// <summary>
+    /// ç§»åŠ¨åˆ°ç›®æ ‡ä½ç½®
+    /// </summary>
     protected Vector3 targetPosition;
     
-    //Ã¿Ö¡×î´óÒÆ¶¯¾àÀë
-    //private float _maxMoveDistancePerFrame;
-    //¹ÒÆğµÈ´ıÏÂÒ»¸ö¹Ì¶¨Ö¡
-    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+    /// <summary>
+    /// å›ºå®šå¸§æ›´æ–°çš„ç­‰å¾…æ—¶é•¿
+    /// </summary>
+    /// <returns></returns>
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
     protected virtual void Awake()
     {
-        //³õÊ¼»¯Ã¿Ö¡×î´óÒÆ¶¯¾àÀë
-        //_maxMoveDistancePerFrame = moveSpeed * Time.fixedDeltaTime;
-        //Í¨¹ıÄ£ĞÍ¶ÔÏóµÄäÖÈ¾Æ÷×é¼şµÃµ½Ä£ĞÍµÄ³ß´çÖµ
+        //å¾—åˆ°æœºä½“æ¨¡å‹çŸ©å½¢èŒƒå›´
         var size = transform.GetChild(0).GetComponent<Renderer>().bounds.size;
+
         paddingX = size.x / 2f;
-        _paddingY = size.y / 2f;
+        paddingY = size.y / 2f;
     }
     
-    //µĞ»úÆôÓÃÒ»´Î¾Íµ÷ÓÃÒ»´Î
     protected virtual void OnEnable()
     {
-        //ÆôÓÃËæ»úÒÆ¶¯Ğ­³Ì
+
         StartCoroutine(nameof(RandomlyMovingCoroutine));
-        //Ëæ»ú¿ª»ğ
+
         StartCoroutine(nameof(RandomlyFireCoroutine));
     }
-    //ÓÎÏ·Í£ÔËÊ±µ÷ÓÃ
+
     protected virtual void OnDisable()
     {
-        //Í£ÓÃËùÓĞĞ­³Ì
+        //åœæ­¢æ‰€æœ‰åç¨‹
         StopAllCoroutines();
     }
-    //µĞÈËËæ»úÒÆ¶¯Ğ­³Ì
+
+    /// <summary>
+    /// éšæœºç§»åŠ¨åç¨‹
+    /// </summary>
+    /// <returns></returns>
     protected virtual IEnumerator RandomlyMovingCoroutine() 
     {
-        //µĞ»úÔÚ×îÓÒ¾µÍ·ÍâµÄËæ»úÎ»ÖÃ
-        transform.position = Viewport.Instance.RandomEnemySpawnPosition(paddingX, _paddingY);
-        //µĞ»úµÄÄ¿±êÎ»ÖÃ£¬ÔÚ¾µÍ·ÄÚµÄÓÒ²àËæ»úÎ»ÖÃ
-        targetPosition = Viewport.Instance.RandomRightHalfPosition(paddingX, _paddingY);
-        //Èç¹ûµĞ»úÃ»ÓĞ±»´İ»ÙÔòÒ»Ö±Ñ­»·
+        
+        transform.position = Viewport.Instance.RandomEnemySpawnPosition(paddingX, paddingY);
+
+        targetPosition = Viewport.Instance.RandomRightHalfPosition(paddingX, paddingY);
+
+        //è‹¥æ•Œæœºå¤„äºæ´»åŠ¨çŠ¶æ€
         while (gameObject.activeSelf)
         {
-            //Èç¹ûµĞ»úÎ´µ½´ïÄ¿±êÎ»ÖÃ ¼´µĞ»úµ±Ç°Î»ÖÃÓëÄ¿±êÎ»ÖÃ¾àÀë ´óÓÚ µĞ»úÃ¿Ö¡ÒÆ¶¯µÄ¾àÀë
+            //æ•Œæœºä½ç½®ä¸ç›®æ ‡ä½ç½®çš„è·ç¦» å¤§äºç­‰äº æ•Œæœºæ¯å›ºå®šå¸§æ—¶é—´çš„è·ç¦»è·ç¦»
             if (Vector3.Distance(transform.position, targetPosition) >=moveSpeed * Time.fixedDeltaTime)
             {
-                //¼ÌĞøÇ°ÍùÄ¿±êÎ»ÖÃ ÒÔÃ¿Ö¡ÒÆ¶¯¾àÀë Ç°ÍùÄ¿±êÎ»ÖÃ
-                transform.position =
-                    Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
-                //µĞÈËÒÆ¶¯Ê±Ğı×ª È¡µÃÒÆ¶¯·½ÏòÏòÁ¿£¬¹éÒ»»¯ºóYÖáÖµ ³Ë Ğı×ª½Ç¶È£¬ÑØµĞÈË¶ÔÏóµÄXÖáÕı·½ÏòĞı×ª
-                transform.rotation =
-                    Quaternion.AngleAxis((targetPosition - transform.position).normalized.y * moveRotationAngle,
-                        Vector3.right);
+                //æ•Œæœºæœç›®æ ‡ä½ç½®åŒ€é€Ÿç§»åŠ¨
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
+                //æ•Œæœºç§»åŠ¨æ—¶æ²¿ä¸–ç•Œåæ ‡Xè½´æ—‹è½¬ï¼Œè¶Šé è¿‘å‚ç›´æ–¹å‘ç§»åŠ¨ï¼Œæ—‹è½¬è§’åº¦è¶Šå¤§ã€‚
+                transform.rotation = Quaternion.AngleAxis((targetPosition - transform.position).normalized.y * moveRotationAngle, Vector3.right);
             }
-            //µĞ»úÈç¹ûÒÑµ½´ïÄ¿±êÎ»ÖÃ£¬Ôò¸øÓèÒ»¸öĞÂµÄÄ¿±êÎ»ÖÃ
-            else 
-                targetPosition = Viewport.Instance.RandomRightHalfPosition(paddingX,_paddingY);
-            //¹ÒÆğÖ±µ½ÏÂÒ»¸ö¹Ì¶¨Ö¡
+            else //å¦åˆ™ç›®æ ‡ä½ç½®é‡æ–°èµ‹å€¼
+                targetPosition = Viewport.Instance.RandomRightHalfPosition(paddingX,paddingY);
+             
             yield return new WaitForFixedUpdate();
         }
     }
     
-    //µĞÈËËæ»ú¿ª»ğĞ­³Ì
+    /// <summary>
+    /// éšæœºå¼€ç«åç¨‹
+    /// </summary>
+    /// <returns></returns>
     protected virtual IEnumerator RandomlyFireCoroutine()
     {
-        //Èç¹ûµĞ»úÃ»ÓĞ´İ»ÙÔòÒ»ÆğÑ­»·
         while(gameObject.activeSelf)
         {
-            //ÔÚ×î´ó¡¢×îĞ¡¿ª»ğ¼ä¸ôÖĞ£¬Ëæ»ú¿ª»ğ¡£Ö»ÄÜÔÚÑ­»·ÖĞĞÂ½¨±äÁ¿£¬²ÅÄÜÍêÈ«ÊµÏÖÃ¿´ÎËæ»úÊ±¼ä¿ª»ğ
-            yield return new WaitForSeconds(Random.Range(minFireInterval,maxFireInterval));
+            //åœ¨æœ€å¤§æˆ–æœ€å°å¼€ç«é—´éš”ä¹‹é—´åå¼€ç«
+            yield return new WaitForSeconds(Random.Range(minFireInterval, maxFireInterval));
             
-            //Èç¹ûÓÎÏ·×´Ì¬Îª½áÊø£¬Ôò½áÊøĞ­³Ì
+            //æ¸¸æˆç»“æŸåˆ™ç›´æ¥é€€å‡ºå¼€ç«åç¨‹
             if(GameManager.GameState ==GameState.GameOver) yield break;
             
             foreach (var projectile in projectiles)
-            {
-                //¶ÔÏó³ØÉú³ÉÊı×éÖĞµÄËùÓĞ×Óµ¯
+            {   
+                //å¯¹è±¡æ± é‡Šæ”¾å­å¼¹
                 PoolManager.Release(projectile, muzzle.position);
             }
-            //²¥·ÅËæ»ú×Óµ¯·¢ÉäÒôĞ§
+
             AudioManager.Instance.PlayerRandomSFX(projectileLaunchSFX);
-            //²¥·ÅÇ¹¿ÚÌØĞ§
             muzzleVFX.Play();
         }
     }

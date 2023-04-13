@@ -29,32 +29,36 @@ public class Boss : Enemy
         healthBarCanvas.enabled = true;
     }
     
-    //��д���������ײ����
     protected override void OnCollisionEnter2D(Collision2D other)
     {
-        //���ײ��Boss��
+       //如果Boss碰到玩家，玩家直接死亡
        if(other.gameObject.TryGetComponent<Player>(out Player player))
-           //ֻ����һ�����
            player.Die();
     }
 
-    //��д��������
+    /// <summary>
+    /// Boss死亡
+    /// </summary>
     public override void Die()
     {
-        //�ر�boss HUD����
+        //Boss血条隐藏
         healthBarCanvas.enabled = false;
         base.Die();
     }
 
-    //��д���˺���
+    /// <summary>
+    /// Boss受伤
+    /// </summary>
+    /// <param name="damage"></param>
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        //boss HUDѪ����ʾ
         healthBar.UpdateStats(health,maxHealth);
     }
 
-    //��д����Ѫ�����ֵ������Boss���Ѫ��+���˲���*����ֵ����
+    /// <summary>
+    /// 根据敌人波数设置Boss的血量
+    /// </summary>
     protected override void SetHealth()=>maxHealth += EnemyManager.Instance.WaveNumber * healthFactor;
 
 }

@@ -2,135 +2,183 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Bossæ§åˆ¶å™¨
+/// </summary>
 public class BossController : EnemyController
 {
-    //Á¬Ğø¿ª»ğ³ÖĞøÊ±¼ä
+    /// <summary>
+    /// è¿ç»­å¼€ç«çš„æŒç»­æ—¶é—´
+    /// </summary>
     [SerializeField] private float continuousFireDuration = 1.5f;
 
+    
+    /// <summary>
+    /// ç©å®¶æ£€æµ‹å™¨çš„ä½ç½®
+    /// </summary>
     [Header("======= Player Detection ========")] 
-    //¼ì²âºĞµÄ±ä»»×é¼ş±äÁ¿
     [SerializeField] private Transform playerDetectionTransform;
-    //¼ì²âºĞµÄ³ß´ç
+
+    /// <summary>
+    /// ç©å®¶æ£€æµ‹å™¨çš„å°ºå¯¸
+    /// </summary>
     [SerializeField] private Vector3 playerDetectionSize;
-    //Íæ¼Ò²ãÕÚÕÖ±äÁ¿
+
+    /// <summary>
+    /// ç©å®¶æ£€æµ‹å±‚
+    /// </summary>
     [SerializeField] private LayerMask playerLayer;
 
+    /// <summary>
+    /// æ¿€å…‰å†·å´æ—¶é—´
+    /// </summary>
     [Header("======= Beam ========")] 
-    //¼¤¹âÀäÈ´Ê±¼ä
     [SerializeField] private float beamCooldownTime = 12f;
-    //¼¤¹âÎäÆ÷ĞîÁ¦ÒôĞ§
+
+    /// <summary>
+    /// æ¿€å…‰å……èƒ½éŸ³æ•ˆ
+    /// </summary>
     [SerializeField] private AudioData beamChargingSFX;
-    //¼¤¹â·¢ÉäÒôĞ§
+
+    /// <summary>
+    /// æ¿€å…‰å‘å°„éŸ³æ•ˆ
+    /// </summary>
     [SerializeField] private AudioData beamLaunchSFX;
-    //¼¤¹âÎäÆ÷ÊÇ·ñÀäÈ´Íê±Ï
-    private bool _isBeamReady;
-    //¼¤»î¶¯»­Trigger²ÎÊı×ª»»Îª¹şÏ£ÖµÊ¹ÓÃ
+
+    /// <summary>
+    /// æ¿€å…‰æ˜¯å¦å‡†å¤‡å®Œæˆ
+    /// </summary>
+    private bool isBeamReady;
+
+    /// <summary>
+    /// æ¿€å…‰åŠ¨ç”»åçš„å“ˆå¸Œå€¼
+    /// </summary>
+    /// <returns></returns>
     private int launchBeamID = Animator.StringToHash("launchBeam");
-    //×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+
+    /// <summary>
+    /// æŒç»­å¼€ç«çš„é—´éš”
+    /// </summary>
     private WaitForSeconds waitForContinuousFireInterval;
     
+    /// <summary>
+    /// å¼€ç«é—´éš”
+    /// </summary>
     private WaitForSeconds waitForFireInterval;
-    //µÈ´ı¼¤¹âÀäÈ´Ê±¼ä
-    private WaitForSeconds _waitBeamCooldownTime;
 
-    //×Óµ¯¶ÔÏóÁĞ±í µ¯Ï»
+    private WaitForSeconds waitBeamCooldownTime;
+
+    /// <summary>
+    /// å¼¹åŒ£
+    /// </summary>
     private List<GameObject> magazine;
-    //´æ·Å¿ª»ğÒôĞ§
+
+    /// <summary>
+    /// å‘å°„å£°æ•ˆ
+    /// </summary>
     private AudioData launchSFX;
-    //¶¯»­×é¼ş
-    private Animator _animator;
-    //Íæ¼ÒÎ»ÖÃ
+    
+    private Animator animator;
+
     private Transform playerTransform;
 
     protected override void Awake()
     {
         base.Awake();
-        //È¡µÃbossÔ¤ÖÆÌåÉÏµÄ¶¯»­Æ÷×é¼ş
-        _animator = GetComponent<Animator>();
+
+        animator = GetComponent<Animator>();
         
-        //³õÊ¼»¯×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
         waitForContinuousFireInterval = new WaitForSeconds(minFireInterval);
-        //³õÊ¼»¯×î³¤¿ª»ğ¼ä¸ôÊ±¼ä
+
         waitForFireInterval = new WaitForSeconds(maxFireInterval);
-        //µÈ´ı¼¤¹âÀäÈ´Ê±¼ä³õÊ¼»¯
-        _waitBeamCooldownTime = new WaitForSeconds(beamCooldownTime);
-        //³õÊ¼»¯µ¯Ï»ÁĞ±í£¬´«Èë×Óµ¯Êı×é³¤¶È¿ØÖÆÁĞ±íÈİÁ¿
+
+        waitBeamCooldownTime = new WaitForSeconds(beamCooldownTime);
+
         magazine = new List<GameObject>(projectiles.Length);
-        //³õÊ¼»¯Íæ¼ÒÎ»ÖÃĞÅÏ¢£¬È¡µÃÍæ¼ÒµÄ±ä»»×é¼ş
+
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    //ÖØĞ´OnEnableº¯Êı
     protected override void OnEnable()
     {
-        //¼¤¹âÃ»×¼±¸ºÃ
-        _isBeamReady = false;
-        //Í£Ö¹²¥·ÅÇ¹¿ÚÌØĞ§
+        isBeamReady = false;
+
         muzzleVFX.Stop();
-        //ÆôÓÃ¼¤¹âÀäÈ´Ğ­³Ì
+
         StartCoroutine(nameof(BeamCooldownCoroutine));
-        //µ÷ÓÃ»ùÀàº¯Êı
+
         base.OnEnable();
     }
 
-    //»­³öBoss¼ì²âºĞµÄ·¶Î§
+    /// <summary>
+    /// ç»˜åˆ¶æ£€æµ‹ç©å®¶çš„èŒƒå›´
+    /// </summary>
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(playerDetectionTransform.position, playerDetectionSize);
     }
 
-    //¼¤¹âÎäÆ÷µÄÆôÓÃÓë·¢Éä
+    /// <summary>
+    /// å¯åŠ¨æ¿€å…‰æ­¦å™¨
+    /// </summary>
     void ActivateBeamWeapon()
     {
-        //¼¤¹âÎäÆ÷Ã»ÓĞ×¼±¸ºÃ
-        _isBeamReady = false;
-        //Í¨Öª¶¯»­Æ÷²¥·Å·¢Éä¼¤¹âµÄ¶¯»­
-        _animator.SetTrigger(launchBeamID);
-        //²¥·Å¼¤¹âÎäÆ÷ĞîÁ¦ÒôĞ§
+        //ä¸‹æ¬¡çš„æ¿€å…‰è¿˜æœªå‡†å¤‡å®Œæˆ
+        isBeamReady = false;
+        
+        //æ’­æ”¾æ¿€å…‰å‘å°„åŠ¨ç”»
+        animator.SetTrigger(launchBeamID);
+
         AudioManager.Instance.PlayerRandomSFX(beamChargingSFX);
     }
 
-    //¶¯»­ÊÂ¼şº¯Êı£¬·¢Éä¼¤¹âÊ±²¥·Å·¢ÉäÒôĞ§
+    /// <summary>
+    /// æ¿€å…‰å‘å°„åŠ¨ç”»çš„äº‹ä»¶å¤„ç†å‡½æ•°
+    /// </summary>
     void AnimationEventLaunchBeam()
     {
         AudioManager.Instance.PlayerRandomSFX(beamLaunchSFX);
     }
 
-    //¶¯»­ÊÂ¼şº¯Êı£¬Í£Ö¹·¢Éä¼¤¹â
+    /// <summary>
+    /// æ¿€å…‰åœæ­¢å‘å°„çš„åŠ¨ç”»äº‹ä»¶å¤„ç†å‡½æ•°
+    /// </summary>
     void AnimationEventStopBeam()
     {
-        //Í£Ö¹×·»÷Íæ¼ÒĞ­³Ì
         StopCoroutine(nameof(ChasingPlayerCoroutine));
-        //ÔÙ´Î¿ªÆô¼¤¹âÎäÆ÷µÄÀäÈ´Ê±¼ä
+
         StartCoroutine(nameof(BeamCooldownCoroutine));
-        //ÔÙ´Î¿ªÆô±»¹Ø±ÕµÄËæ»ú¿ª»ğĞ­³Ì
+
         StartCoroutine(nameof(RandomlyFireCoroutine));
     }
-    //×°Ìî×Óµ¯
+
+    /// <summary>
+    /// å¡«è£…å­å¼¹
+    /// </summary>
     void LoadProjectiles()
     {
-        //ÏÈÇå¿Õ×Óµ¯ÁĞ±í
+        //å¼¹åŒ£æ¸…ç©º
         magazine.Clear();
-        //Íæ¼Ò»úÌåÔÚBossÕıÇ°·½Ê±
+
+        //æ£€æµ‹åˆ°ç©å®¶æœºä½“
         if (Physics2D.OverlapBox(playerDetectionTransform.position, playerDetectionSize, 0f, playerLayer))
         {
-            //×°Ìî1ºÅ×Óµ¯
+            //æ·»åŠ å­å¼¹
             magazine.Add(projectiles[0]);
-            //²¥·Å×Óµ¯·¢ÉäÒôĞ§
+
             launchSFX = projectileLaunchSFX[0];
         }
-        else //Íæ¼Ò»úÌå²»ÔÚBossÕıÇ°·½
+        else //æ²¡æœ‰æ£€æµ‹åˆ°ç©å®¶æœºä½“å°±éšæœºå¡«è£…å­å¼¹
         {
             if (Random.value < 0.5f)
             {
-                //×°Ìî2ºÅ×Óµ¯
                 magazine.Add(projectiles[1]);
+
                 launchSFX = projectileLaunchSFX[1];
             }
             else
             {
-                //×°ÌîËùÓĞ²»Í¬½Ç¶ÈµÄ3ºÅ×Óµ¯
                 for (int i = 2; i < projectiles.Length; i++)
                     magazine.Add(projectiles[i]);
                 
@@ -139,80 +187,87 @@ public class BossController : EnemyController
         }
     }
 
-    //ÖØĞ´Ëæ»ú¿ª»ğĞ­³Ì
+    /// <summary>
+    /// éšæœºå¼€ç«åç¨‹
+    /// </summary>
+    /// <returns></returns>
     protected override IEnumerator RandomlyFireCoroutine()
     {
-        //boss´¦ÓÚ»î¶¯×´Ì¬£¬¾ÍÒ»Ö±Ñ­»·
         while (isActiveAndEnabled)
         {
-            //ÓÎÏ·½áÊøÊ±£¬Í£Ö¹Ğ­³Ì
+            //è‹¥æ¸¸æˆç»“æŸï¼Œé€€å‡ºå¼€ç«åç¨‹
             if (GameManager.GameState == GameState.GameOver) yield break;
-            //Èç¹û¼¤¹âÎäÆ÷ÒÑÀäÈ´Íê±Ï
-            if (_isBeamReady)
+            
+            //è‹¥æ¿€å…‰å‡†å¤‡å®Œæˆ
+            if (isBeamReady)
             {
-                //¼¤»î¼¤¹âÎäÆ÷
                 ActivateBeamWeapon();
-                //¿ªÆô×·×ÙÍæ¼ÒĞ­³Ì
+
                 StartCoroutine(nameof(ChasingPlayerCoroutine));
-                //Í£Ö¹¿ª»ğĞ­³Ì
+
                 yield break;
             }
-            //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä
+
             yield return waitForFireInterval;
-            //¹ÒÆğÖ´ĞĞÁ¬Ğø¿ª»ğĞ­³Ì
+
             yield return StartCoroutine(nameof(ContinuousFireCoroutine));
         }
     }
 
-    //Á¬Ğø¿ª»ğĞ­³Ì
+    //æŒç»­å¼€ç«åç¨‹
     IEnumerator ContinuousFireCoroutine()
     {
-        //µ÷ÓÃ×°Ìî×Óµ¯º¯Êı
+
         LoadProjectiles();
-        //²¥·ÅÇ¹¿ÚÌØĞ§
+
         muzzleVFX.Play();
         
-        //³ÖĞø¿ª»ğ¼ÆÊ±Æ÷
+        //è¿ç»­å¼€ç«è®¡æ—¶å™¨
         float continuousFireTimer = 0f;
-        //³ÖĞø¿ª»ğ¼ÆÊ±Æ÷ Ğ¡ÓÚ Á¬Ğø¿ª»ğ³ÖĞøÊ±¼ä£¬¾ÍÒ»Ö±¿ª»ğ
+
+        //è‹¥è¿ç»­å¼€ç«è®¡æ—¶ å°äº è¿ç»­å¼€ç«æŒç»­æ—¶é—´
         while (continuousFireTimer < continuousFireDuration)
         {
-            //·¢Éäµ¯Ï»ÖĞµÄ×Óµ¯
+            //å¯¹è±¡æ± æŒ¨ä¸ªé‡Šæ”¾å­å¼¹
             foreach (var projectile in magazine)
             {
                 PoolManager.Release(projectile, muzzle.position);
             }
-            //¼ÆÊ±Æ÷Ôö¼Ó¿ª»ğ¼ä¸ôÊ±¼äÖµ
+
             continuousFireTimer += minFireInterval;
-            //²¥·Å¿ª»ğÒôĞ§
+
             AudioManager.Instance.PlayerRandomSFX(launchSFX);
-            //¹ÒÆğµÈ´ı×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+  
             yield return waitForContinuousFireInterval;
         }
-        //Í£Ö¹²¥·ÅÇ¹¿ÚÌØĞ§
+
         muzzleVFX.Stop();
     }
-
-    //¼¤¹âÎäÆ÷ÀäÈ´Ğ­³Ì
+    
+    /// <summary>
+    /// æ¿€å…‰å†·å´åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator BeamCooldownCoroutine()
     {
-        //µÈ´ı¹ÒÆğ¼¤¹âÀäÈ´Ê±¼ä
-        yield return _waitBeamCooldownTime;
-        //¼¤¹âÒÑ×¼±¸Íê³É
-        _isBeamReady = true;
+
+        yield return waitBeamCooldownTime;
+  
+        isBeamReady = true;
     }
 
-    //×·»÷Íæ¼ÒĞ­³Ì
+    /// <summary>
+    /// è·Ÿè¸ªç©å®¶æœºä½“çš„åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator ChasingPlayerCoroutine()
     {
-        //Boss¼¤»îÊ±Ò»Ö±Ñ­»·
         while (isActiveAndEnabled)
         {
-            //ĞŞ¸ÄBossÒÆ¶¯Ê±µÄÄ¿±êÎ»ÖÃ
-            //XÖáÎª»­Ãæ×îÓÒ±ß ¼õÈ¥ BossÄ£ĞÍµÄx±ß¾àÖµ
             targetPosition.x = Viewport.Instance.MaxX - paddingX;
-            //YÖáÎªÍæ¼ÒÎ»ÖÃµÄYÖá
+
             targetPosition.y = playerTransform.position.y;
+            
             yield return null;
         }
     }

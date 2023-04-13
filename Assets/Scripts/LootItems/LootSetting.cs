@@ -2,21 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//½«Î´¼Ì³ĞMonoµÄÀàÖĞµÄÔ¤ÁĞ»¯×Ö¶ÎÆØÂ¶³öÀ´
-[System.Serializable] public class LootSetting
+/// <summary>
+/// æˆ˜åˆ©å“è®¾ç½®ç±»
+/// </summary>
+[System.Serializable] 
+public class LootSetting
 {
-    //ÓÎÏ·Õ½ÀûÆ·¶ÔÏó
+    /// <summary>
+    /// æˆ˜åˆ©å“å¯¹è±¡é¢„åˆ¶ä½“
+    /// </summary>
     public GameObject prefab;
-    //Õ½ÀûÆ·µôÂÊ°Ù·Ö±È
+
+    /// <summary>
+    /// æ‰è½ç™¾åˆ†æ¯”æ¦‚å¿µ
+    /// </summary>
     [Range(0f, 100f)] public float dropPercentage;
 
-    //Éú³ÉÕ½ÀûÆ·µÀ¾ß¹¦ÄÜ ½ÓÊÕÈıÎ¬ÏòÁ¿²ÎÊı£¬ÉèÖÃµÀ¾ßÉú³ÉÎ»ÖÃ
+    /// <summary>
+    /// æˆ˜åˆ©å“ç”Ÿæˆ
+    /// </summary>
+    /// <param name="position">ç”Ÿæˆä½ç½®</param>
     public void Spawn(Vector3 position)
     {
-        //ÈôËæ»úÖµĞ¡ÓÚµÈÓÚµôÂÊÖµ
+        //éšæœºæ•°å°äºæ‰è½æ¦‚å¿µå°±ç”Ÿæˆæˆ˜åˆ©å“
         if (Random.Range(0f, 100f) <= dropPercentage)
         {
-            //¶ÔÏó³Ø¹ÜÀíÆ÷Éú³ÉÒ»¸öÕ½ÀûÆ·µÀ¾ß
+            
             PoolManager.Release(prefab, position);
         }
     }

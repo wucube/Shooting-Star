@@ -3,68 +3,106 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
+/// <summary>
+/// è§†å£ç±»
+/// </summary>
 public class Viewport : Singleton<Viewport>
 {
-    //Íæ¼ÒÎ»ÖÃ x¡¢yÖáÈ¡Öµ·¶Î§
+    //è§†å£èŒƒå›´å†…çš„åæ ‡æå€¼
     float minX;
     float maxX;
     float minY;
     float maxY;
-    
-    //ÊÓ¿ÚÖĞĞÄµãµÄXÖáÖµ
+
+    /// <summary>
+    /// è§†å£ä¸­å¿ƒç‚¹çš„Xè½´å€¼
+    /// </summary>
     float middleX;
     
-    //¹«ÓĞÊôĞÔMaxX
+    /// <summary>
+    /// è§†å£èŒƒå›´å†…çš„æœ€å¤§xè½´å€¼
+    /// </summary>
     public float MaxX => maxX;
     void Start()
     {
         Camera mainCamera = Camera.main;
         
-        //ÊÓ¿Ú×ø±ê×ªÊÀ½ç×ø±ê
-        Vector2 bottomLeft = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f));//ÊÓ¿Ú×óÏÂ½Ç×ø±ê×ªÊÀ½ç
-        Vector2 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f));//ÊÓ¿ÚÓÒÉÏ½Ç×ø±ê×ªÊÀ½ç
-        middleX = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, 0f)).x;//ÊÓ¿ÚÖĞĞÄµãµÄXµã×ø±ê×ªÎªÊÀ½çÏµ×ø±ê
+        //è§†å£å·¦ä¸‹è§’çš„åæ ‡ï¼šè§†å£åæ ‡è½¬ä¸–ç•Œåæ ‡
+        Vector2 bottomLeft = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f));
+        //è§†å£å³ä¸Šè§’çš„åæ ‡ï¼šè§†å£åæ ‡è½¬ä¸–ç•Œåæ ‡
+        Vector2 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f));
+
+        middleX = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, 0f)).x;
         minX = bottomLeft.x;
         minY = bottomLeft.y;
         maxX = topRight.x;
         maxY = topRight.y;
     }
     
-    //Íæ¼ÒÒÆ¶¯ÔÚÊÓ¿Ú·¶Î§ÄÚ
+    /// <summary>
+    /// ç©å®¶æœºä½“å¯ç§»åŠ¨çš„ä½ç½®
+    /// </summary>
+    /// <param name="playerPosition">ç©å®¶ä½ç½®</param>
+    /// <param name="paddingX">æœºä½“ä¸­å¿ƒçš„æ°´å¹³è¾¹è·</param>
+    /// <param name="paddingY">æœºä½“ä¸­å¿ƒçš„å‚ç›´è¾¹è·</param>
+    /// <returns></returns>
     public Vector3 PlayerMoveablePosition(Vector3 playerPosition,float paddingX,float paddingY)
     {
-        //ÁÙÊ±±äÁ¿´æ´¢Î»ÖÃ
         Vector3 position = Vector3.zero;
-        //ÏŞÖÆÍæ¼ÒXÖáÖµµÄÒÆ¶¯·¶Î§
+        
         position.x = Mathf.Clamp(playerPosition.x, minX + paddingX, maxX - paddingX);
-        //ÏŞÖÆÍæ¼ÒYÖáÖµµÄÒÆ¶¯·¶Î§
         position.y = Mathf.Clamp(playerPosition.y, minY + paddingY, maxY - paddingY);
+
         return position;
     }
     
-    //µĞÈËËæ»ú³öÉúÎ»ÖÃ£¬ÔÚ¾µÍ·ÍâµÄÓÒ°ë²¿·Ö
+    /// <summary>
+    /// æ•Œäººéšæœºå‡ºç”Ÿçš„ä½ç½®
+    /// </summary>
+    /// <param name="paddingX">æœºä½“çš„æ°´å¹³è¾¹è·</param>
+    /// <param name="paddingY">æœºä½“çš„å‚ç›´è¾¹è·</param>
+    /// <returns></returns>
     public Vector3 RandomEnemySpawnPosition(float paddingX,float paddingY)
     {
         Vector3 position = Vector3.zero;
+
+        //æœºä½“ä»å±å¹•å¤–è¿›å…¥å±å¹•å†…(Xè½´)
         position.x = maxX + paddingX;
         position.y = Random.Range(minY + paddingY, maxY - paddingY);
+
         return position;
     }
     
-    //µĞ»úÔÚ¾µÍ·ÄÚÓÒ°ë²¿·ÖËæ»úÎ»ÖÃ
+    /// <summary>
+    /// è§†å£å³åŠè¾¹çš„éšæœºä½ç½®
+    /// </summary>
+    /// <param name="paddingX">æœºä½“çš„æ°´å¹³è¾¹è·</param>
+    /// <param name="paddingY">æœºä½“çš„å‚ç›´è¾¹è·</param>
+    /// <returns></returns>
     public Vector3 RandomRightHalfPosition(float paddingX,float paddingY)
     {
         Vector3 position = Vector3.zero;
+        
+        //Xè½´çš„å€¼åœ¨è§†å£å³åŠè¾¹èŒƒå›´å†…
         position.x = Random.Range(middleX, maxX - paddingX);
         position.y = Random.Range(minY+paddingX, maxY - paddingY);
+
         return position;
     }
-    //µĞ»úËæ»úÔÚ¾µÍ·ÄÚÎ»ÖÃ
+
+    /// <summary>
+    /// æ•Œäººéšæœºç§»åŠ¨çš„ä½ç½®
+    /// </summary>
+    /// <param name="paddingX"></param>
+    /// <param name="paddingY"></param>
+    /// <returns></returns>
     public Vector3 RandomEnemyMovePosition(float paddingX, float paddingY)
     {
         Vector3 position = Vector3.zero;
+
         position.x = Random.Range(minX + paddingX, maxX - paddingX);
         position.y = Random.Range(minY + paddingX, maxY - paddingY);
+        
         return position;
     }
 }

@@ -3,21 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// æ¸¸æˆç®¡ç†å™¨
+/// </summary>
 public class GameManager : PersistentSingleton<GameManager>
 {
-    //ÉèÎª¾²Ì¬Î¯ÍĞÊ¹ÓÃ·ÃÎÊÊ¹ÓÃ£¬Ò²¿ÉÒÔ²»ÉèÖÃÍ¨¹ıµ¥ÀıÀà·ÃÎÊ
+    /// <summary>
+    /// æ¸¸æˆç»“æŸäº‹
+    /// </summary>
     public static UnityAction onGameOver;
     
-    //ÓÎÏ·×´Ì¬ÊôĞÔ
+    /// <summary>
+    /// æ¸¸æˆçŠ¶æ€
+    /// </summary>
+    /// <value></value>
     public static GameState GameState
     {
         get => Instance.gameState;
         set => Instance.gameState = value;
     }
-    //ÓÎÏ·×´Ì¬£¬Ä¬ÈÏÎªÓÎÏ·ÔËĞĞ×´Ì¬
+
     [SerializeField] private GameState gameState = GameState.Playing;
 }
-//ÓÎÏ·×´¹«ÓĞÃ¶¾Ù
+
+/// <summary>
+/// æ¸¸æˆçŠ¶æ€æšä¸¾
+/// </summary>
 public enum GameState
 {
     Playing,

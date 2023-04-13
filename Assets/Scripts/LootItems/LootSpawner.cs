@@ -2,19 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æˆ˜åˆ©å“ç”Ÿæˆç±»
+/// </summary>
 public class LootSpawner : MonoBehaviour
 {
-    //Õ½ÀûÆ·ÉèÖÃÊı×é
+    /// <summary>
+    /// æˆ˜åˆ©å“ç”Ÿæˆè®¾ç½®æ•°ç»„
+    /// </summary>
     [SerializeField] private LootSetting[] lootSettings;
 
-    //Éú³ÉÕ½ÀûÆ·º¯Êı ½ÓÊÕÈıÎ¬ÏòÁ¿ÉèÖÃÕ½ÀûÆ·ÉèÖÃ
+    /// <summary>
+    /// æˆ˜åˆ©å“ç”Ÿæˆ
+    /// </summary>
+    /// <param name="position"></param>
     public void Spawn(Vector2 position)
     {
-        //±éÀúÕ½ÀûÆ·ÉèÖÃÊı×é
+        //éå†æˆ˜åˆ©å“ç”Ÿæˆè®¾ç½®æ•°ç»„
         foreach (var item in lootSettings)
         {
-            //µ÷ÓÃÊı×éÖĞÃ¿¸öÕ½ÀûÆ·ÉèÖÃµÄÉú³Éº¯Êı£¬µÀ¾ßÉú³É²úÉúÒ»µãÆ«ÒÆ
-            item.Spawn(position+Random.insideUnitCircle);
+            //éšæœºç”Ÿæˆæˆ˜åˆ©å“ï¼Œæ¯ä¸ªæˆ˜åˆ©å“ä½ç½®ç•¥æœ‰ä½ç½®åå·®
+            item.Spawn(position + Random.insideUnitCircle);
         }
     }
 }

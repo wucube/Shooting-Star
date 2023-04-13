@@ -6,56 +6,68 @@ using UnityEngine.SceneManagement;
 
 public class Enemy : Character
 {
-    //?????????????¡Â????
+    /// <summary>
+    /// æ•Œäººçš„åˆ†æ•°ç‚¹
+    /// </summary>
     [SerializeField] private int scorePoint = 100;
-    //????????????
+
+    /// <summary>
+    /// æ•Œäººæ­»äº¡çš„èƒ½é‡å¥–åŠ±
+    /// </summary>
     [SerializeField] private int deathEnergyBonus = 3;
     
-    //ÑªÁ¿ÒòËØ
+    /// <summary>
+    /// è¡€é‡å€¼å› å­ï¼Œç”¨äºè®¡ç®—
+    /// </summary>
     [SerializeField] protected int healthFactor;
 
-    //Õ½ÀûÆ·Éú³ÉÆ÷½Å±¾
+    /// <summary>
+    /// æˆ˜åˆ©å“ç”Ÿæˆ
+    /// </summary>
     private LootSpawner lootSpawner;
 
     protected virtual void Awake()
     {
-        //È¡µÃÕ½ÀûÆ·Éú³ÉÆ÷
         lootSpawner = GetComponent<LootSpawner>();
     }
 
     protected override void OnEnable()
     {
-        //ÉèÖÃµĞÈË×î´óÑªÁ¿
         SetHealth();
+
         base.OnEnable();
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        //????§İ?????????
+        //è‹¥æ•Œæœºç¢°åˆ°ç©å®¶æœºä½“
         if (other.gameObject.TryGetComponent<Player>(out Player player))
         {
-            //???????
+            //ç©å®¶æ­»äº¡
             player.Die();
-            //?§İ?????
+            //æ•Œæœºä¹Ÿæ­»äº¡
             Die();
         }
     }
-    //ÖØĞ´½ÇÉ«ËÀÍöº¯Êı
+    
+    /// <summary>
+    /// æ•Œæœºæ­»äº¡
+    /// </summary>
     public override void Die()
     {
-        //????????????¡Â?
+        //æ·»åŠ åˆ†æ•°ç‚¹
         ScoreManager.Instance.AddScore(scorePoint);
-        //????????????????????????????????????
+        //ç©å®¶æœºä½“è·å¾—èƒ½é‡å¥–åŠ±
         PlayerEnergy.Instance.Obtain(deathEnergyBonus);
-        //??????§Ò???????????????
+        //æ•Œäººæœºä½“ä»åˆ—è¡¨ä¸­ç§»é™¤
         EnemyManager.Instance.RemoveFromList(gameObject);
-        //µ÷ÓÃÉú³ÉÆ÷µÄÉú³Éº¯Êı
+        //ç”Ÿæˆæˆ˜åˆ©å“
         lootSpawner.Spawn(transform.position);
-        
-        //????????????????
+
         base.Die();
     }
-    //ÉèÖÃµĞÈË×î´óÑªÁ¿º¯Êı£¬×î´óÑªÁ¿¼ÓÉÏµĞÈË²¨ÊıÏà¹ØµÄÊıÖµ
+    /// <summary>
+    /// æ ¹æ®æ•Œäººæ³¢æ•°è®¾ç½®æ•Œäººæœ€å¤§è¡€é‡
+    /// </summary>
     protected virtual void SetHealth() => maxHealth += (int)(EnemyManager.Instance.WaveNumber / healthFactor);
 }
