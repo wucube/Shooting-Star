@@ -3,21 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// å¯¼å¼¹æ˜¾ç¤º
+/// </summary>
 public class MissileDisplay : MonoBehaviour
 {
-    //µ¼µ¯ÊıÁ¿ÎÄ±¾×é¼ş
+    /// <summary>
+    ///  å¯¼å¼¹å‰©ä½™æ•°é‡çš„æ–‡æœ¬
+    /// </summary>
     private static Text amountText;
-    //ÀäÈ´Í¼Æ¬×é¼ş
+    /// <summary>
+    /// å¯¼å¼¹å†·å´å›¾
+    /// </summary>
     private static Image cooldownImage;
+
     private void Awake()
     {
-        //»ñÈ¡×Ó¶ÔÏóÎÄ±¾×é¼ş
         amountText = transform.Find("Amount Text").GetComponent<Text>();
-        //»ñÈ¡×Ó¶ÔÏóÀäÈ´Í¼Æ¬×é¼ş
         cooldownImage = transform.Find("Cooldown Image").GetComponent<Image>();
     }
-    //¸üĞÂÏÔÊ¾µ¼µ¯ÊıÁ¿
+    /// <summary>
+    /// æ›´æ–°å¯¼å¼¹å‰©ä½™æ•°é‡
+    /// </summary>
+    /// <param name="amount"></param>
     public static void UpdateAmountText(int amount) => amountText.text = amount.ToString();
-    //¸üĞÂÏÔÊ¾ÀäÈ´Í¼Æ¬
+    /// <summary>
+    /// æ›´æ–°å¯¼å¼¹å†·å´å›¾ç‰‡çš„å¡«å……å€¼ï¼Œä¸º0è¡¨ç¤ºå†·å´å®Œæˆï¼Œå¯¼å¼¹å¯ä»¥å‘å°„ã€‚
+    /// </summary>
+    /// <param name="fillAmount"></param>
     public static void UpdateCooldownImage(float fillAmount) => cooldownImage.fillAmount = fillAmount;
 }

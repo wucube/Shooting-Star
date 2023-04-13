@@ -3,97 +3,134 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç©å®¶èƒ½é‡ç³»ç»Ÿ
+/// </summary>
 public class PlayerEnergy : Singleton<PlayerEnergy>
 {
-    //ÄÜÁ¿ÌõÀàÒıÓÃ±äÁ¿
+    /// <summary>
+    /// ç©å®¶èƒ½é‡æ¡
+    /// </summary>
     [SerializeField] private EnergyBar energyBar;
-    //ÄÜÁ¿±¬·¢¼ä¸ôÊ±¼ä
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å»¶è¿Ÿæ—¶é—´
+    /// </summary>
     [SerializeField] private float overdriveInterval = 0.1f;
-    //ÄÜ·ñ»ñÈ¡ÄÜÁ¿
-    private bool _available = true;
-    //ÄÜÁ¿Öµ×î´óÖµ³£Á¿£¬²»»á¸Ä±ä
+   
+    /// <summary>
+    /// èƒ½å¦è·å–èƒ½é‡
+    /// </summary>
+    private bool available = true;
+
+    /// <summary>
+    /// èƒ½é‡æœ€å¤§å€¼
+    /// </summary>
     public const int Max = 100;
-    //ÄÜÁ¿°Ù·Ö±ÈÖµ³£Á¿
+
+    /// <summary>
+    /// èƒ½é‡ç™¾åˆ†æ¯”
+    /// </summary>
     public const int Percent = 1;
-    //´æ´¢µ±Ç°ÄÜÁ¿Öµ
-    private int _energy;
-    //¹ÒÆğµÈ´ıÄÜÁ¿±¬·¢¼ä¸ôÊ±¼ä
-    private WaitForSeconds _waitForOverdriveInterval;
+    
+    /// <summary>
+    /// å½“å‰èƒ½é‡å€¼
+    /// </summary>
+    private int energy;
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘çŠ¶æ€ä¸‹çš„èƒ½é‡æ‰£é™¤æ—¶é—´é—´éš”
+    /// </summary>
+    private WaitForSeconds waitForOverdriveInterval;
+
     protected override void Awake()
     {
         base.Awake();
-        //¹ÒÆğµÈ´ıÄÜÁ¿±¬·¢Ê±¼ä¼ä¸ô³õÊ¼»¯
-        _waitForOverdriveInterval = new WaitForSeconds(overdriveInterval);
+        waitForOverdriveInterval = new WaitForSeconds(overdriveInterval);
     }
     void OnEnable()
     {
-        //¶©ÔÄÄÜÁ¿±¬·¢ÏµÍ³µÄOnÓëOffÎ¯ÍĞ
         PlayerOverdrive.on += PlayerOverdriveOn;
         PlayerOverdrive.off += PlayerOverdriveOff;
     }
 
     void OnDisable()
     {
-        //ÍË¶©ÄÜÁ¿±¬·¢ÏµÍ³µÄOnÓëOffÎ¯ÍĞ
         PlayerOverdrive.on -= PlayerOverdriveOn;
         PlayerOverdrive.off -= PlayerOverdriveOff;
     }
 
     void Start()
     {
-        //ÄÜÁ¿ÌõUI³õÊ¼»¯,´«Èëµ±Ç°ÄÜÁ¿ÖµÓë×î´óÄÜÁ¿Öµ
-        energyBar.Initialize(_energy,Max);
-        //Íæ¼ÒÄÜÁ¿ÖµÈ«Âú
+        energyBar.Initialize(energy,Max);
         Obtain(Max);
     }
-    //»ñÈ¡ÄÜÁ¿º¯Êı
+    
+    /// <summary>
+    /// è·å–èƒ½é‡
+    /// </summary>
+    /// <param name="value">å¢åŠ çš„èƒ½é‡å€¼</param>
     public void Obtain(int value)
     {
-        //ÈôÄÜÁ¿ÖµÊÇÂú£¬»ò´¦ÓÚÄÜÁ¿±¬·¢×´Ì¬»òÍæ¼ÒËÀÍö£¬ÔòÌáÇ°·µ»Ø
-        if (_energy == Max || !_available||!gameObject.activeSelf) return;
-        //ÄÜÁ¿Öµ²»ÂúÔòÀÛ¼Ó»ñÈ¡ÄÜÁ¿£¬Í¬Ê±·ÀÖ¹ÄÜÁ¿ÖµÒç³ö
-        _energy = Mathf.Clamp(_energy + value, 0, Max);
-        //¸üĞÂÄÜÁ¿ÌõµÄUIÏÔÊ¾
-        energyBar.UpdateStats(_energy,Max);
+        //è‹¥å½“å‰èƒ½é‡å€¼æ»¡ æˆ– èƒ½é‡ä¸å¯è·å– æˆ– å¯¹è±¡æ²¡æœ‰æ¿€æ´» å°±ç›´æ¥è¿”å›
+        if (energy == Max || !available || !gameObject.activeSelf) return;
+        
+        energy = Mathf.Clamp(energy + value, 0, Max);
+        energyBar.UpdateStats(energy, Max);
     }
-    //ÄÜÁ¿ÏûºÄº¯Êı
+
+    /// <summary>
+    /// èƒ½é‡ä½¿ç”¨
+    /// </summary>
+    /// <param name="value">æ‰£é™¤çš„èƒ½é‡å€¼</param>
     public void Use(int value)
     {
-        //µ±Ç°ÄÜÁ¿Öµ ¼õ ÏûºÄÄÜÁ¿Öµ
-        _energy -= value;
-        //¸üĞÂÄÜÁ¿ÌõµÄUIÏÔÊ¾
-        energyBar.UpdateStats(_energy,Max);
-        //´¦ÓÚÄÜÁ¿±¬·¢×´Ì¬¼´²»ÄÜ»ñÈ¡ÄÜÁ¿Ê±£¬ÇÒÄÜÁ¿ÖµÏûºÄÍê±ÏÊ±£¬¹Ø±ÕÄÜÁ¿±¬·¢
-        if(_energy==0&&!_available) PlayerOverdrive.off.Invoke();
-    }
-    //ÅĞ¶Ïµ±Ç°ÄÜÁ¿ÖµÊÇ·ñ×ã¹»Ö§¸¶ÏûºÄµÄÄÜÁ¿Öµ
-    public bool IsEnough(int value) => _energy >= value;
+        energy -= value;
+        energyBar.UpdateStats(energy,Max);
 
-   //¿ªÆôÄÜÁ¿±¬·¢Î¯ÍĞ´¦Àíº¯Êı
+        //èƒ½é‡å€¼ä¸º0 ä¸” èƒ½é‡ä¸å¯è·å– å°±å¯ç”¨èƒ½é‡çˆ†å‘å…³é—­äº‹ä»¶
+        if(energy == 0 && !available ) PlayerOverdrive.off.Invoke();
+    }
+    
+    /// <summary>
+    /// èƒ½é‡æ˜¯å¦è¶³å¤Ÿ
+    /// </summary>
+    /// <param name="value">è¦ä½¿ç”¨çš„èƒ½é‡å€¼</param>
+    /// <returns></returns>
+    public bool IsEnough(int value) => energy >= value;
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å¼€å¯äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void PlayerOverdriveOn()
     {
-        //²»ÄÜ»ñÈ¡ÄÜÁ¿
-        _available = false;
-        //¿ªÆô³ÖĞøÏûºÄĞ­³Ì
+        //ä¸èƒ½è·å–èƒ½é‡
+        available = false;
+
         StartCoroutine(nameof(KeepUsingCoroutine));
     }
-    //¹Ø±ÕÄÜÁ¿±¬·¢Î¯ÍĞ´¦Àíº¯Êı
+    
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å…³é—­äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void PlayerOverdriveOff()
     {
-        //¿ÉÒÔ»ñÈ¡ÄÜÁ¿
-        _available = true;
-        //Í£Ö¹³ÖĞøÏûºÄĞ­³Ì
+        //å¯ä»¥è·å–èƒ½é‡
+        available = true;
+
         StopCoroutine(nameof(KeepUsingCoroutine));
     }
-    //³ÖĞøÏûºÄĞ­³Ì
+    
+    /// <summary>
+    /// æŒç»­ä½¿ç”¨èƒ½é‡å€¼
+    /// </summary>
+    /// <returns></returns>
     IEnumerator KeepUsingCoroutine()
     {
-        //Íæ¼Ò»î×ÅÇÒÄÜÁ¿´óÓÚ0Ê±£¬³ÖĞøÑ­»·
-        while (gameObject.activeSelf&&_energy>0)
+        while ( gameObject.activeSelf && energy > 0 )
         {
-            //¹ÒÆğµÈ´ıÄÜÁ¿±¬·¢¼ä¸ôÊ±¼ä£¬Ã¿¹ı0.1Ãë
-            yield return _waitForOverdriveInterval;
-            //ÏûºÄÄÜÁ¿Öµ£¬1¸ö°Ù·Ö±È
+            yield return waitForOverdriveInterval;
+            
             Use(Percent);
         }
     }

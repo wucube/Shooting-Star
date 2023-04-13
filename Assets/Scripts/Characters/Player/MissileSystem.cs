@@ -3,91 +3,111 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// å¯¼å¼¹ç³»ç»Ÿ
+/// </summary>
 public class MissileSystem : MonoBehaviour
 {
-    //µ¼µ¯Ä¬ÈÏÊıÁ¿
+    /// <summary>
+    /// å¯¼å¼¹çš„é»˜è®¤æ•°é‡
+    /// </summary>
     [SerializeField] private int defaultAmount = 5;
-    //µ¼µ¯·¢ÉäÀäÈ´Ê±¼ä
+
+    /// <summary>
+    /// å¯¼å¼¹å‘å°„çš„å†·å´æ—¶é—´
+    /// </summary>
     [SerializeField] private float cooldownTime = 1f;
     
-    //µ¼µ¯Ô¤ÖÆÌå
+    /// <summary>
+    /// å¯¼å¼¹é¢„åˆ¶ä½“
+    /// </summary>
     [SerializeField] private GameObject missilePrefab = null;
-    //µ¼µ¯·¢ÉäÒôĞ§±äÁ¿
+
+    /// <summary>
+    /// å¯¼å¼¹å‘å°„å£°æ•ˆ
+    /// </summary>
     [SerializeField] private AudioData launchSFX = null;
     
-    //µ¼µ¯ÊÇ·ñ×¼±¸ºÃ
+    /// <summary>
+    /// å¯¼å¼¹å‘å°„æ˜¯å¦å‡†å¤‡å®Œæˆ
+    /// </summary>
     private bool isReady = true;
     
-    //µ±Ç°ÓµÓĞµÄµ¼µ¯ÊıÁ¿
-    private int _amount;
+    /// <summary>
+    /// å¯¼å¼¹å‰©ä½™æ•°é‡
+    /// </summary>
+    private int amount;
 
     private void Awake()
     {
-        //Ä¬ÈÏµ¼µ¯ÊıÁ¿¸³Óèµ±Ç°µ¼µ¯ÊıÁ¿
-        _amount = defaultAmount;
+        amount = defaultAmount;
     }
 
     private void Start()
     {
-        //µ÷ÓÃµ¼µ¯ÊıÁ¿¸üĞÂº¯Êı
-        MissileDisplay.UpdateAmountText(_amount);
+        MissileDisplay.UpdateAmountText(amount);
     }
 
-    //µ¼µ¯Ê°È¡º¯Êı
+    /// <summary>
+    /// å¯¼å¼¹æ‹¾å–
+    /// </summary>
     public void PickUp()
     {
-        //µ¼µ¯ÊıÁ¿×ÔÔö
-        _amount++;
-        //¸üĞÂÏÔÊ¾µ¼µ¯ÎÄ±¾UI 
-        MissileDisplay.UpdateAmountText(_amount);
-        //Èç¹ûÏÈÇ°µ¼µ¯ÊıÁ¿Îª0£¬Ê°È¡µ¼µ¯ºóÊıÁ¿Îª1£¬
-        if (_amount == 1)
+        amount++;
+        MissileDisplay.UpdateAmountText(amount);
+
+        //å‰©ä½™å¯¼å¼¹æ•°é‡ä¸º0ï¼Œè¡¨ç¤ºä¹‹å‰å¯¼å¼¹å·²å‘å°„å®Œã€‚æ­¤æ—¶æ‹¾å–æ–°å¯¼å¼¹åç›´æ¥è¿›å…¥å¯å‘å°„çŠ¶æ€ã€‚
+        if (amount == 1)
         {
-            //¸üĞÂÏÔÊ¾µ¼µ¯Í¼±êUI 
             MissileDisplay.UpdateCooldownImage(0f);
-            //µ¼µ¯·¢ÉäÒÑ×¼±¸ºÃ
             isReady = true;
         }
     }
-    //µ¼µ¯·¢Éäº¯Êı
+
+    /// <summary>
+    /// å¯¼å¼¹å‘å°„
+    /// </summary>
+    /// <param name="muzzleTransform">æªå£ä½ç½®</param>
     public void Launch(Transform muzzleTransform)
     {
-        //Èç¹ûµ±Ç°µ¼µ¯ÊıÁ¿Îª0£¬Ö±½Ó·µ»Ø
-        if(_amount ==0 ||!isReady) return; // µ¼µ¯ÊıÁ¿Îª0£¬»¹¿ÉÒÔ²¥·Å´íÎóÒôĞ§£¬UI×ö³öÒ»¶¨¸Ä±äµÈ
-        //µ¼µ¯»¹Ã»ÓĞ×¼±¸ºÃ
+        //å¯¼å¼¹å‰©ä½™æ•°é‡ä¸º0 æˆ– å¯¼å¼¹æœªå‡†å¤‡å®Œæˆï¼Œç›´æ¥è¿”å›
+        if(amount ==0 ||!isReady) return; 
+
+        //ä¸‹æ¬¡çš„å¯¼å¼¹å‘å°„æœªå‡†å¤‡å¥½
         isReady = false;
         
-        //¶ÔÏó³Ø¹ÜÀíÆ÷Éú³Éµ¼µ¯
+        //å¯¹è±¡é‡Šæ”¾å¯¼å¼¹å¯¹è±¡
         PoolManager.Release(missilePrefab, muzzleTransform.position);
-        //²¥·Åµ¼µ¯·¢ÉäÒôĞ§
+
         AudioManager.Instance.PlayerRandomSFX(launchSFX);
-        
-        //µ±Ç°µ¼µ¯ÊıÁ¿¼õÉÙÒ»¸ö
-        _amount--;
-        //¸üĞÂÏÔÊ¾µ¼µ¯UI
-        MissileDisplay.UpdateAmountText(_amount);
-        //µ¼µ¯ÊıÁ¿±äÎª0£¬Ôò¸üĞÂÏÔÊ¾ÀäÈ´Í¼Æ¬º¯Êı
-        if (_amount == 0) MissileDisplay.UpdateCooldownImage(1f);
-        //µ¼µ¯ÊıÁ¿²»Îª0£¬½øÈëÀäÈ´×´Ì¬
-        else StartCoroutine(CooldownCoroutine());
+        amount--;
+        MissileDisplay.UpdateAmountText(amount);
+
+        if (amount == 0) 
+            MissileDisplay.UpdateCooldownImage(1f);
+        else 
+            StartCoroutine(CooldownCoroutine());
     }
     
-    //ÀäÈ´Ğ­³Ì
+    /// <summary>
+    /// å¯¼å¼¹å†·å´åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CooldownCoroutine()
     {
-        //´æ´¢µ¼µ¯ÀäÈ´Ê±¼ä
         var cooldownValue = cooldownTime;
-        //ÀäÈ´Öµ´óÓÚ0½øÈëÑ­»·
+
+        //è‹¥å¯¼å¼¹å†·å´æ—¶é—´å€¼å¤§äº0
         while (cooldownValue > 0f)
         {
-            //¸üĞÂÀäÈ´Í¼Æ¬Ìî³äÖµ£¬ÀäÈ´Öµ½éÓÚ0µ½1Ö®¼ä
+            //æ¯å¸§æ”¹å˜å¯¼å¼¹å†·å´å›¾ç‰‡çš„å¡«å……å€¼
             MissileDisplay.UpdateCooldownImage(cooldownValue/cooldownTime);
-            //ÀäÈ´Öµ²»¶Ï¼õÉÙ£¬ÇÒÓÀ²»Ğ¡ÓÚ0
+
             cooldownValue = Mathf.Max(cooldownValue - Time.deltaTime, 0f);
-            //¹ÒÆğµÈ´ıÏÂÒ»Ö¡
+
             yield return null;
         }
-        //µ¼µ¯·¢Éä¹¦ÄÜ×¼±¸ºÃ
+        //å¯¼å¼¹å‘å°„å‡†å¤‡å®Œæˆ
         isReady = true;
     }
 }

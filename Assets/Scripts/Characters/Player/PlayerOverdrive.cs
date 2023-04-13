@@ -4,34 +4,61 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// ç©å®¶èƒ½é‡çˆ†å‘
+/// </summary>
 public class PlayerOverdrive : MonoBehaviour
 {
-    //ÄÜÁ¿±¬·¢¿ªÆôÓë¹Ø±ÕµÄ¾²Ì¬Î¯ÍĞ
-    public static UnityAction on  =delegate { };
-    public static UnityAction off = delegate { };
+    /// <summary>
+    /// é™æ€èƒ½é‡çˆ†å‘å¼€å¯äº‹ä»¶
+    /// </summary>
+    public static UnityAction on = delegate { };
 
-    //ÄÜÁ¿±¬·¢µÄÊÓ¾õÌØĞ§
+    /// <summary>
+    /// é™æ€èƒ½é‡çˆ†å‘å…³é—­äº‹ä»¶
+    /// </summary>
+    public static UnityAction off = delegate { };
+    
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å¯åŠ¨è§†æ•ˆ
+    /// </summary>
     [SerializeField] private GameObject triggerVFX;
+
+    /// <summary>
+    /// æœºä½“å¼•æ“ç«ç„°çš„æ­£å¸¸è§†æ•ˆ
+    /// </summary>
     [SerializeField] private GameObject engineVFXNormal;
+
+    /// <summary>
+    /// æœºä½“å¼•æ“ç«ç„°çš„èƒ½é‡çˆ†å‘è§†æ•ˆ
+    /// </summary>
     [SerializeField] private GameObject engineVFXOverdrive;
-    //ÄÜÁ¿±¬·¢¿ªÆôÓë¹Ø±ÕµÄÒôĞ§
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å¼€å¯çš„éŸ³é¢‘æ•°é‡
+    /// </summary>
     [SerializeField] private AudioData onSFX;
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å…³é—­çš„éŸ³é¢‘æ•°é‡
+    /// </summary>
     [SerializeField] private AudioData offSFX;
     
     private void Awake()
     {
-        //¶©ÔÄonÓëoffÎ¯ÍĞ
         on += On;
         off += Off;
     }
-    //½Å±¾ÉúÃüÖÜÆÚµÄ¿ªÊ¼Óë½áÊø¶©ÔÄ¡¢ÍË¶©Î¯ÍĞ£¬ÒòÎªÎ¯ÍĞÊÇÀà³ÉÔ±£¬¿ÉÒÔÕâÑù×ö
+
     private void OnDestroy()
     {
-        //ÍË¶©onÓëoffÎ¯ÍĞ
         on -= On;
         off -= Off;
     }
-    //onÎ¯ÍĞ´¦Àíº¯Êı
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å¼€å¯çš„äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void On()
     {
         triggerVFX.SetActive(true);
@@ -39,7 +66,10 @@ public class PlayerOverdrive : MonoBehaviour
         engineVFXOverdrive.SetActive(true);
         AudioManager.Instance.PlayerRandomSFX(onSFX);
     }
-    //offÎ¯ÍĞ´¦Àíº¯Êı
+
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å…³é—­çš„äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void Off()
     {
         engineVFXOverdrive.SetActive(false);
