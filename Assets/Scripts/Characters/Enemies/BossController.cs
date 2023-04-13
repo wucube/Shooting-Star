@@ -217,7 +217,6 @@ public class BossController : EnemyController
     //持续开火协程
     IEnumerator ContinuousFireCoroutine()
     {
-
         LoadProjectiles();
 
         muzzleVFX.Play();
@@ -257,7 +256,7 @@ public class BossController : EnemyController
     }
 
     /// <summary>
-    /// 跟踪玩家机体的协程
+    /// 追踪玩家机体的协程
     /// </summary>
     /// <returns></returns>
     IEnumerator ChasingPlayerCoroutine()

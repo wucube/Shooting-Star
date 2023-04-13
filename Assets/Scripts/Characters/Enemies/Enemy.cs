@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 敌人类
+/// </summary>
 public class Enemy : Character
 {
     /// <summary>
