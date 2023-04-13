@@ -5,55 +5,57 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    //Boss HUDÑªÌõ±äÁ¿
+    /// <summary>
+    /// Bossè¡€æ¡
+    /// </summary>
     private BossHealthBar _healthBar;
-    //HUDÑªÌõ¶ÔÏóµÄ»­²¼×é¼ş
+    //HUDÑªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private Canvas _healthBarCanvas;
     protected override void Awake()
     {
         base.Awake();
-        //»ñÈ¡ÑªÌõ¶ÔÏó
+        //ï¿½ï¿½È¡Ñªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         _healthBar = FindObjectOfType<BossHealthBar>();
-        //»ñÈ¡HUDÑªÌõ¶ÔÏó»­²¼
+        //ï¿½ï¿½È¡HUDÑªï¿½ï¿½ï¿½ï¿½ï¿½ó»­²ï¿½
         _healthBarCanvas = _healthBar.GetComponentInChildren<Canvas>();
     }
 
-    //ÖØĞ´OnEnableº¯Êı
+    //ï¿½ï¿½Ğ´OnEnableï¿½ï¿½ï¿½ï¿½
     protected override void OnEnable()
     {
         base.OnEnable();
-        //³õÊ¼»¯Boss HUDÑªÌõ
+        //ï¿½ï¿½Ê¼ï¿½ï¿½Boss HUDÑªï¿½ï¿½
         _healthBar.Initialize(health,maxHealth);
-        //¿ªÆôHUDÑªÌõ»­²¼
+        //ï¿½ï¿½ï¿½ï¿½HUDÑªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         _healthBarCanvas.enabled = true;
     }
     
-    //ÖØĞ´µĞÈËÀàµÄÅö×²º¯Êı
+    //ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½
     protected override void OnCollisionEnter2D(Collision2D other)
     {
-        //Íæ¼Ò×²ÉÏBoss»ú
+        //ï¿½ï¿½ï¿½×²ï¿½ï¿½Bossï¿½ï¿½
        if(other.gameObject.TryGetComponent<Player>(out Player player))
-           //Ö»ÓĞÍæ¼Ò»áËÀµô
+           //Ö»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
            player.Die();
     }
 
-    //ÖØĞ´ËÀÍöº¯Êı
+    //ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public override void Die()
     {
-        //¹Ø±Õboss HUD»­²¼
+        //ï¿½Ø±ï¿½boss HUDï¿½ï¿½ï¿½ï¿½
         _healthBarCanvas.enabled = false;
         base.Die();
     }
 
-    //ÖØĞ´ÊÜÉËº¯Êı
+    //ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        //boss HUDÑªÌõÏÔÊ¾
+        //boss HUDÑªï¿½ï¿½ï¿½ï¿½Ê¾
         _healthBar.UpdateStats(health,maxHealth);
     }
 
-    //ÖØĞ´ÉèÖÃÑªÁ¿×î´óÖµº¯Êı£¬Boss×î´óÑªÁ¿+µĞÈË²¨Êı*½¡¿µÖµÒòËØ
+    //ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Bossï¿½ï¿½ï¿½Ñªï¿½ï¿½+ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½*ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
     protected override void SetHealth()=>maxHealth += EnemyManager.Instance.WaveNumber * healthFactor;
 
 }

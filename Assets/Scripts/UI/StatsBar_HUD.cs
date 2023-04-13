@@ -3,31 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// HUDçŠ¶æ€æ¡
+/// </summary>
 public class StatsBar_HUD : StatsBar
 {
-    //???????????????????????????
+    /// <summary>
+    /// ç™¾åˆ†æ¯”æ•°å­—æ˜¾ç¤ºçš„æ–‡æœ¬
+    /// </summary>
     [SerializeField] protected Text percentText;
     
-    //??????????????
+    /// <summary>
+    /// è®¾ç½®ç™¾åˆ†æ¯”æ–‡æœ¬
+    /// </summary>
     protected virtual void SetPercentText()
     {
-        //ÏÔÊ¾ÎÄ±¾ÉèÖÃÉèÎª²»´øĞ¡ÊıÎ»
         percentText.text = targetFillAmount.ToString("P0");
+
     }
-    //??§Õ?????????
+    /// <summary>
+    /// åˆå§‹åŒ–çŠ¶æ€æ¡
+    /// </summary>
+    /// <param name="currentValue">å½“å‰å€¼</param>
+    /// <param name="maxValue">æœ€å¤§å€¼</param>
     public override void Initialize(float currentValue, float maxValue)
     {
-        //?????????
         base.Initialize(currentValue, maxValue);
-        //???????
         SetPercentText();
     }
-    //??§Õ???????§¿??
+    
+    /// <summary>
+    /// çŠ¶æ€æ¡å»¶ç¼“å˜åŒ–çš„åç¨‹
+    /// </summary>
+    /// <param name="image"></param>
+    /// <returns></returns>
     protected override IEnumerator BufferedFillingCoroutine(Image image)
     {
-        //?????????
         SetPercentText();
-        //?????§İ??????§¿??
+        
         return base.BufferedFillingCoroutine(image);
     }
 }

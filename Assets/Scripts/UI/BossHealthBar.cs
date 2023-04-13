@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Bossè¡€æ¡ç±»
+/// </summary>
 public class BossHealthBar : StatsBar_HUD
 {
-    //ÖØĞ´ÉèÖÃÎÄ±¾°Ù·Ö±Èº¯Êı£¬ÏÔÊ¾Ğ¡ÊıµãºóÁ½Î»
+    //è®¾ç½®å‰©ä½™è¡€é‡çš„ç™¾åˆ†æ¯”æ–‡æœ¬
     protected override void SetPercentText()
     {
-        // P¼´percentage£¬2 ´ú±íĞ¡ÊıÎ»ÊıÎª2
-        percentText.text = targetFillAmount.ToString("P2");
+        percentText.text = targetFillAmount.ToString("P2");//å°æ•°è½¬å­—ç¬¦ä¸²ï¼Œä¿ç•™å°æ•°ä¸¤ä½
     }
 }

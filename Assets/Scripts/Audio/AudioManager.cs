@@ -7,15 +7,22 @@ using UnityEngine;
 /// </summary>
 public class AudioManager : PersistentSingleton<AudioManager>
 {
-    //��Դ�����������Ч������
+    /// <summary>
+    /// 音效源
+    /// </summary>
     [SerializeField] private AudioSource sfxPlayer;
-    //��С���߳���
+
+    /// <summary>
+    /// 最小音量
+    /// </summary>
     private const float MinPitch = 0.9f;
-    //������߳���
+    /// <summary>
+    /// 最大音量
+    /// </summary>
     private const float MaxPitch = 1.1f;
 
     /// <summary>
-    /// ��Ч���ź���,���ڲ���UI��Ч
+    /// 播放声效
     /// </summary>
     /// <param name="audioData"></param>
     public void PlaySFX(AudioData audioData)
@@ -23,22 +30,20 @@ public class AudioManager : PersistentSingleton<AudioManager>
         sfxPlayer.PlayOneShot(audioData.audioClip,audioData.volume);
     }
     /// <summary>
-    /// ������Ų�ͬ��Ч����ͬ��Ч��ͬ���ߡ����������ظ����ŵ���Ч�����ӵ�������Ч
+    /// 随机音量播放声效
     /// </summary>
     /// <param name="audioData"></param>
     public void PlayerRandomSFX(AudioData audioData)
     {
-        //������Ų�ͬ���ߵ���Ч
         sfxPlayer.pitch = Random.Range(MinPitch, MaxPitch);
         PlaySFX(audioData);
     }
     /// <summary>
-    /// ������Ų�ͬ��Ч
+    /// 随机播放不同音效
     /// </summary>
-    /// <param name="audioData">��Ƶ���ݼ���</param>
     public void PlayerRandomSFX(AudioData[] audioData)
     {
-        //����Ƶ���ݼ��������һ����Ƶ���ϲ�����
+        
         PlayerRandomSFX(audioData[Random.Range(0,audioData.Length)]);
     }
 }
