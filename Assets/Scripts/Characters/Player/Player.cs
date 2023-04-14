@@ -53,12 +53,12 @@ public class Player : Character
     private float paddingY;
     
     /// <summary>
-    /// 玩家移动加速度
+    /// 玩家加速时间
     /// </summary>
     [SerializeField] float accelerationTime = 3f;
 
     /// <summary>
-    /// 玩家移动减速度
+    /// 玩家减速时间
     /// </summary>
     [SerializeField] float decelerationTime = 3f;
 
@@ -67,278 +67,331 @@ public class Player : Character
     /// </summary>
     [SerializeField] float moveRotationAngle = 50f;
 
-    //���Ѫ���Ƿ�ȫ������
+    /// <summary>
+    /// 血量是否全满
+    /// </summary>
     public bool IsFullHealth => health == maxHealth;
-    //������������Ƿ���������
+
+    /// <summary>
+    /// 能量是否全满
+    /// </summary>
     public bool IsFullPower => weaponPower == 2;
 
     [FormerlySerializedAs("projectile")]
     [Header("------ FIRE -------")]
-    //�ӵ�����
-    [SerializeField] GameObject projectile1;
-    [SerializeField] GameObject projectile2;
-    [SerializeField] GameObject projectile3;
-    //���������ӵ�Ԥ����
+    [SerializeField] private GameObject projectile1;
+    [SerializeField] private GameObject projectile2;
+    [SerializeField] private GameObject projectile3;
+    /// <summary>
+    /// 能量爆发子弹
+    /// </summary>
     [SerializeField] private GameObject projectileOverdrive;
     
-    //ǹ����Ч
+    /// <summary>
+    /// 枪口特效
+    /// </summary>
     [SerializeField] private ParticleSystem muzzleVFX;
     
-    //�ӵ�����λ��  ǹ��
+    /// <summary>
+    /// 中枪口
+    /// </summary>
     [SerializeField] Transform muzzleMiddle;
+
+    /// <summary>
+    /// 上枪口
+    /// </summary>
     [SerializeField] Transform muzzleTop;
+
+    /// <summary>
+    /// 下枪口
+    /// </summary>
     [SerializeField] Transform muzzleBottom;
-    //�ӵ��������Ƶ���ݱ���
+
     [SerializeField] AudioData projectileSFX;
-    //��������
+
+    /// <summary>
+    /// 武器威力
+    /// </summary>
+    /// <returns></returns>
     [SerializeField, Range(0, 2)] int weaponPower = 0;
     
-    //������
+    /// <summary>
+    /// 开火间隔
+    /// </summary>
     [SerializeField] float fireInterval = 0.2f;
 
     [Header("------ DODGE -------")] 
-    //������Ƶ����
+
+    /// <summary>
+    /// 闪避声效
+    /// </summary>
     [SerializeField] private AudioData dodgeSFX;
-    //������������ֵ
+    /// <summary>
+    /// 闪避能量消耗值
+    /// </summary>
+    /// <returns></returns>
     [SerializeField, Range(0, 100)] private int dodgeEnergyCost = 25;
-    //����ת��
+    /// <summary>
+    /// 最大翻滚角度
+    /// </summary>
     [SerializeField] private float maxRoll = 360f;
-    //�����ٶ�
+    /// <summary>
+    /// 翻滚速度
+    /// </summary>
     [SerializeField] private float rollSpeed = 360f;
-    //����ʱģ��������Сֵ
+
+    //闪避时 机体缩放值
     [SerializeField] private Vector3 dodgeScale = new Vector3(0.5f, 0.5f, 0.5f);
 
 
     [Header("------ OVERDRIVE -------")]
-    //��������ʱ��������������
+    /// <summary>
+    /// 能量爆发闪避因子
+    /// </summary>
     [SerializeField] private int overdriveDodgeFactor = 2;
-    //��������ʱ���ٶ���������
+    /// <summary>
+    /// 能量爆发速度因子
+    /// </summary>
     [SerializeField] private float overdriveSpeedFactor = 1.2f;
-    //��������ʱ�Ŀ�����������
+    /// <summary>
+    /// 能量爆发开火因子
+    /// </summary>
     [SerializeField] private float overdriveFireFactor = 1.2f;
    
-    //����޵г���ʱ��
+    /// <summary>
+    /// 无敌时间
+    /// </summary>
     readonly float InvincibleTime = 1f;
     
-    //�Ƿ�����������
-    private bool _isDodging = false;
-    //����Ƿ�����������
-    private bool _isOverdriving = false;
-    //�ӵ�ʱ��ָ�����ʱ�䣬ֻ������
+    /// <summary>
+    /// 是否正在闪避
+    /// </summary>
+    private bool isDodging = false;
+
+    /// <summary>
+    /// 是否为能量爆发
+    /// </summary>
+    private bool isOverdriving = false;
+    
+    /// <summary>
+    /// 慢动作持续时间
+    /// </summary>
     private readonly float slowMotionDuration = 1f;
     
-    //�洢��ǰ�Ĺ�ת��
-    private float _currentRoll;
-    //���ܳ���ʱ��
-    private float _dodgeDuration;
+    /// <summary>
+    /// 当前翻滚角度
+    /// </summary>
+    private float currentRoll;
+    /// <summary>
+    /// 闪避持续时间，在机体翻滚完成后结束
+    /// </summary>
+    private float dodgeDuration;
     
-    //��¼Э��ѭ����ʱ��
-    private float _t;
-    //����ƶ�����
-    private Vector2 _moveDirection;
-    //���ڼ�¼��Ҹ����ʼ�ٶ�
-    private Vector2 _previousVelocity;
-    //���ڼ�¼��ҳ�ʼ��Ԫ��
-    private Quaternion _previousRotation;
-    
-    //Э�̵��ӵ����ɵȴ�����ʱ��
-    WaitForSeconds waitForFireInterval;
-    //�ȴ���������ʱ�Ŀ�����
-    WaitForSeconds waitForOverdriveFireInterval;
-    //�ȴ�����ֵ����ʱ��
-    WaitForSeconds waitHealthRegenerateTime;
-    //�ȴ�����ʱ��
-    WaitForSeconds waitDecelerationTime;
-    //�ȴ��޵�ʱ��
-    private WaitForSeconds waitInvincibleTime;
-    //�ȴ���һ�ι̶�֡����
-    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+    /// <summary>
+    /// 用于移动协程运算的时间
+    /// </summary>
+    private float t;
+    /// <summary>
+    /// 移动方向
+    /// </summary>
+    private Vector2 moveDirection;
+    /// <summary>
+    /// 先前的速度
+    /// </summary>
+    private Vector2 previousVelocity;
 
-    //���ڴ洢���������ƶ�Э�̺����ı���
+    /// <summary>
+    /// 先前的旋转
+    /// </summary>
+    private Quaternion previousRotation;
+    
+    /// <summary>
+    /// 等待开火间隔
+    /// </summary>
+    WaitForSeconds waitForFireInterval;
+    /// <summary>
+    /// 等待能量爆发开火间隔
+    /// </summary>
+    WaitForSeconds waitForOverdriveFireInterval;
+    /// <summary>
+    /// 等待血量恢复间隔
+    /// </summary>
+    WaitForSeconds waitHealthRegenerateTime;
+    /// <summary>
+    /// 等待减速时间
+    /// </summary>
+    WaitForSeconds waitDecelerationTime;
+    /// <summary>
+    /// 无敌时间间隔
+    /// </summary>
+    private WaitForSeconds waitInvincibleTime;
+
+    /// <summary>
+    /// 等待固定更新
+    /// </summary>
+    /// <returns></returns>
+    private WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
+
+    /// <summary>
+    /// 移动协程
+    /// </summary>
     Coroutine moveCoroutine;
-    //����ֵ�ָ�Э�̱���
+
+    /// <summary>
+    /// 血量恢复协程
+    /// </summary>
     Coroutine healthRegenerateCoroutine;
 
-    Rigidbody2D _rigidbody;
-    //2D��ײ�����
-    private  Collider2D _collider;
+    new Rigidbody2D rigidbody;
+
+    new  Collider2D collider;
      
-    //����ϵͳ����
-    private MissileSystem _missile;
+    /// <summary>
+    /// 导弹系统
+    /// </summary>
+    private MissileSystem missile;
     
     void Awake()
     {
-        //��ȡ�������������
-        _rigidbody = GetComponent<Rigidbody2D>();
-        //��ȡ�����ײ�����������
-        _collider = GetComponent<Collider2D>();
-        //ȡ�õ����ű�ϵͳʵ��
-        _missile = GetComponent<MissileSystem>();
         
-        //ͨ��ģ�Ͷ������Ⱦ�����ȡ��ģ�ͳߴ�
+        rigidbody = GetComponent<Rigidbody2D>();
+        collider = GetComponent<Collider2D>();
+        missile = GetComponent<MissileSystem>();
+        
         var size = transform.GetChild(0).GetComponent<Renderer>().bounds.size;
-        //ģ�����ĵ��߾�ֵ Ϊģ�ͳ�����һ��
         paddingX = size.x / 2f;
         paddingY = size.y / 2f;
         
-        //��ʼ������ʱ��
-        _dodgeDuration = maxRoll / rollSpeed;
+        dodgeDuration = maxRoll / rollSpeed;
+        //机体刚体重力值为0，模拟太空无重力状态
+        rigidbody.gravityScale = 0f;
         
-        _rigidbody.gravityScale = 0f;
-        //��ʼ���ȴ����������Ŀ���ʱ����������Ϊ ������ʱ�� ���� ������������������ʵ�ʿ�����ʱ������
-        waitForOverdriveFireInterval = new WaitForSeconds(fireInterval/=overdriveFireFactor);
-        
+        waitForOverdriveFireInterval = new WaitForSeconds(fireInterval /= overdriveFireFactor);
         waitForFireInterval = new WaitForSeconds(fireInterval);
-        //��ʼ������ֵ����ʱ��
         waitHealthRegenerateTime = new WaitForSeconds(healthRegenerateTime);
-        //��ʼ���ȴ�����ʱ�䣬������Ҽ���ʱ��
         waitDecelerationTime = new WaitForSeconds(decelerationTime);
-        
-        //��ʼ���ȴ��޵�ʱ��
         waitInvincibleTime = new WaitForSeconds(InvincibleTime);
     }
     
-    //������д
     protected override void OnEnable()
     {
         base.OnEnable();
-        //�����������ƶ���ֹͣ�ƶ����¼����Ķ�Ӧ��������
+
         input.onMove += Move;
         input.onStopMove += StopMove;
-        //���������Ŀ���ͣ���¼����Ķ�Ӧ�¼�������
         input.onFire += Fire;
         input.onStopFire += StopFire;
-        //�������������������¼�
         input.onDodge += Dodge;
-        //�����������������������¼�
         input.onOverdrive += Overdrive;
-        //���ķ��䵼���¼�
         input.onLaunchMissile += LaunchMissile;
-        //������������ϵͳ�Ŀ�����ر�ί��
+
         PlayerOverdrive.on += OverdriveOn;
         PlayerOverdrive.off += OverdriveOff;
     }
     void OnDisable()
     {
-        //�����������ƶ���ֹͣ�ƶ��¼��˶���Ӧ�¼�������
         input.onMove -= Move;
         input.onStopMove -= StopMove;
-        //���������Ŀ���ͣ���¼��˶���Ӧ�¼�������
         input.onFire -= Fire;
         input.onStopFire -= StopFire;
-        //�˶����������������¼�
         input.onDodge -= Dodge;
-        //�˶����������¼�
         input.onOverdrive -= Overdrive;
-        //�˶����䵼���¼�
         input.onLaunchMissile -= LaunchMissile;
-        //�˶���������ϵͳ�Ŀ����ر�ί��
+
         PlayerOverdrive.on -= OverdriveOn;
         PlayerOverdrive.off -= OverdriveOff;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        //�޸ĸ������������ֵΪ0����������Ϊ0�� ��Ϸ����ʱ���Ǹ�׹�� 
-        _rigidbody.gravityScale = 0f;
         
-        //��ʼ���ӵ����ɵȴ�����ʱ��
-        waitForFireInterval = new WaitForSeconds(fireInterval);
-        //��ʼ����Ѫ�ȴ�����ʱ��
-        waitHealthRegenerateTime = new WaitForSeconds(healthRegenerateTime);
+        //rigidbody.gravityScale = 0f;
         
-        //��ʼ��HUDѪ��
+        //waitForFireInterval = new WaitForSeconds(fireInterval);
+        
+        //waitHealthRegenerateTime = new WaitForSeconds(healthRegenerateTime);
+        
         statsBar_HUD.Initialize(health, maxHealth);
         
-        //Player�ű�����ʱ������Gameplay������
         input.EnableGameplayInput();
     }
-
-    //��д���˺���
+    
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        //�������ʱ���������½�
+
         PowerDown();
-        
-        //����HUDѪ��״̬
+
         statsBar_HUD.UpdateStats(health, maxHealth);
-        //�����ӵ�ʱ�亯��
+
         TimeController.Instance.BulletTime(slowMotionDuration);
         
-        //�����Ϸ�����ڻ״̬
         if (gameObject.activeSelf)
         {
-            //����ʱ����Move����
-            Move(_moveDirection);
-            //��������޵�ʱ��Э��
+            Move(moveDirection);
+           
             StartCoroutine(InvincibleCoroutine());
             
-            //�����������ؿ���
             if (regenerateHealth)
             {
-                //�������Э�̲�Ϊ�գ���ͣ������Э�̣�ȷ��ÿ�ε���Э��ʱ����ǰ�Ļ�ѪЭ���Ѿ�ͣ��
                 if (healthRegenerateCoroutine != null)
                     StopCoroutine(healthRegenerateCoroutine);
-                //������������Э�̣���������ʱ���������ָ��ٷֱ���
-                healthRegenerateCoroutine =
-                    StartCoroutine(HealthRegenerateCoroutine(waitHealthRegenerateTime, healthRegeneratePercent));
+                
+                healthRegenerateCoroutine = StartCoroutine(HealthRegenerateCoroutine(waitHealthRegenerateTime, healthRegeneratePercent));
             }
         }
     }
-    //��д��Ѫ����
     public override void RestoreHealth(float value)
     {
-        //���û��ຯ��
         base.RestoreHealth(value);
-        //����Ѫ��״̬
+
         statsBar_HUD.UpdateStats(health, maxHealth);
     }
-    //��д��������
+
     public override void Die()
     {
-        //������Ϸ����������Ϸ����ί��
         GameManager.onGameOver?.Invoke();
-        //��Ϸ״̬Ϊ����
+        
         GameManager.GameState = GameState.GameOver;
         
-        //�ȸ���Ѫ��״̬����ǰ״ֵ̬Ϊ0��Ѫ�����
         statsBar_HUD.UpdateStats(0f, maxHealth);
+
         base.Die();
     }
-
-    //�޵�ʱ��Э��
+    /// <summary>
+    /// 无敌状态协程
+    /// </summary>
+    /// <returns></returns>
     IEnumerator InvincibleCoroutine()
     {
-        //�����ײ�崥��������һ��ʱ����ٹر�
-        _collider.isTrigger = true;
-        yield return waitInvincibleTime;
-        _collider.isTrigger = false;
-    }
-    #region MOVE
+        collider.isTrigger = true;
 
-    //�ƶ��¼���������
+        yield return waitInvincibleTime;
+
+        collider.isTrigger = false;
+    }
+
+    #region MOVE
+    /// <summary>
+    /// 移动输入事件处理器
+    /// </summary>
+    /// <param name="moveInput"></param>
     void Move(Vector2 moveInput)
     {
-        //�����ٶ� ���� �����ά���� * �ƶ��ٶ�
-        //_rigidbody.velocity = moveInput * moveSpeed;
-        
-        //����������Э����Э�̱����洢�����������ƶ�Э��ǰ��ֹͣ��һ���ƶ�Э�̣������ϸ�Э�̻���ִ����ȥ
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        
-        //����ƶ�����Ϊ�ƶ����������һ��֮���ֵ
-        _moveDirection = moveInput.normalized;
-        //��ת�Ƕȣ�moveInput��Yֵ��-1�� 1֮��
+        if (moveCoroutine != null) 
+            StopCoroutine(moveCoroutine);
+
+        moveDirection = moveInput.normalized;
         Quaternion moveRotation = Quaternion.AngleAxis(moveRotationAngle * moveInput.y, Vector3.right);
-        //�����ƶ�Э�̣���moveInput����һ����ʹ�������ֱ�����Ķ�ά��������һ��
-        moveCoroutine = StartCoroutine(MoveCoroutine(accelerationTime, _moveDirection * moveSpeed, moveRotation));
-        //��ͣ����Ҽ���Э��
+       
+        moveCoroutine = StartCoroutine(MoveCoroutine(accelerationTime, moveDirection * moveSpeed, moveRotation));
         StopCoroutine(nameof(DecelerationCoroutine));
-        //���÷�Χ�ƶ������ƶ�Э��
         StartCoroutine(nameof(MoveRangeLimitationCoroutine));
     }
-    //ֹͣ�ƶ��¼�
+    
+    /// <summary>
+    /// 停止移动输入事件处理器
+    /// </summary>
     void StopMove()
     {
         // if (moveCoroutine != null)
@@ -346,40 +399,44 @@ public class Player : Character
         // moveDirection=Vector2.zero;
         // moveCoroutine = StartCoroutine(MoveCoroutine(decelerationTime, Vector2.zero, Quaternion.identity));
         // StopCoroutine(nameof(DecelerationCoroutine));
-        
-        //�����ٶ�Ϊ0
+    
        // _rigidbody.velocity = Vector2.zero;
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        _moveDirection=Vector2.zero;
-        //�����ƶ�Э�̣��������ʱ�䣬�����ٶ���Ϊ0��������ת��ԭ
-        moveCoroutine = StartCoroutine(MoveCoroutine(decelerationTime,Vector2.zero,quaternion.identity));
-        //ͣ����һ������Э��
+
+        if (moveCoroutine != null) 
+            StopCoroutine(moveCoroutine);
+
+        moveDirection = Vector2.zero;
+
+        moveCoroutine = StartCoroutine(MoveCoroutine(decelerationTime, Vector2.zero, quaternion.identity));
         StopCoroutine(nameof(DecelerationCoroutine));
     }
     
-    //�ƶ�Э�̣���Ҹ����ٶȴ�0������ٶȣ�����ٶȵ�0
-    IEnumerator MoveCoroutine(float time,Vector2 moveVelocity,Quaternion moveRotation)
+    /// <summary>
+    /// 移动协程
+    /// </summary>
+    /// <param name="time">移动时间</param>
+    /// <param name="moveVelocity">移动速度</param>
+    /// <param name="moveRotation">移动旋转角度</param>
+    /// <returns></returns>
+    IEnumerator MoveCoroutine(float time, Vector2 moveVelocity, Quaternion moveRotation)
     {
-        //��¼ʱ��
-        _t = 0f;
-        //��¼��Ҹ����ٶ�ֵ����ת�Ƕ�
-        _previousVelocity = _rigidbody.velocity;
-        _previousRotation = transform.rotation;
-        //��tС��ָ��ʱ�䣬һֱѭ��
-        while (_t < time) 
+        t = 0f;
+        previousVelocity = rigidbody.velocity;
+        previousRotation = transform.rotation;
+
+        while (t < time) 
         {
-            //ʱ���ۼ�
-            _t += Time.fixedDeltaTime;
-            //���Բ�ֵ�ı�����ٶ�
-            _rigidbody.velocity = Vector2.Lerp(_previousVelocity, moveVelocity, _t / time);
-            //���Բ�ֵ�ı���ҵ���ת�Ƕ�
-            transform.rotation = Quaternion.Lerp(_previousRotation, moveRotation, _t / time);
-            //����ȴ���һ�ι̶�����
-            yield return  _waitForFixedUpdate;
+            t += Time.fixedDeltaTime;
+            
+            rigidbody.velocity = Vector2.Lerp(previousVelocity, moveVelocity, t / time);
+            transform.rotation = Quaternion.Lerp(previousRotation, moveRotation, t / time);
+ 
+            yield return  waitForFixedUpdate;
         }
     }
+
     /// <summary>
-    /// ��������ƶ���Χ
+    /// 移动范围限制协程
     /// </summary>
     /// <returns></returns>
     IEnumerator MoveRangeLimitationCoroutine()
@@ -387,15 +444,18 @@ public class Player : Character
         while (true)
         {
             transform.position = Viewport.Instance.PlayerMoveablePosition(transform.position, paddingX, paddingY);
+
             yield return null;
         }
     }
-    //��һ������Э��
+    /// <summary>
+    /// 减速协程
+    /// </summary>
+    /// <returns></returns>
     IEnumerator DecelerationCoroutine()
     {
-        //����ȴ�����ʱ��
         yield return waitDecelerationTime;
-        //ͣ���ƶ���λ������Э��
+
         StopCoroutine(nameof(MoveRangeLimitationCoroutine));
     }
 
@@ -403,28 +463,33 @@ public class Player : Character
 
     #region FIRE
 
-    //������
+    /// <summary>
+    /// 开火输入事件处理器
+    /// </summary>
     void Fire()
     {
-        //����ǹ����Ч
         muzzleVFX.Play();
         StartCoroutine(nameof(FireCoroutine));
     }
-    //ͣ����
+    
+    /// <summary>
+    /// 停止开火输入事件处理器
+    /// </summary>
     void StopFire()
     {
-        //ͣ��ǹ����Ч
         muzzleVFX.Stop();
-        
         StopCoroutine(nameof(FireCoroutine));
     }
     
-    //�ӵ�����Э��
+    /// <summary>
+    /// 开火协程
+    /// </summary>
+    /// <returns></returns>
     IEnumerator FireCoroutine()
     {
         while (true)
         {
-            //δ���ö���������ӵ�
+            //不使用对象池根据武器威力等级实例化子弹对象
             //switch (weaponPower)
             //{
             //    case 0:
@@ -440,57 +505,63 @@ public class Player : Character
             //        Instantiate(projectile3, muzzleBottom.position, Quaternion.identity);
             //        break;
             //}
-            switch (weaponPower) // ���������������ɲ�ͬ�ӵ�
+
+            switch (weaponPower)
             {
-                //������������״̬���ӵ������������ӵ�������������ͨ�ӵ�
+                //使用对象池释放不同武器威力下的不同数量与类型的子弹对象
                 case 0:
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile1, muzzleMiddle.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile1, muzzleMiddle.position);
                     break;
                 case 1:
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile1, muzzleTop.position);
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile1, muzzleBottom.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile1, muzzleTop.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile1, muzzleBottom.position);
                     break;
                 case 2:
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile1, muzzleMiddle.position);
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile2, muzzleTop.position);
-                    PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile3, muzzleBottom.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile1, muzzleMiddle.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile2, muzzleTop.position);
+                    PoolManager.Release(isOverdriving ? projectileOverdrive : projectile3, muzzleBottom.position);
                     break;
             }
-            //����һ���ӵ����Ͳ���һ�������Ч
             AudioManager.Instance.PlayerRandomSFX(projectileSFX);
-            //���������������״̬����ȴ�������������������ʱ�䣬�������ȴ���ͨ������ʱ��
-            yield return _isOverdriving ? waitForOverdriveFireInterval : waitForFireInterval;
+           
+            //根据是否为能量爆发状态决定不同的开火间隔时间
+            yield return isOverdriving ? waitForOverdriveFireInterval : waitForFireInterval;
         }
     }
     
     #endregion
 
     #region DODGE
-    //�����¼���������
+    /// <summary>
+    /// 闪避输入事件处理器
+    /// </summary>
     void Dodge()
     {
-        //������������������������������ʱ��ֱ�ӷ���
-        if (_isDodging||!PlayerEnergy.Instance.IsEnough(dodgeEnergyCost)) return;
-        //��������Э��
+        
+        if (isDodging || !PlayerEnergy.Instance.IsEnough(dodgeEnergyCost)) 
+            return;
+
         StartCoroutine(nameof(DodgeCoroutine));
     }
-    //����Э��  
+
+    /// <summary>
+    /// 闪避协程
+    /// </summary>
+    /// <returns></returns>
     IEnumerator DodgeCoroutine()
     {
-        //���ܿ������������� Ϊ True
-        _isDodging = true;
-        //����������Ч
+        isDodging = true;
+       
         AudioManager.Instance.PlayerRandomSFX(dodgeSFX);
-        //��������
         PlayerEnergy.Instance.Use(dodgeEnergyCost);
-        //ʹ��ײ���Ϊ����������ײ����ʧЧ������޵�
-        _collider.isTrigger = true;
-        //���忪ʼ����ǰ�����õ�ǰ��ת�ǣ�����Ϊ0
-        _currentRoll = 0f;
-        //��ʱ�����洢��ҵ�ǰ����ֵ
+
+        collider.isTrigger = true;
+        
+        currentRoll = 0f;
+
         var scale = transform.localScale;
-        //�����ӵ�ʱ�亯��
-        TimeController.Instance.BulletTime(slowMotionDuration,slowMotionDuration);
+
+        TimeController.Instance.BulletTime(slowMotionDuration, slowMotionDuration);
         //���������X����ת �ı�ģ�͵Ĵ�С��ģ������ֵ��1��0.5֮��任
 
         // * Mathod 01
@@ -540,95 +611,94 @@ public class Player : Character
         
         // * Method 03 ���ױ��������߲�ֵ�� 
 
-        //��ǰ��ת�� С�� ����ת��ʱ��һ��ѭ��
-        while (_currentRoll < maxRoll)
+        while (currentRoll < maxRoll)
         {
-            //��ǰ��ת���ۼ�
-            _currentRoll += rollSpeed * Time.deltaTime;
-            //������X����ת����ת��λ��
-            transform.rotation = Quaternion.AngleAxis(_currentRoll, Vector3.right);
-            //ģ������ֵ��1��0.2֮��任���ö��α��������߲�ֵ�㷨�����������߲��ᴩ����С�㣬��С����ֵҪ��С��
-            transform.localScale =
-                BezierCurve.QuadraticPoint(Vector3.one, Vector3.one, dodgeScale, _currentRoll / maxRoll);
+            //最大翻滚角度与翻滚速度契合，可用翻滚速度累加计算角度
+            currentRoll += rollSpeed * Time.deltaTime;
+            transform.rotation = Quaternion.AngleAxis(currentRoll, Vector3.right);
+            transform.localScale = BezierCurve.QuadraticPoint(Vector3.one, Vector3.one, dodgeScale, currentRoll / maxRoll);
+
             yield return null;
         }
-        //�������ָ�Ϊ��ײ�壬��ײ������Ч�����ʧȥ�޵�Ч��
-        _collider.isTrigger = false;
-        //���ܶ�����ɣ��Ƿ���������Ϊ false
-        _isDodging = false;
+        //翻滚完成，取消触发器，玩家机体变得可碰撞
+        collider.isTrigger = false;
+        isDodging = false;
     }
 
     #endregion
 
     #region OVERDRIVE
 
-    //���������¼���������
+    /// <summary>
+    /// 能量爆发启用输入事件处理器
+    /// </summary>
     void Overdrive()
     {
-        //�����������ʱֱ�ӷ���
-        if(!PlayerEnergy.Instance.IsEnough(PlayerEnergy.Max)) return;
-        //������������ϵͳ Onί�У�������������
+        if(!PlayerEnergy.Instance.IsEnough(PlayerEnergy.Max)) 
+            return;
+        
         PlayerOverdrive.on.Invoke();
     }
-    //����������������
+    
+    /// <summary>
+    /// 进入能量爆发事件处理器
+    /// </summary>
     void OverdriveOn()
     {
-        //�����������ڿ���
-        _isOverdriving = true;
-        //����������������
+        isOverdriving = true;
         dodgeEnergyCost *= overdriveDodgeFactor;
-        //�ƶ��ٶ�����
         moveSpeed *= overdriveSpeedFactor;
-        //�����ӵ�ʱ�亯��,ʱ��������ٻָ�
         TimeController.Instance.BulletTime(slowMotionDuration,slowMotionDuration);
     }
-    //�ر�������������
+    
+    /// <summary>
+    /// 退出能量爆发事件处理器
+    /// </summary>
     void OverdriveOff()
     {
-        //�����������ڹر�
-        _isOverdriving = false;
-        //�����������Ļָ�
+        isOverdriving = false;
+
         dodgeEnergyCost /= overdriveDodgeFactor;
-        //�ƶ��ٶȻָ�
         moveSpeed /= overdriveSpeedFactor;
     }
     #endregion
 
     #region MISSILE
-    //���䵼���¼�������
+    /// <summary>
+    /// 发射导弹输入的事件处理器
+    /// </summary>
     void LaunchMissile()
     {
-        //���õ���ϵͳ�ķ��亯��
-        _missile.Launch(muzzleMiddle);
+        missile.Launch(muzzleMiddle);
     }
-    //���ʳȡ��������
+    
+    /// <summary>
+    /// 拾取导弹
+    /// </summary>
     public void PickUpMissile()
     {
-        //���õ���ϵͳ��ʰȡ����
-        _missile.PickUp();
+        missile.PickUp();
     }
     #endregion
 
     #region WEAPON POWER
-
-    //����������������
+    /// <summary>
+    /// 武器威力提升
+    /// </summary>
     public void PowerUp()
     {
-        //�����������Ϊ2
-        weaponPower = Mathf.Min(weaponPower + 1,2);
+        weaponPower = Mathf.Min(weaponPower + 1, 2);
     }
 
-    //���������½�����
+    //武器威力下降
     void PowerDown()
     {
-        //����������Ϊ0
         weaponPower = Mathf.Max(--weaponPower, 0);
     }
 
     #endregion
     
-    
-    //--------------------------
+    // 在Update中限制玩家移动范围
     // private void Update()
     // {
     //     transform.position = Viewport.Instance.PlayerMoveablePosition(transform.position);

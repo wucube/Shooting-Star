@@ -16,7 +16,7 @@ public class OverdriveMaterialController : MonoBehaviour
     Material defaultMaterial;
     
     /// <summary>
-    /// 隐藏基类renderer的渲染器
+    /// 粒子系统的Render
     /// </summary>
     new Renderer renderer;
     

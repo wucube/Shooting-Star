@@ -4,72 +4,100 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 
+/// <summary>
+/// ç©å®¶è¾“å…¥ç±»
+/// </summary>
 [CreateAssetMenu(menuName = "Player Input")]
-public class PlayerInput : 
-    ScriptableObject, 
-    InputActions.IGamePlayActions,
-    InputActions.IPauseMenuActions,
-    InputActions.IGameOverScreenActions
+public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, InputActions.IPauseMenuActions, InputActions.IGameOverScreenActions
 {
-    //public event UnityAction<Vector2> onMove = delegate { };
-    
-    //ÒÆ¶¯ÊÂ¼ş³ÉÔ± ,¸³Öµ¿ÕÎ¯ÍĞ×÷Îª³õÊ¼Öµ£¬µ÷ÓÃÊ±²»ÔÙ×ö¿ÕÖµ¼ì²é
+    /// <summary>
+    /// ç§»åŠ¨è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction<Vector2> onMove = delegate {  };
-    //Í£Ö¹ÒÆ¶¯ÊÂ¼ş³ÉÔ±
+
+    /// <summary>
+    /// åœæ­¢ç§»åŠ¨è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onStopMove = delegate { }; 
-    //Íæ¼Ò¿ª»ğÊÂ¼ş
+
+    /// <summary>
+    /// å¼€ç«è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onFire  =delegate { };
-    //Íæ¼ÒÍ£Ö¹¿ª»ğÊÂ¼ş
+
+    /// <summary>
+    /// åœæ­¢å¼€ç«è¾“å…¥è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onStopFire = delegate { };
-    //Íæ¼ÒÉÁ±ÜÊÂ¼ş
+
+    /// <summary>
+    /// é—ªé¿è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onDodge = delegate { };
-    //ÄÜÁ¿±¬·¢ÊÂ¼ş
+
+    /// <summary>
+    /// å¼€å¯èƒ½é‡çˆ†å‘è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onOverdrive = delegate { };
-    //ÔİÍ£ÊÂ¼ş
+
+    /// <summary>
+    /// æš‚åœè¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onPause= delegate { };
-    //½áÊøÔİÍ£ÊÂ¼ş
+
+    /// <summary>
+    /// å–æ¶ˆæš‚åœè¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onUnpause= delegate { };
-    //·¢Éäµ¼µ¯ÊÂ¼ş
+
+    /// <summary>
+    /// å‘å°„å¯¼å¼¹è¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onLaunchMissile = delegate { };
     
-    //È·ÈÏÓÎÏ·½áÊøÊÂ¼ş
+    /// <summary>
+    /// ç¡®å®šæ¸¸æˆç»“æŸè¾“å…¥äº‹ä»¶
+    /// </summary>
     public event UnityAction onConfirmGameOver = delegate { };
     
-    //InputActionsÀàµÄÒıÓÃ
-    InputActions _inputActions;
+    /// <summary>
+    /// è¾“å…¥åŠ¨ä½œç±»
+    /// </summary>
+    InputActions inputActions;
     void OnEnable()
     {
-        //³õÊ¼»¯InputActionsÀàµÄÒıÓÃ
-        _inputActions = new InputActions();
-        //µÇ¼ÇGamePlay¶¯×÷±íµÄ»Øµ÷º¯Êı£¬´«ÈëIGamePlay½Ó¿Ú
-        _inputActions.GamePlay.SetCallbacks(this);
-        //µÇ¼ÇÔİÍ£²Ëµ¥¶¯×÷µÄ»Øµ÷º¯Êı£¬´«Èë ÔİÍ£²Ëµ¥ ½Ó¿Ú
-        _inputActions.PauseMenu.SetCallbacks(this);
-        //µÇ¼ÇÓÎÏ·½áÊø¶¯×÷µÄ»Øµ÷º¯Êı
-        _inputActions.GameOverScreen.SetCallbacks(this);
+        inputActions = new InputActions();
+
+        //ç©å®¶è¾“å…¥ç±»å®ä¾‹è®¾ä¸ºä¸‰ç§è¾“å…¥åŠ¨ä½œè¡¨çš„å›è°ƒ
+        inputActions.GamePlay.SetCallbacks(this);
+        inputActions.PauseMenu.SetCallbacks(this);
+        inputActions.GameOverScreen.SetCallbacks(this);
     }
     void OnDisable()
     {
-        //½ûÓÃÍæ¼ÒÊäÈë
+        //å–æ¶ˆæ‰€æœ‰è¾“å…¥
         DisableAllInputs();
     }
     
-    //ÇĞ»»¶¯×÷±íº¯Êı
-    void SwitchActionMap(InputActionMap actionMap,bool isUIInput)
+    /// <summary>
+    /// åˆ‡æ¢è¾“å…¥åŠ¨ä½œè¡¨
+    /// </summary>
+    /// <param name="actionMap">è¾“å…¥åŠ¨ä½œè¡¨</param>
+    /// <param name="isUIInput">æ˜¯å¦ä¸ºUIè¾“å…¥</param>
+    void SwitchActionMap(InputActionMap actionMap, bool isUIInput)
     {
-        //½ûÓÃ ÊäÈëÀàÖĞµÄËùÓĞ¶¯×÷±í
-        _inputActions.Disable();
-        //ÆôÓÃ Ä¿±ê¶¯×÷±í 
+        //ç¦ç”¨è¾“å…¥åŠ¨ä½œç±»
+        inputActions.Disable();
+        
         actionMap.Enable();
-        //Èç¹ûÆôÓÃµÄ¶¯×÷±íÓÃÓÚUIÊäÈë
+        
         if (isUIInput)
         {
-            //¹â±ê¿É¼û
+            //å…‰æ ‡å¯è§
             Cursor.visible = true;
-            //²»Ëø¶¨¹â±ê
+            //å…‰æ ‡ä¸é”å®š
             Cursor.lockState = CursorLockMode.None;
         }
-        //Èç¹ûÆôÓÃµÄ¶¯×÷±í²»ÊÇUIÊäÈë
         else
         {
             Cursor.visible = false;
@@ -77,90 +105,120 @@ public class PlayerInput :
         }
     }
 
-    //ÇĞ»»µ½¶¯Ì¬¸üĞÂÄ£Ê½
-    public void SwitchToDynamicUpdateMode() =>
-        InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsInDynamicUpdate;
+    /// <summary>
+    /// åˆ‡æ¢åˆ°åŠ¨æ€æ›´æ–°æ¨¡å¼
+    /// </summary>
+    public void SwitchToDynamicUpdateMode() => InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsInDynamicUpdate;
 
-    //ÇĞ»»µ½¹Ì¶¨¸üĞÂÄ£Ê½
-    public void SwitchToFixedUpdateMode() =>
-        InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsInFixedUpdate;
+    /// <summary>
+    /// åˆ‡æ¢åˆ°å›ºå®šæ›´æ–°æ¨¡å¼
+    /// </summary>
+    public void SwitchToFixedUpdateMode() => InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsInFixedUpdate;
     
-    //½ûÓÃËùÓÃÊäÈë¶¯×÷º¯Êı£¬¹©Íâ²¿Ê¹ÓÃ
-    public void DisableAllInputs() => _inputActions.Disable();
+    /// <summary>
+    /// å–æ¶ˆæ‰€æœ‰è¾“å…¥
+    /// </summary>
+    public void DisableAllInputs() => inputActions.Disable();
     
-    //ÆôÓÃGamePlay¶¯×÷±íµÄº¯Êı,Ö±½Óµ÷ÓÃ¶¯×÷±íÇĞ»»º¯ÊıÆôÓÃGamePlay¶¯×÷±í
-    public void EnableGameplayInput() => SwitchActionMap(_inputActions.GamePlay, false);
+    /// <summary>
+    /// å¯ç”¨GamePlayè¾“å…¥
+    /// </summary>
+    public void EnableGameplayInput() => SwitchActionMap(inputActions.GamePlay, false);
     
-    //ÆôÓÃÔİÍ£²Ëµ¥¶¯×÷±í
-    public void EnablePauseMenuInput() => SwitchActionMap(_inputActions.PauseMenu, true);
-    //ÆôÓÃÓÎÏ·½áÊø¶¯×÷±í
-    public void EnableGameOverScreenInput() => SwitchActionMap(_inputActions.GameOverScreen, false);
-    //ÒÆ¶¯ÊäÈë¶¯×÷½Ó¿Úº¯Êı
+    /// <summary>
+    /// å¯ç”¨æ¸¸æˆæš‚åœèœå•çš„è¾“å…¥
+    /// </summary>
+    public void EnablePauseMenuInput() => SwitchActionMap(inputActions.PauseMenu, true);
+    
+    /// <summary>
+    /// å¯ç”¨æ¸¸æˆç»“æŸç•Œé¢çš„è¾“å…¥
+    /// </summary>
+    public void EnableGameOverScreenInput() => SwitchActionMap(inputActions.GameOverScreen, false);
+
+    /// <summary>
+    /// ç§»åŠ¨è¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnMove(InputAction.CallbackContext context)
     {
-        //GamePlay¶¯×÷±í½ÓÊÕµ½ÒÆ¶¯ÊäÈëĞÅºÅ
-        //Íæ¼Ò¼Ò°´×¡°´¼üÊ±£¬½ÇÉ«³ÖĞøÒÆ¶¯
         if (context.performed) 
-        {
-            //µ÷ÓÃonMoveÊÂ¼ş
-            //´«ÈëÊäÈë¶¯×÷¶ÁÈ¡µ½µÄ¶şÎ¬ÏòÁ¿Öµ
             onMove.Invoke(context.ReadValue<Vector2>());
-        }
-        //ËÉ¿ª°´¼üÊ±£¬½ÇÉ«Í£Ö¹ÒÆ¶¯
+        
         if (context.canceled)
-        {
             onStopMove.Invoke();
-        }
+        
     }
     
-    //¿ª»ğÊäÈë¶¯×÷½Ó¿Úº¯Êı
+    /// <summary>
+    /// å¼€ç«è¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnFire(InputAction.CallbackContext context)
     {
-        //°´×¡°´¼ü£¬µ÷ÓÃ¿ª»ğÊÂ¼ş
         if (context.performed)
             onFire.Invoke();
-        //»úĞÍ°´¼ü£¬µ÷ÓÃÍ£»ğÊÂ¼ş
+       
         if (context.canceled)
             onStopFire.Invoke();
     }
-    //ÉÁ±Ü¶¯×÷½Ó¿Úº¯Êı
+    /// <summary>
+    /// é—ªé¿è¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnDodge(InputAction.CallbackContext context)
     {
-        //°´ÏÂÉÁ±Ü¼üÔòµ÷ÓÃÉÁ±ÜÊÂ¼ş
-        if(context.performed) onDodge.Invoke();
+        if(context.performed) 
+            onDodge.Invoke();
     }
-    //ÄÜÁ¿±¬·¢¶¯×÷½Ó¿Úº¯Êı
+   
+    /// <summary>
+    /// èƒ½é‡çˆ†å‘å¯ç”¨è¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnOverdrive(InputAction.CallbackContext context)
     {
-        //°´ÏÂÄÜÁ¿±¬·¢¼ü£¬µ÷ÓÃÄÜÁ¿±¬·¢ÊÂ¼ş
-        if (context.performed) onOverdrive.Invoke();
+        if (context.performed) 
+            onOverdrive.Invoke();
     }
 
-    //ÔİÍ£¶¯×÷½Ó¿Úº¯Êı
+    /// <summary>
+    /// æš‚åœè¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnPause(InputAction.CallbackContext context)
     {
-        //°´ÏÂÔİÍ£¼ü£¬´¥·¢ÔİÍ£ÊÂ¼ş
         if (context.performed)
             onPause.Invoke();
     }
-    //½áÊøÔİÍ£¶¯×÷½Ó¿Úº¯Êı
+    
+    /// <summary>
+    /// å–æ¶ˆæš‚åœè¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnUnpause(InputAction.CallbackContext context)
     {
-        //°´ÏÂÔİÍ£¼ü£¬´¥·¢½áÊøÔİÍ£ÊÂ¼ş
         if (context.performed)
             onUnpause.Invoke();
     }
-    //·¢Éäµ¼µ¯¶¯×÷½Ó¿Úº¯Êı
+    
+    /// <summary>
+    /// å‘å°„å¯¼å¼¹è¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnLaunchMissile(InputAction.CallbackContext context)
     {
-        //°´ÏÂµ¼µ¯·¢Éä¼ü£¬µ÷ÓÃ·¢Éäµ¼µ¯ÊÂ¼ş
-        if (context.performed) onLaunchMissile.Invoke();
+        if (context.performed) 
+            onLaunchMissile.Invoke();
     }
     
-    //È·ÈÏÓÎÏ·½áÊø¶¯×÷½Ó¿Úº¯Êı
+    /// <summary>
+    /// ç¡®è®¤æ¸¸æˆç»“æŸè¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
+    /// <param name="context"></param>
     public void OnConfirmGameOver(InputAction.CallbackContext context)
     {
-        //°´ÏÂÈ·ÈÏ¼ü£¬µ÷ÓÃÈ·ÈÏÓÎÏ·½áÊøÊÂ¼ş
-        if(context.performed) onConfirmGameOver.Invoke();
+
+        if(context.performed) 
+            onConfirmGameOver.Invoke();
     }
 }
