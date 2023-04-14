@@ -2,92 +2,137 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable] //½«Î´¼Ì³ĞMonoµÄÀàÖĞµÄÔ¤ÁĞ»¯×Ö¶ÎÆØÂ¶³öÀ´
+/// <summary>
+/// æ± å­ç±»
+/// </summary>
+[System.Serializable] 
 public class Pool
 {
-    //ÓÃÓÚ»ñÈ¡ÓÎÏ·¶ÔÏóÔ¤ÖÆÌåµÄÊôĞÔĞÅÏ¢£¬ÓÎÏ·¶ÔÏóÔ¤ÖÆÌå±äÁ¿ÊÇË½ÓĞ
     public GameObject Prefab => prefab;
-    //ÓÃÓÚ»ñÈ¡ÓÎÏ·¶ÔÏóÔ¤ÖÆÌå
-    [SerializeField] GameObject prefab;
-    //¶ÔÏó³Ø´óĞ¡£¬¼´¼¯ºÏµÄ³¤¶È
-    [SerializeField] int size = 1;
-    //¶ÔÏó³Ø³ß´çÊôĞÔ
+    [SerializeField] private GameObject prefab;
+
+    /// <summary>
+    /// å¯¹è±¡æ± åˆå§‹å®¹é‡
+    /// </summary>
+    [SerializeField] private int size = 1;
+
+    /// <summary>
+    /// å¯¹è±¡æ± åˆå§‹å®¹é‡
+    /// </summary>
     public int Size => size;
-    //¶ÔÏó³ØÔËĞĞÊ±Êµ¼Ê³ß´ç
-    public int RuntimeSize=>queue.Count;
+
+    /// <summary>
+    /// å¯¹è±¡æ± è¿è¡Œæ—¶çš„å®é™…å®¹é‡
+    /// </summary>
+    public int RuntimeSize => queue.Count;
     
-    //ÓÎÏ·¶ÔÏóÊı¾İ¼¯ºÏ¶ÓÁĞ
-    Queue<GameObject> queue;
-    //×Óµ¯ÖÆ×÷ÌåµÄ¸¸¶ÔÏó
+    /// <summary>
+    /// å­˜å‚¨å¯¹è±¡çš„å®¹å™¨
+    /// </summary>
+    private Queue<GameObject> queue;
+    
+    /// <summary>
+    /// å¯¹è±¡çš„çˆ¶å¯¹è±¡
+    /// </summary>
     private Transform parent;
-    //³õÊ¼»¯¶ÔÏó¼¯ºÏ
+    
+    /// <summary>
+    /// åˆå§‹åŒ–å¯¹è±¡æ± 
+    /// </summary>
+    /// <param name="parent">å¯¹è±¡çš„çˆ¶å¯¹è±¡</param>
     public void Initialize(Transform parent)
     {
-        //³õÊ¼»¯¶ÓÁĞ
         queue = new Queue<GameObject>();
-        //Ô¤ÖÆÌå¸¸¶ÔÏóµÄÎ»ÖÃ
+
         this.parent = parent;
+
+        //æ ¹æ®å¯¹è±¡æ± å®¹é‡æ·»åŠ å¯¹è±¡
         for (int i = 0; i < size; i++)
-        {
-            //¶ÓÁĞÄ©Î²Ìí¼ÓÔ¤ÖÆÌå¿ËÂ¡
             queue.Enqueue(Copy());
-        }
+        
     }
-    //¸´ÖÆÔ¤ÖÆÌå
-    GameObject Copy()
+
+    /// <summary>
+    /// å¤åˆ¶å¯¹è±¡
+    /// </summary>
+    /// <returns>è¿”å›æœªæ¿€æ´»çš„å¯¹è±¡</returns>
+    private GameObject Copy()
     {
-        //Éú³ÉÔ¤ÖÆÌå¶ÔÏó
         var copy = GameObject.Instantiate(prefab, parent);
-        //½ûÓÃ²¢·µ»Ø
         copy.SetActive(false);
         return copy;
     }
-    //È¡³ö¿ÉÓÃ¶ÔÏó
-    GameObject AvailableObject()
+    
+    /// <summary>
+    /// å¯ç”¨å¯¹è±¡
+    /// </summary>
+    /// <returns>è¿”å›æœªæ¿€æ´»çš„å¯¹è±¡</returns>
+    private GameObject AvailableObject()
     {
         GameObject availableObject = null;
-        //¶ÓÁĞÖĞÓĞÔªËØ¿ÉÓÃ ¶ÓÁĞµÚÒ»¸öÔªËØ²»ÊÇÔÚÆôÓÃ×´Ì¬ÖĞ
-        //Peek()º¯Êı·µ»Ø¶ÓÁĞµÄµÚÒ»¸öÔªËØ£¬µ«²»»á½«ÔªËØ´Ó¶ÓÁĞÖĞÒÆ³ı
-        if(queue.Count > 0 &&!queue.Peek().activeSelf)
-            //È¡³ö¶ÓÁĞµÚÒ»¸öÔªËØ£¬²¢´Ó¶ÓÁĞÖĞÒÆ³ı
+        
+        //è‹¥ å¯¹è±¡å®¹å™¨ä¸­å­˜åœ¨å¯¹è±¡ ä¸” å®¹å™¨çš„å¤´éƒ¨å¯¹è±¡æœªæ¿€æ´»
+        if(queue.Count > 0 && !queue.Peek().activeSelf)
+            //ä»å®¹å™¨ä¸­å–å‡ºå¤´éƒ¨å¯¹è±¡
             availableObject = queue.Dequeue();
-        //¶ÓÁĞÖĞÎŞÔªËØ¿ÉÓÃ
-        else
-        //Éú³ÉĞÂµÄ¶ÔÏó
+
+        else //å¦åˆ™å¤åˆ¶ä¸€ä¸ªå¯¹è±¡
             availableObject = Copy();
         
-        //È¡³ö¶ÔÏóºóÁ¢¼´ÈëÁĞ
+        //å°†å¯ç”¨å¯¹è±¡å†åŠ å…¥åˆ°å®¹å™¨å°¾éƒ¨ã€‚é‡‡ç”¨é˜Ÿåˆ—ä½œä¸ºå¯¹è±¡å®¹å™¨ï¼Œå–å‡ºçš„å¯ç”¨å¯¹è±¡ç«‹å³åŠ å…¥åˆ°é˜Ÿå°¾ï¼Œå¦‚æ­¤å°±å¯åªåˆ¤æ–­ å®¹å™¨ä¸­å¯¹è±¡æ•°é‡å’Œé˜Ÿé¦–çš„å¯¹è±¡æ˜¯å¦å¯ç”¨ æ¥åˆ¤æ–­æ•´ä¸ªå¯¹è±¡å®¹å™¨ä¸­æ˜¯å¦è¿˜æœ‰å¯ç”¨å¯¹è±¡ã€‚
         queue.Enqueue(availableObject);
+
         return availableObject;  
     }
 
-    //Ô¤±¸Íê³ÉµÄ¶ÔÏó
+    /// <summary>
+    /// å‡†å¤‡å®Œæˆçš„å¯¹è±¡
+    /// </summary>
+    /// <returns>è¿”å›æ¿€æ´»çš„å¯¹è±¡</returns>
     public GameObject PreparedObject()
     {
-        //´æ´¢È¡³öµÄ¿ÉÓÃ¶ÔÏó
         GameObject  preparedObject = AvailableObject();
-        //ÆôÓÃ¿ÉÓÃ¶ÔÏó
+        //æ¿€æ´»å¯ç”¨å¯¹è±¡
         preparedObject.SetActive(true);
+
         return preparedObject;
     }
-    //Ô¤±¸Íê³ÉµÄ¶ÔÏó£¬Ö¸¶¨¶ÔÏóÎ»ÖÃ 
+
+    /// <summary>
+    /// å‡†å¤‡å®Œæˆçš„å¯¹è±¡
+    /// </summary>
+    /// <param name="position">å¯¹è±¡çš„ä½ç½®</param>
+    /// <returns>è¿”å›æ¿€æ´»çš„å¯¹è±¡</returns>
     public GameObject PreparedObject(Vector3 position)
     {
         GameObject preparedObject = AvailableObject();
         preparedObject.SetActive(true);
         preparedObject.transform.position = position;
+
         return preparedObject;
     }
-    //Ô¤±¸Íê³É¶ÔÏó£¬Ö¸¶¨¶ÔÏóµÄÎ»ÖÃÓëĞı×ª½Ç¶È
-    public GameObject PreparedObject(Vector3 position,Quaternion rotation)
+    /// <summary>
+    /// å‡†å¤‡å®Œæˆçš„å¯¹è±¡
+    /// </summary>
+    /// <param name="position">å¯¹è±¡çš„ä½ç½®</param>
+    /// <param name="rotation">å¯¹è±¡çš„æ—‹è½¬</param>
+    /// <returns>è¿”å›æ¿€æ´»çš„å¯¹è±¡</returns>
+    public GameObject PreparedObject(Vector3 position, Quaternion rotation)
     {
         GameObject preparedObject = AvailableObject();
         preparedObject.SetActive(true);
         preparedObject.transform.position = position;
         preparedObject.transform.rotation = rotation;
+
         return preparedObject;
     }
-    //Ô¤±¸Íê³É¶ÔÏó£¬Ö¸¶¨¶ÔÏóµÄÎ»ÖÃÓëĞı×ª½Ç¶ÈºÍÕÀ·Å´óĞ¡
+    /// <summary>
+    /// å‡†å¤‡å®Œæˆçš„å¯¹è±¡
+    /// </summary>
+    /// <param name="position">å¯¹è±¡çš„ä½ç½®</param>
+    /// <param name="rotation">å¯¹è±¡çš„æ—‹è½¬</param>
+    /// <param name="localScale">å¯¹è±¡çš„ç¼©æ”¾</param>
+    /// <returns>è¿”å›æ¿€æ´»çš„å¯¹è±¡</returns>
     public GameObject PreparedObject(Vector3 position, Quaternion rotation,Vector3 localScale)
     {
         GameObject preparedObject = AvailableObject();
@@ -95,6 +140,7 @@ public class Pool
         preparedObject.transform.position = position;
         preparedObject.transform.rotation = rotation;
         preparedObject.transform.localScale = localScale;
+
         return preparedObject;
     }
 }
