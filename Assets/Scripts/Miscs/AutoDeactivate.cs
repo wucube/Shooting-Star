@@ -1,13 +1,24 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// è‡ªåŠ¨åœç”¨
+/// </summary>
 public class AutoDeactivate : MonoBehaviour
 {
-    //ÊÇ·ñ´İ»ÙÓÎÏ·¶ÔÏó
+    /// <summary>
+    /// è¦é”€æ¯çš„å¯¹è±¡
+    /// </summary>
     [SerializeField] bool destroyGameObject;
-    //ÉúÃüÖÜÆÚÊ±¼ä
+    
+    /// <summary>
+    /// é”€æ¯æ—¶é—´
+    /// </summary>
     [SerializeField] float lifetime = 3f;
-    //µÈ´ıÉúÃüÖÜÆÚ
+   
+    /// <summary>
+    /// ç­‰å¾…é”€æ¯çš„æ—¶é—´
+    /// </summary>
     WaitForSeconds waitLifetime;
 
     void Awake()
@@ -16,26 +27,20 @@ public class AutoDeactivate : MonoBehaviour
     }
     void OnEnable()
     {
-        //µ÷ÓÃ×Óµ¯½ûÓÃĞ­³Ì
         StartCoroutine(DeactivateCoroutine());
     }
-
-    //×Óµ¯½ûÓÃĞ­³Ì
+    
+    /// <summary>
+    /// åœç”¨åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator DeactivateCoroutine()
     {
-        //¹ÒÆğµÈ´ı¶ÔÏóÉúÃüÖÜÆÚ
         yield return waitLifetime;
-        //Èç¹ûÒª´İ»Ù
+
         if (destroyGameObject)
-        {
-            //Ïú»Ù×Óµ¯¶ÔÏó
             Destroy(gameObject);
-        }
-        //²»´İ»Ù
         else 
-        {
-            //½ûÓÃ×Óµ¯¶ÔÏó
             gameObject.SetActive(false);
-        }
     }
 }

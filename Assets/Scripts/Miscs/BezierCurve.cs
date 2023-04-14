@@ -1,16 +1,25 @@
 
 using UnityEngine;
 
+
+/// <summary>
+/// è´å¡å°”æ›²çº¿ç±»
+/// </summary>
 public class BezierCurve
 {
     /// <summary>
-    /// ·µ»Ø¶ş´Î±´Èû¶ûÇúÏßÉÏµÄµã¡£
+    /// äºŒæ¬¡æ–¹çš„ç‚¹
     /// </summary>
+    /// <param name="startPoint">èµ·ç‚¹</param>
+    /// <param name="endPoint">ç»ˆç‚¹</param>
+    /// <param name="controlPoint">æ§åˆ¶ç‚¹</param>
+    /// <param name="by"></param>
+    /// <returns></returns>
     public static Vector3 QuadraticPoint(Vector3 startPoint, Vector3 endPoint, Vector3 controlPoint, float by)
     {
-        // * Math Formula Method
-        // float oneMinusT = 1f - t;
+        // * Math Formula Method(æ•°å­¦å…¬å¼æ–¹æ³•)
 
+        // float oneMinusT = 1f - t;
         // return oneMinusT * oneMinusT * startPoint + t * t * endPoint + 2 * oneMinusT * t * controlPoint;
         
         return Vector3.Lerp(
@@ -19,9 +28,16 @@ public class BezierCurve
             by);
     }
 
+
     /// <summary>
-    /// ·µ»ØÈı´Î±´Èû¶ûÇúÏßÉÏµÄµã¡£
+    /// ä¸‰æ¬¡æ–¹çš„ç‚¹
     /// </summary>
+    /// <param name="startPoint">èµ·ç‚¹</param>
+    /// <param name="endPoint">ç»ˆç‚¹</param>
+    /// <param name="controlPointStart">æ§åˆ¶ç‚¹çš„èµ·ç‚¹</param>
+    /// <param name="controlPointEnd">æ§åˆ¶ç‚¹çš„ç»ˆç‚¹</param>
+    /// <param name="t"></param>
+    /// <returns></returns>
     public static Vector3 CubicPoint(Vector3 startPoint, Vector3 endPoint, Vector3 controlPointStart, Vector3 controlPointEnd, float t)
     {
         // * Method 01
@@ -60,6 +76,7 @@ public class BezierCurve
         return QuadraticPoint(
             Vector3.Lerp(startPoint, controlPointStart, t), 
             Vector3.Lerp(controlPointEnd, endPoint, t),
-            Vector3.Lerp(controlPointStart, controlPointEnd, t), t);
+            Vector3.Lerp(controlPointStart, controlPointEnd, t),
+            t);
     }
 }

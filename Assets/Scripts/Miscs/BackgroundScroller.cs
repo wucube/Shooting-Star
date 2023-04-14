@@ -3,33 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// èƒŒæ™¯è§†å›¾æ»šåŠ¨å™¨
+/// </summary>
 public class BackgroundScroller : MonoBehaviour
 {
-    //±³¾°¹ö¶¯ËÙ¶È
+    
+    /// <summary>
+    /// æ»šåŠ¨é€Ÿåº¦
+    /// </summary>
     [SerializeField]Vector2 scrollVelocity;
-    //ÓÃÓÚ»ñÈ¡²ÄÖÊ×é¼ş
+
     Material material;
     void Awake()
     {
-        //µÃµ½ËÄ±ßĞÎäÖÈ¾Æ÷×é¼şµÄ²ÄÖÊ
         material = GetComponent<Renderer>().material;
     }
 
-    // Update is called once per frame
+    
     IEnumerator Start()
     {
-        //ÓÎÏ·×´Ì¬²»Îª½áÊø×´Ì¬£¬²ÅÃ¿Ö¡¾í¶¯±³¾°
-        while (GameManager.GameState!=GameState.GameOver)
+        while (GameManager.GameState != GameState.GameOver)
         {
-            //¸Ä±ä²ÄÖÊµÄÖ÷ÎÆÀíµÄOffsetÖµ
+            //èƒŒæ™¯è§†å›¾æè´¨çš„ä¸»è´´å›¾ä½ç½®ä¸æ–­åç§»
             material.mainTextureOffset += scrollVelocity * Time.deltaTime;
+
             yield return null;
         }
     }
 
+     
+    // åœ¨Updateä¸­ä¸æ–­æ»šåŠ¨èƒŒæ™¯è§†å›¾
     // private void Update()
     // {
-    //     //¸Ä±ä²ÄÖÊµÄÖ÷ÎÆÀíµÄOffsetÖµ
+    //     
     //     material.mainTextureOffset += scrollVelocity * Time.deltaTime;
     // }
     
