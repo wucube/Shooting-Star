@@ -140,7 +140,10 @@ public class Player : Character
     /// </summary>
     [SerializeField] private float rollSpeed = 360f;
 
-    //闪避时 机体缩放值
+    /// <summary>
+    /// 闪避中机体最小绽放值
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] private Vector3 dodgeScale = new Vector3(0.5f, 0.5f, 0.5f);
 
 
@@ -528,7 +531,6 @@ public class Player : Character
             yield return isOverdriving ? waitForOverdriveFireInterval : waitForFireInterval;
         }
     }
-    
     #endregion
 
     #region DODGE
@@ -562,14 +564,15 @@ public class Player : Character
         var scale = transform.localScale;
 
         TimeController.Instance.BulletTime(slowMotionDuration, slowMotionDuration);
-        //���������X����ת �ı�ģ�͵Ĵ�С��ģ������ֵ��1��0.5֮��任
 
-        // * Mathod 01
-        
+
+        //闪避过程中缩放玩家机体，前半段缩小后半段放大
+
+        // * Mathod 01 缩放向量各方向的值逐个改变
         // while (currentRoll < maxRoll)
         // {
-        //     //currentRoll += rollSpeed * Time.deltaTime;
-        //     //transform.rotation = Quaternion.AngleAxis(currentRoll,Vector3.right);
+        //     currentRoll += rollSpeed * Time.deltaTime;
+        //     transform.rotation = Quaternion.AngleAxis(currentRoll,Vector3.right);
         //
         //     if (currentRoll < maxRoll / 2f)
         //     {
@@ -588,13 +591,15 @@ public class Player : Character
         //     yield return null;
         // }
 
-        // * Mathod 02 ʹ�ô��Բ�ֵʵ��ģ������
+        // * Mathod 02 使用插值计算改变缩放值
+        //
         // var t1 = 0f;
         // var t2 = 0f;
         // while (currentRoll < maxRoll)
         // {
         //     currentRoll += rollSpeed * Time.deltaTime;
         //     transform.rotation = Quaternion.AngleAxis(currentRoll, Vector3.right);
+        //
         //     if (currentRoll < maxRoll / 2f)
         //     {
         //         t1 += Time.deltaTime / dodgeDuration;
@@ -609,8 +614,7 @@ public class Player : Character
         //     yield return null;
         // }
         
-        // * Method 03 ���ױ��������߲�ֵ�� 
-
+        // * Method 03 使用贝塞尔曲线变换缩放值
         while (currentRoll < maxRoll)
         {
             //最大翻滚角度与翻滚速度契合，可用翻滚速度累加计算角度

@@ -150,7 +150,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
     
     /// <summary>
-    /// 开火输入事件处理器
+    /// GamePlay动作表的开火输入
     /// </summary>
     /// <param name="context"></param>
     public void OnFire(InputAction.CallbackContext context)
@@ -162,7 +162,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
             onStopFire.Invoke();
     }
     /// <summary>
-    /// 闪避输入事件处理器
+    /// GamePlay动作表的闪避输入
     /// </summary>
     /// <param name="context"></param>
     public void OnDodge(InputAction.CallbackContext context)
@@ -172,7 +172,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
    
     /// <summary>
-    /// 能量爆发启用输入事件处理器
+    /// GamePlay动作表的能量爆发输入
     /// </summary>
     /// <param name="context"></param>
     public void OnOverdrive(InputAction.CallbackContext context)
@@ -182,7 +182,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
 
     /// <summary>
-    /// 暂停输入事件处理器
+    /// GamePlay动作表的暂停输入
     /// </summary>
     /// <param name="context"></param>
     public void OnPause(InputAction.CallbackContext context)
@@ -192,7 +192,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
     
     /// <summary>
-    /// 取消暂停输入事件处理器
+    /// PauseMenu动作表的取消暂停输入
     /// </summary>
     /// <param name="context"></param>
     public void OnUnpause(InputAction.CallbackContext context)
@@ -202,7 +202,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
     
     /// <summary>
-    /// 发射导弹输入事件处理器
+    /// GamePlay动作表的发射导弹输入
     /// </summary>
     /// <param name="context"></param>
     public void OnLaunchMissile(InputAction.CallbackContext context)
@@ -212,7 +212,7 @@ public class PlayerInput : ScriptableObject, InputActions.IGamePlayActions, Inpu
     }
     
     /// <summary>
-    /// 确认游戏结束输入事件处理器
+    /// GameOverScreen动作表的确认游戏结束输入
     /// </summary>
     /// <param name="context"></param>
     public void OnConfirmGameOver(InputAction.CallbackContext context)
