@@ -73,7 +73,7 @@ public class Player : Character
     public bool IsFullHealth => health == maxHealth;
 
     /// <summary>
-    /// 能量是否全满
+    /// 武器威力全满
     /// </summary>
     public bool IsFullPower => weaponPower == 2;
 

@@ -2,14 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// åˆ†æ•°å¥–åŠ±æˆ˜åˆ©å“æ‹¾å–
+/// </summary>
 public class ScoreBonusPickUp :LootItem
 {
+   /// <summary>
+   /// åˆ†æ•°å¥–åŠ±
+   /// </summary>
    [SerializeField] private int scoreBonus;
-   //ÖØĞ´Ê°È¡º¯Êı
+   
    protected override void PickUp()
    {
-      //Ôö¼Ó·ÖÊı
+      //æ·»åŠ åˆ†æ•°
       ScoreManager.Instance.AddScore(scoreBonus);
+
       base.PickUp();
    }
 }

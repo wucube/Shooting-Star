@@ -26,9 +26,6 @@ public class LootSetting
     {
         //随机数小于掉落概念就生成战利品
         if (Random.Range(0f, 100f) <= dropPercentage)
-        {
-            
             PoolManager.Release(prefab, position);
-        }
     }
 }

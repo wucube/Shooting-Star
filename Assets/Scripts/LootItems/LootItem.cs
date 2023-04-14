@@ -5,41 +5,46 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// æˆ˜åˆ©å“åŸºç±»
+/// </summary>
 public class LootItem : MonoBehaviour
 {
-    //µÀ¾ßÒÆ¶¯ËÙ¶È±äÁ¿
     [SerializeField] private float minSpeed = 5f;
     [SerializeField] private float maxSpeed = 15f;
-    
-    //Ä¬ÈÏÊ°È¡ÒôĞ§
+
+    /// <summary>
+    /// æˆ˜åˆ©å“é»˜è®¤æ‹¾å–éŸ³æ•ˆ
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] protected AudioData defaultPickUpSFX;
-    //²¥·ÅÊ°È¡¶¯»­µÄÌõ¼ş²ÎÊı£¬×ªÎª¹şÏ£Öµ
-    private int pickUpStateID = Animator.StringToHash("PickUp");
-    //µÀ¾ßÉÏµÄ¶¯»­Æ÷×é¼ş
-    private Animator animator;
-    //Ê°È¡ÒôĞ§±äÁ¿
-    protected AudioData pickUpSFX;
-    //Íæ¼Ò¶ÔÏó±äÁ¿
-    protected Player player;
     
-    //Ê°È¡µÀ¾ßµÄÎÄ±¾ĞÅÏ¢
+    /// <summary>
+    /// æˆ˜åˆ©å“åŠ¨ç”»åå­—ç¬¦ä¸²çš„å“ˆå¸Œå€¼
+    /// </summary>
+    /// <returns></returns>
+    private int pickUpStateID = Animator.StringToHash("PickUp");
+    private Animator animator;
+    protected AudioData pickUpSFX;
+    protected Player player;
+
+    /// <summary>
+    /// æˆ˜åˆ©å“æ‹¾å–æ—¶çš„æç¤ºä¿¡æ¯
+    /// </summary>
     protected Text lootMessage;
 
     private void Awake()
     {
-        //³õÊ¼»¯¶¯»­Æ÷×é¼ş±äÁ¿
         animator = GetComponent<Animator>();
-        //³õÊ¼»¯Íæ¼Ò¶ÔÏó±äÁ¿
+        
         player = FindObjectOfType<Player>();
-        //³õÊ¼»¯ÎÄ±¾ĞÅÏ¢£¬´«ÈëTrue£¬»ñÈ¡½ûÓÃµÄ×é¼ş
+        
         lootMessage = GetComponentInChildren<Text>(true);
-        //³õÊ¼»¯ÁìÈ¡ÒôĞ§±äÁ¿£¬¸³ÓèÄ¬ÈÏÒôĞ§µÄÖµ
+        
         pickUpSFX = defaultPickUpSFX;
     }
-
     private void OnEnable()
     {
-        //ÆôÓÃµÀ¾ßÒÆ¶¯Ğ­³Ì
         StartCoroutine(MoveCoroutine());
     }
 
@@ -48,32 +53,35 @@ public class LootItem : MonoBehaviour
         PickUp();
     }
 
+    /// <summary>
+    /// æˆ˜åˆ©å“æ‹¾å–
+    /// </summary>
     protected virtual void PickUp()
     {
-        //µÀ¾ßÍ£Ö¹ÒÆ¶¯
         StopAllCoroutines();
-        //²¥·ÅÊ°È¡¶¯»­
+
         animator.Play(pickUpStateID);
-        //²¥·ÅÊ°È¡ÒôĞ§
+
         AudioManager.Instance.PlayerRandomSFX(pickUpSFX);
     }
-
+    
+    /// <summary>
+    /// æˆ˜åˆ©å“ç§»åŠ¨åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveCoroutine()
     {
-        //Ëæ»úÈ¡µÃÒÆ¶¯ËÙ¶È
         float speed = Random.Range(minSpeed, maxSpeed);
-        //ÒÆ¶¯·½Ïò£¬Ä¬ÈÏÏò×ó·ÉĞĞ
+
         Vector3 direction = Vector3.left;
+
         while (true)
         {
-            //Èç¹ûÍæ¼Ò´æ»î
             if (player.isActiveAndEnabled)
-            {
-                //ĞŞ¸ÄÒÆ¶¯·½ÏòÏòÁ¿
                 direction = (player.transform.position - transform.position).normalized;
-            }
-            //µÀ¾ßÏòÍæ¼Ò·½ÏòÒÆ¶¯
-            transform.Translate(direction*speed*Time.deltaTime);
+
+            transform.Translate(direction * speed * Time.deltaTime);
+
             yield return null;
         }
     }

@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æˆ˜åˆ©å™¨çš„çŠ¶æ€æœºè¡Œä¸ºè„šæœ¬
+/// </summary>
 public class LootItemBehaviour : StateMachineBehaviour
 {
-    //×´Ì¬ÍË³öº¯Êı
+    //çŠ¶æ€é€€å‡ºæ—¶éšè—æˆ˜åˆ©å™¨
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //½ûÓÃ¶¯»­Æ÷Ëù¹ÒÔØµÄ¶ÔÏó
         animator.gameObject.SetActive(false);
     }
 }

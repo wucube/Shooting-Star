@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// å¯¼å¼¹æˆ˜åˆ©å“æ‹¾å–
+/// </summary>
 public class MissilePickUp : LootItem
 {
     protected override void PickUp()
     {
-        //µ÷ÓÃÍæ¼ÒµÄµ¼µ¯ÁìÈ¡º¯Êı
         player.PickUpMissile();
+
         base.PickUp();
     }
 }

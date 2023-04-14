@@ -1,31 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// æ­¦å™¨å¨åŠ›æå‡
+/// </summary>
 public class WeaponPowerPickUp : LootItem
 {
-    //ÎäÆ÷ÍşÁ¦Âú¼¶Ê±µÄ²¥·ÅµÄÒôĞ§
+    /// <summary>
+    /// æ»¡çº§å­å¼¹æ—¶çš„å£°æ•ˆ
+    /// </summary>
     [SerializeField] private AudioData fullPowerPickUpSFX;
-    //·ÖÊı½±Àø
+    /// <summary>
+    /// æ»¡çº§å­å¼¹æ—¶æ‹¾å–å‡çº§å­å¼¹æˆ˜åˆ©å“çš„å¥–åŠ±
+    /// </summary>
     [SerializeField] private int fullPowerScoreBonus = 200;
 
+    /// <summary>
+    /// æ‹¾å–å­å¼¹å‡çº§æˆ˜åˆ©å“
+    /// </summary>
     protected override void PickUp()
     {
-        //ÈôÍæ¼ÒÎäÆ÷ÍşÁ¦Âú¼¶£¬
         if (player.IsFullPower)
         {
             pickUpSFX = fullPowerPickUpSFX;
             lootMessage.text = $"SCORE + {fullPowerScoreBonus}";
-            //Ôö¼ÓÍæ¼Ò·ÖÊı
             ScoreManager.Instance.AddScore(fullPowerScoreBonus);
         }
-        else//ÈôÍæ¼ÒÎäÆ÷ÍşÁ¦Î´Âú
+        else
         {
             pickUpSFX = defaultPickUpSFX;
             lootMessage.text = "POWER UP!";
-            //ÌáÉıÍæ¼ÒÎäÆ÷ÍşÁ¦
             player.PowerUp();
         }
+        
         base.PickUp();
     }
 }
