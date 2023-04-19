@@ -2,43 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// å­å¼¹åˆ¶å¯¼ç³»ç»Ÿ
+/// </summary>
 public class ProjectileGuidanceSystem : MonoBehaviour
 {
-    //×Óµ¯Àà½Å±¾ÒıÓÃ±äÁ¿
     [SerializeField] private Projectile projectile;
-    //×îĞ¡µ¯µÀ½Ç¶È
+    
+    /// <summary>
+    /// æœ€å¤§å¼¹é“è§’åº¦
+    /// </summary>
     [SerializeField] private float minBallisticAngle = -50f;
-    //×î´óµ¯µÀ½Ç¶È
+    
+    /// <summary>
+    /// æœ€å¤§å¼¹é“è§’åº¦
+    /// </summary>
     [SerializeField] private float maxBallisticAngle = 50f;
-    //×Óµ¯Ïà¶ÔÓÚÄ¿±êµÄ³¯Ïò
-    private Vector3 _targetDirection;
-    //µ¯µÀ½Ç¶È±äÁ¿
-    private float _ballisticAngle;
-    //×Óµ¯¹é³²Ğ­³Ì¡£¹é³²£¬¾üÊÂÊõÓïÖĞÍ¨³£´úÖ¸×Óµ¯µ¼µ¯×Ô¶¯×·×Ù¹¦ÄÜ
+    
+    /// <summary>
+    /// ç›®æ ‡ç§»åŠ¨æ–¹å‘
+    /// </summary>
+    private Vector3 targetDirection;
+    /// <summary>
+    /// å¼¹é“è§’åº¦
+    /// </summary>
+    private float ballisticAngle;
+
+    /// <summary>
+    /// å½’å·¢åç¨‹
+    /// </summary>
+    /// <param name="target">è¦å‘½ä¸­çš„ç›®æ ‡å¯¹è±¡</param>
+    /// <returns></returns>
     public IEnumerator HomingCoroutine(GameObject target)
     {
-        //Ñ­»·¿ªÊ¼Ç°£¬µ÷ÓÃËæ»úº¯ÊıÎªµ¯µÀ½Ç¶È¸³Öµ
-        _ballisticAngle = Random.Range(minBallisticAngle, maxBallisticAngle);
-        //µ±×Óµ¯´¦ÓÚ»î¶¯×´Ì¬Ê±£¬Ôò½øĞĞÑ­»·
+        ballisticAngle = Random.Range(minBallisticAngle, maxBallisticAngle);
+        
         while (gameObject.activeSelf)
         {
-            //Èç¹ûÄ¿±ê´¦ÓÚ»î¶¯×´Ì¬£¬×Óµ¯³ÖĞøÏòÄ¿±êÒÆ¶¯
             if (target.activeSelf)
             {
-                //Ä¿±êÏòÁ¿ - ×Óµ¯×ÔÉíÎ»ÖÃÏòÁ¿ µÃ×Óµ¯Ïà¶ÔÄ¿±êµÄ³¯ÏòÏòÁ¿
-                _targetDirection = target.transform.position - transform.position;
-                //×ª¶¯×Óµ¯ZÖá£¬ÈÃ×Óµ¯Ê¼ÖÕ³¯ÏòÄ¿±ê
-                //ÓÃ·´ÕıÇĞº¯ÊıÈ¡µÃ³¯ÏòÄ¿±êµÄĞı×ª»¡¶È£¬¶ÔÏóXÖáÓë ¶ÔÏóºÍÄ¿±êÁ¬½ÓÖ±ÏßµÄ»¡¶È
-                transform.rotation =
-                    Quaternion.AngleAxis(Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg,
-                        Vector3.forward);
-                //ĞŞÕı×Óµ¯³¯Ïòºó£¬ÔÙ½«×Óµ¯Ğı×ª´«³ËÒ»¸öËÄÔªÌÆµÄÅ·À­½Ç£¬Ö»¸ÄZÖá½Ç¶È  
-                transform.rotation *= Quaternion.Euler(0f,0f,_ballisticAngle);
-                //µ÷ÓÃ×Óµ¯ÒÆ¶¯º¯Êı 
+                targetDirection = target.transform.position - transform.position;
+                //å­å¼¹æ—‹è½¬æœå‘ç›®æ ‡
+                transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg, Vector3.forward);
+                //å­å¼¹å†æ—‹è½¬ä¸€å®šè§’åº¦ï¼Œä½¿å¼¹é“æœ‰å¼§åº¦ã€‚
+                transform.rotation *= Quaternion.Euler(0f, 0f, ballisticAngle);
+                //å­å¼¹ç§»åŠ¨
                 projectile.Move();
             }
-            //Èç¹ûÄ¿±ê²»´¦ÓÚ»î¶¯×´Ì¬£¬ÔòÈÃ×Óµ¯ÑØ×ÅÔ­À´Éè¶¨ºÃµÄÒÆ¶¯·½ÏòÇ°ÒÆ
-            else projectile.Move();
+            else 
+                projectile.Move();
+
             yield return null;
         }
     }

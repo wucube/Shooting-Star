@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//æ™®é€šæ•Œäººå­å¼¹
 public class EnemyProjectile : Projectile
 {
     void Awake()
     {
-        //ĞŞÕıÎ´ÒÔÖ±Ïß·ÉÍù×ó±ßµÄ×Óµ¯£¬ĞŞÕıÆäĞı×ª½Ç¶È
-         if(moveDirection!=Vector2.left)
-             //Quaternion.FromToRotation() ¸ù¾İ´«ÈëµÄ¿ªÊ¼Óë½áÊøÁ½¸ö·½Ïò·µ»ØÒ»¸öĞı×ªÖµ
-             transform.rotation = Quaternion.FromToRotation(Vector2.left, moveDirection);
+        //å¦‚æœå­å¼¹ç§»åŠ¨æ–¹å‘ä¸ä¸ºå·¦ï¼Œå°±å°†å­å¼¹ç§»åŠ¨æ–¹å‘ä»å·¦è½¬åˆ°ç›®æ ‡æ–¹å‘
+        if(moveDirection!=Vector2.left)
+            transform.rotation = Quaternion.FromToRotation(Vector2.left, moveDirection);
     }
 }

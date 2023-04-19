@@ -3,23 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ•Œäººæ¿€å…‰
+/// </summary>
 public class EnemyBeam : MonoBehaviour
 {
-    //¼¤¹âÉËº¦Öµ
+    
     [SerializeField] private float damage = 50f;
-    //¼¤¹âÍ¾ÖĞÊ±µÄÊÓ¾õÌØĞ§
+    //å‡»ä¸­ç›®æ ‡ç‰¹æ•ˆ
     [SerializeField] private GameObject hitVFX;
 
-     void OnCollisionStay2D(Collision2D collision)
+    /// <summary>
+    /// æ¿€å…‰ç¢°æ’ä½“ä¸ç©å®¶æŒç»­ç¢°æ’
+    /// </summary>
+    /// <param name="collision"></param>
+    void OnCollisionStay2D(Collision2D collision)
     {
-        //ÈôÅö×²¶ÔÏóÉÏÄÜ»ñÈ¡µ½Íæ¼Ò½Å±¾
+        
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
         {
-            //µ÷ÓÃÍæ¼ÒÊÜÉËº¯Êı
+            
             player.TakeDamage(damage);
-            //¶ÔÏó³ØÉú³ÉÃüÖĞÊÓ¾õÌØĞ§
-            PoolManager.Release(hitVFX, collision.GetContact(0).point,
-                Quaternion.LookRotation(collision.GetContact(0).normal));
+            
+            PoolManager.Release(hitVFX, collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal));
         }
     }
 }

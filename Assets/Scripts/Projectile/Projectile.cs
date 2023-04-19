@@ -2,59 +2,82 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 瀛愬脊鍩虹被
+/// </summary>
 public class Projectile : MonoBehaviour
 {
-    //命中视觉特效对象
+    /// <summary>
+    /// 鍛戒腑瑙嗘晥
+    /// </summary>
     [SerializeField] GameObject hitVFX;
-    //????????????????????
+
+    /// <summary>
+    /// 鍛戒腑澹版晥
+    /// </summary>
     [SerializeField] AudioData[] hitSFX;
-    //伤害值
+
+    /// <summary>
+    /// 浼ゅ
+    /// </summary>
     [SerializeField] float damage;
-    //子弹移动速度
+
+    /// <summary>
+    /// 瀛愬脊绉诲姩閫熷害
+    /// </summary>
     [SerializeField] protected float moveSpeed = 10f;
-    //??????????
+
+    /// <summary>
+    /// 瀛愬脊绉诲姩鏂瑰悜
+    /// </summary>
     [SerializeField] protected Vector2 moveDirection;
-    //????????????
+
+    /// <summary>
+    /// 鐩爣瀵硅薄
+    /// </summary>
     protected GameObject target;
     
-    //???????????????????OnEnable????
     protected virtual void OnEnable()
     {
-        //?????????????????
         StartCoroutine(MoveDirectly());
     }
-    //??????????????????
+    
+    /// <summary>
+    /// 瀛愬脊鎸佺画绉诲姩鍗忕▼
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveDirectly()
     {
-        //?????????????
         while (gameObject.activeSelf)
         {
-            //??????
             Move();
-            //??????
             yield return null;
         }
     }
-    //??????????
+    
+    /// <summary>
+    /// 璁剧疆瀛愬脊鍛戒腑鐩爣
+    /// </summary>
+    /// <param name="target"></param>
     protected void SetTarget(GameObject target)=>this.target = target;
-    //??????????????????????????????????????????????????
+    
+    /// <summary>
+    /// 瀛愬脊绉诲姩
+    /// </summary>
     public void Move()=>transform.Translate(moveDirection * (moveSpeed * Time.deltaTime));
 
-    //碰撞函数
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
-        //判断撞击对象是否为角色类
         if(collision.gameObject.TryGetComponent(out Character character))
         {
-            //角色受到伤害
             character.TakeDamage(damage);
-            //对象池释放特效对象
-            //第一个接触点即碰撞发生位置；特效朝向接触点法线方向
-            PoolManager.Release(hitVFX, collision.GetContact(0).point,
-                Quaternion.LookRotation(collision.GetContact(0).normal));
-            //随机播放命中特效
+            
+            //瀵硅薄绠＄悊鍣ㄩ噴鏀惧瓙寮瑰懡涓鏁堬紝骞惰缃綅缃笌鏃嬭浆瑙掑害
+            PoolManager.Release(hitVFX, collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal));
+            
             AudioManager.Instance.PlayerRandomSFX(hitSFX);
-            //子弹对象禁用，回到对象池中等待再次被启用
+            
+            //瀛愬脊瀵硅薄澶辨椿锛屽洖鏀跺埌瀵硅薄姹犱腑
             gameObject.SetActive(false);
         }
     }

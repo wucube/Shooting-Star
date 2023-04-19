@@ -32,7 +32,6 @@ public class BackgroundScroller : MonoBehaviour
         }
     }
 
-     
     // 在Update中不断滚动背景视图
     // private void Update()
     // {

@@ -2,34 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ•Œäººçš„è¿½è¸ªå­å¼¹
+/// </summary>
 public class EnemyProjectile_Aiming : Projectile
 {
     void Awake()
     {
-        //Ñ°ÕÒÍæ¼Ò¶ÔÏóÎïÌå
         //target = GameObject.FindGameObjectWithTag("Player");
-        
-        //ÉèÖÃÍæ¼Ò¶ÔÏóÎªÄ¿±êµĞÈË
+
+        //å°†è¿½è¸ªç›®æ ‡è®¾ç½®ä¸ºæ•Œäºº
         SetTarget(GameObject.FindWithTag("Player"));
     }
     protected override void OnEnable()
     {
-        //ÆôÓÃĞ­³Ì»ñÈ¡¾«È·µÄÒÆ¶¯·½Ïò
+        
         StartCoroutine(nameof(MoveDirectionCoroutine));
         base.OnEnable();
         
     }
-    // Ê¹ÓÃĞ­³Ì »ñÈ¡¾«È·µÄÒÆ¶¯·½Ïò ¸¡µãÊı²»×¼È·
+    
+    /// <summary>
+    /// æŒç»­æ”¹å˜å­å¼¹ç§»åŠ¨æ–¹å‘çš„åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveDirectionCoroutine()
     {
-        //¹ÒÆğÒ»Ö¡
         yield return null;
-        
-        //Èç¹ûÍæ¼ÒÃ»ÓĞËÀÍö£¬¼ÌĞøÖ´ĞĞ
+
+        //å¦‚æœç›®æ ‡æ¿€æ´»
         if (target.activeSelf)
         {
-            //ĞŞ¸Ä×Óµ¯ÒÆ¶¯·½Ïò£¬Ä¿±êÎ»ÖÃ  - µ±Ç°Î»ÖÃ µÃµ½ĞÂÒÆ¶¯·½Ïò ¹éÒ»»¯ÒÆ¶¯·½Ïò£¬È·±£ÒÆ¶¯ËÙ¶È²»Ææ¹Ö
-            moveDirection = (target.transform.position-transform.position).normalized;
+            //ç›®æ ‡ä½ç½® - å­å¼¹è‡ªèº«ä½ç½® å¾—åˆ°çš„å‘é‡å½’ä¸€åŒ–å°±æ˜¯å­å¼¹ç§»åŠ¨æ–¹å‘
+            moveDirection = (target.transform.position - transform.position).normalized;
         }
     }
 

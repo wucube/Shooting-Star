@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 爆炸伤害判定
+/// 爆炸范围伤害判定
 /// </summary>
 public class Explosion : MonoBehaviour
 {
