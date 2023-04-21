@@ -1,22 +1,32 @@
 using UnityEngine;
 using UnityEngine.UI;
+
+/// <summary>
+/// åˆ†æ•°æ˜¾ç¤º
+/// </summary>
 public class ScoreDisplay : MonoBehaviour
 {
-    //Unity ÎÄ±¾¶ÔÏó±äÁ¿
-    private static Text _scoreText;
+    /// <summary>
+    /// æ˜¾ç¤ºåˆ†æ•°çš„æ–‡æœ¬ç»„ä»¶
+    /// </summary>
+    private static Text scoreText;
     private void Awake()
     {
-        //È¡µÃ·ÖÊýÎÄ±¾¶ÔÏóµÄÎÄ±¾×é¼þ
-        _scoreText = GetComponent<Text>();
+        scoreText = GetComponent<Text>();
     }
     private void Start()
     {
-        //µ÷ÓÃÖØÖÃ·ÖÊýº¯Êý
         ScoreManager.Instance.ResetScore();
     }
     
-    //¸üÐÂÎÄ±¾¾²Ì¬º¯Êý£¬±ãÓÚ±»ÆäËûÀàµ÷ÓÃ
-    public static void UpdateText(int score)=>_scoreText.text = score.ToString();
-    //ÎÄ±¾Ëõ·Å¾²Ì¬º¯Êý£¬ÐÞ¸Ä·ÖÊýÎÄ±¾¾ØÐÎ±ä»»×é¼þµÄËõ·ÅÖµ
-    public static void ScaleText(Vector3 targetScale) => _scoreText.rectTransform.localScale = targetScale;
+    /// <summary>
+    /// æ›´æ–°åˆ†æ•°
+    /// </summary>
+    /// <param name="score"></param>
+    public static void UpdateText(int score)=>scoreText.text = score.ToString();
+    /// <summary>
+    /// ç¼©æ”¾åˆ†æ•°æ–‡æœ¬ç»„ä»¶
+    /// </summary>
+    /// <param name="targetScale"></param>
+    public static void ScaleText(Vector3 targetScale) => scoreText.rectTransform.localScale = targetScale;
 }

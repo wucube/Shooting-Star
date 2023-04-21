@@ -7,39 +7,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Serialization;
 
+/// <summary>
+/// GmmePlay UIæ§åˆ¶å™¨
+/// </summary>
 public class GameplayUIController : MonoBehaviour
 {
     [Header("====== PLAYER INPUT ======")]
-    //Íæ¼ÒÊäÈëÀà
     [SerializeField] private PlayerInput playerInput;
 
     [Header("====== AUDIO DATA ======")]
-    //ÔİÍ£ÒôĞ§
     [SerializeField] private AudioData pauseSFX;
-    //È¡ÏûÔİÍ£ÒôĞ§
     [SerializeField] private AudioData unpauseSFX;
     
     [Header("====== CANVAS ======")]
-    //HUD»­²¼
     [SerializeField] private Canvas hUDCanvas;
-    //²Ëµ¥»­²¼
     [SerializeField] private Canvas menusCanvas;
 
     [Header("====== PLAYER INPUT ======")] 
-    //ÔİÍ£²Ëµ¥µÄÈı¸ö°´Å¥×é¼ş±äÁ¿
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button mainMenuButton;
-    //º¯Êı²ÎÊıµÄ¹şÏ£Öµ
     private int buttonPressedParameterID = Animator.StringToHash("Pressed");
     void OnEnable()
     {
-        //¶©ÔÄÍæ¼ÒÊäÈëµÄÔİÍ£Óë»Ö¸´ÊÂ¼ş
         playerInput.onPause += Pause;
         playerInput.onUnpause += Unpause;
     
-        //Îª¶¯»­×´Ì¬»úĞĞÎª½Å±¾ÖĞµÄ°´Å¥¹¦ÄÜ±í×ÖµäÌí¼Ó¼üÖµ¶Ô
-        //¼ü´«Èë¸÷°´Å¥×é¼ş¹ÒÔØ¶ÔÏóµÄÃû³Æ£¬Öµ´«Èë¸÷¸ö°´Å¥¶ÔÓ¦µÄ¹¦ÄÜº¯Êı 
         ButtonPressedBehavior.buttonFunctionTable.Add(resumeButton.gameObject.name,OnResumeButtonClick);
         ButtonPressedBehavior.buttonFunctionTable.Add(optionsButton.gameObject.name,OnOptionsButtonClick);
         ButtonPressedBehavior.buttonFunctionTable.Add(mainMenuButton.gameObject.name,OnMainMenuButtonClick);
@@ -47,84 +40,72 @@ public class GameplayUIController : MonoBehaviour
 
     void OnDisable()
     {
-        //ÍË¶©Íæ¼ÒÊäÈëµÄÔİÍ£Óë»Ö¸´ÊÂ¼ş
         playerInput.onPause -= Pause;
         playerInput.onUnpause -= Unpause;
-        //Çå¿Õ°´Å¥º¯Êı¹¦ÄÜ±íÖĞµÄ¼üÖµ¶Ô
         ButtonPressedBehavior.buttonFunctionTable.Clear();
     }
 
-    //ÔİÍ£º¯Êı
+    /// <summary>
+    /// æš‚åœè¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void Pause()
     {
-        //¹Ø±ÕHUD»­²¼
         hUDCanvas.enabled = false;
-        //¿ªÆôÔİÍ£²Ëµ¥»­²¼
         menusCanvas.enabled = true;
-        
-        //ÓÎÏ·×´Ì¬ÎªÔİÍ£
+    
         GameManager.GameState = GameState.Paused;
-        //µ÷ÓÃÊ±¼ä¿ØÖÆÆ÷µÄÔİÍ£º¯Êı
         TimeController.Instance.Pause();
-        
-        //ÇĞ»»µ½ÔİÍ£²Ëµ¥¶¯×÷±í
+
         playerInput.EnablePauseMenuInput();
-        //ÊäÈëÄ£Ê½ÇĞ»»µ½¶¯Ì¬¸üĞÂÄ£Ê½
         playerInput.SwitchToDynamicUpdateMode();
-        //µ÷ÓÃÑ¡ÖĞUIº¯Êı,ÔİÍ£²Ëµ¥´ò¿ª¾Í»áÑ¡ÖĞ»Ö¸´°´Å¥
+
         UIInput.Instance.SelectUI(resumeButton);
-        //²¥·ÅÔİÍ£ÒôĞ§
         AudioManager.Instance.PlaySFX(pauseSFX);
     }
     
-    //È¡ÏûÔİÍ£º¯Êı
+    /// <summary>
+    /// ç»“æŸæš‚åœè¾“å…¥äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void Unpause()
     {
-        //ÏÈÑ¡ÖĞ»Ö¸´°´Å¥
         resumeButton.Select();
-        //½«°´Å¥×´Ì¬ÇĞ»»µ½°´ÏÂ×´Ì¬
         resumeButton.animator.SetTrigger(buttonPressedParameterID);
-        //²¥·ÅÈ¡ÏûÔİÍ£ÒôĞ§
         AudioManager.Instance.PlaySFX(unpauseSFX);
     }
 
-    //µã»÷»Ö¸´°´Å¥µÄ¹¦ÄÜº¯Êı
+    /// <summary>
+    /// ç»§æ‰¿æŒ‰é’®äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void OnResumeButtonClick()
     {
-        //Ê±¼ä¿Ì¶È»Ö¸´Õı³£
         Time.timeScale = 1f;
-        //¿ªÆôHUD½çÃæ
         hUDCanvas.enabled = true;
-        //Òş²ØÔİÍ£²Ëµ¥½çÃæ
         menusCanvas.enabled = false;
-        
-        //ÓÎÏ·×´Ì¬ÎªÔËĞĞ
+    
         GameManager.GameState = GameState.Playing;
-        //µ÷ÓÃÊ±¼ä¹ÜÀíÆ÷»Ö¸´º¯Êı
         TimeController.Instance.Unpause();
         
-        //ÇĞ»»µ½GamePlay¶¯×÷±í
+    
         playerInput.EnableGameplayInput();
-        //ÇĞ»»µ½¹Ì¶¨¸üĞÂÄ£Ê½
         playerInput.SwitchToFixedUpdateMode();
     }
     
-    //µã»÷Ñ¡Ïî°´Å¥µÄ¹¦ÄÜº¯Êı
+    /// <summary>
+    /// é€‰é¡¹æŒ‰é’®äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void OnOptionsButtonClick()
     {
-        //Ñ¡ÖĞ Ñ¡Ïî¹¦ÄÜ°´Å¥ 
         UIInput.Instance.SelectUI(optionsButton);
-        //¿ªÆôÔİÍ£²Ëµ¥¶¯×÷±í
         playerInput.EnablePauseMenuInput();
     }
 
-    //µã»÷Ö÷²Ëµ¥°´Å¥µÄ¹¦ÄÜº¯Êı
+    /// <summary>
+    /// ä¸»èœå•æŒ‰é’®äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void OnMainMenuButtonClick()
     {
-        //ÔİÍ£²Ëµ¥¹Ø±Õ
         menusCanvas.enabled = false;
-        //¼ÓÔØÖ÷²Ëµ¥³¡¾°
+        //åŠ è½½ä¸»åœºæ™¯
         SceneLoader.Instance.LoadMainMenuScene();
-        // Load Main Menu Scene
     }
 }

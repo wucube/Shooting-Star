@@ -5,21 +5,24 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// æŒ‰é’®çŠ¶æ€å¤„ç†è¡Œä¸ºè„šæœ¬
+/// </summary>
 public class ButtonPressedBehavior : StateMachineBehaviour
 {
-    //¹«ÓĞ¾²Ì¬×Öµä£¬¼üÎª°´Å¥Ãû×Ö£¬ÖµÎª²»´ø²ÎÊıµÄÎ¯ÍĞ - °´Å¥¹¦ÄÜ±í
+    /// <summary>
+    /// æŒ‰é’®åŠŸèƒ½æ˜ å°„è¡¨
+    /// </summary>
     public static Dictionary<string, Action> buttonFunctionTable;
 
     private void Awake()
     {
-        //³õÊ¼»¯×Öµä
         buttonFunctionTable = new Dictionary<string, Action>();
     }
 
-   //×´Ì¬½øÈëº¯Êı£¬½øÈë×´Ì¬µÄµÚÒ»Ö¡µ÷ÓÃ
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //½ûÓÃËùÓĞÊäÈë
+        //å–æ¶ˆæ‰€æœ‰è¾“å…¥
         UIInput.Instance.DisableAllUIInputs();
     }
 
@@ -32,7 +35,7 @@ public class ButtonPressedBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //µ÷ÓÃ ²¥·Å°´ÏÂ¶¯»­µÄ°´Å¥ ¶ÔÓ¦µÄÎ¯ÍĞ
+        //è°ƒç”¨å¯¹åº”çš„å§”æ‰˜å‡½æ•°
         buttonFunctionTable[animator.gameObject.name].Invoke();
     }
 

@@ -96,6 +96,11 @@ public class ScoreManager : PersistentSingleton<ScoreManager>
     /// </summary>
     /// <returns></returns>
     public bool HasNewHighScore => score > LoadPlayerScoreData().list[9].score;
+
+    /// <summary>
+    /// 设置玩家名称
+    /// </summary>
+    /// <param name="newName"></param>
     public void SetPlayerName(string newName)
     {
         playerName = newName;
@@ -109,7 +114,7 @@ public class ScoreManager : PersistentSingleton<ScoreManager>
         var playerScoreData = LoadPlayerScoreData();
         //添加新的玩家分数到数据列表中
         playerScoreData.list.Add(new PlayerScore(score,playerName));
-        //为分数列表排序
+        //为分数列表升序排序
         playerScoreData.list.Sort((x,y) => y.score.CompareTo(x.score));
         //将排好序的分类列表以Json数据方式存储到本地
         SaveSystem.SaveByJson(SaveFileName,playerScoreData);

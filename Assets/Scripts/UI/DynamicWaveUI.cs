@@ -2,84 +2,115 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// åŠ¨æ€æ³¢æ•°UI
+/// </summary>
 public class DynamicWaveUI : MonoBehaviour
 {
-    //ºáÏßÒÆ¶¯ºÍÎÄ±¾Ëõ·ÅµÄ³ÖĞøÊ±¼ä(¶¯»­³ÖĞøÊ±¼ä)
+    /// <summary>
+    /// åŠ¨ç”»æ’­æ”¾çš„æ—¶é•¿
+    /// </summary>
     [SerializeField] private float animationTime = 1f;
+
     [Header("---- LINE MOVE ----")]
-    //ÉÏºáÏßµÄÄ¬ÈÏÎ»ÖÃ
+    /// <summary>
+    /// é¡¶éƒ¨çº¿æ¡å¼€å§‹çš„ä½ç½®
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] private Vector2 lineTopStartPosition = new Vector2(-1250f, 140f);
-    //ÉÏºáÏßÒÆ¶¯µÄÄ¿±êÎ»ÖÃ
+    /// <summary>
+    /// é¡¶éƒ¨çº¿æ¡çš„ç›®æ ‡ä½ç½®
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] private Vector2 lineTopTargetPosition = new Vector2(0f, 140f);
-    //ÏÂºáÏßµÄÄ¬ÈÏÎ»ÖÃ
+    /// <summary>
+    /// åº•éƒ¨çº¿æ¡å¼€å§‹çš„ä½ç½®
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] private Vector2 lineBottomStartPosition = new Vector2(1250f, 0f);
-    //ÏÂºáÏßÒÆ¶¯µÄÄ¿±êÎ»ÖÃ
+    /// <summary>
+    /// åº•éƒ¨çº¿æ¡çš„ç›®æ ‡ä½ç½®
+    /// </summary>
     [SerializeField] private Vector2 lineBottomTargetPosition = Vector2.zero;
 
     [Header("---- TEXT SCALE ----")]
-    //ÎÄ±¾ÆğÊ¼Ëõ·ÅÖµ
+    /// <summary>
+    /// æ³¢æ•°æ–‡æœ¬çš„åˆå§‹ç¼©æ”¾å€¼
+    /// </summary>
+    /// <returns></returns>
     [SerializeField] private Vector2 waveTextStartScale = new Vector2(1f, 0f);
-    //ÎÄ±¾Ä¿±êËõ·ÅÖµ
+    /// <summary>
+    /// æ³¢æ•°æ–‡æœ¬çš„ç›®æ ‡ç¼©æ”¾å€¼
+    /// </summary>
     [SerializeField] private Vector2 waveTextTargetScale = Vector2.one;
     
-    //²¨ÊıUIÉÏºáÏß¾ØĞÎ±ä»»×é¼ş
-    private RectTransform _lineTop;
-    //²¨ÊıUIÏÂºáÏß¾ØĞÎ±ä»»×é¼ş
-    private RectTransform _lineBottom;
-    //²¨ÊıUIÎÄ±¾µÄ¾ØĞÎ±ä»»×é¼ş
-    private RectTransform _waveText;
-    //UIÔÚ»­ÃæÖĞÍ£ÁôµÄµÈ´ıÊ±¼ä±äÁ¿
+    /// <summary>
+    /// é¡¶éƒ¨çº¿æ¡çš„Rect
+    /// </summary>
+    private RectTransform lineTop;
+    /// <summary>
+    /// åº•éƒ¨çº¿æ¡çš„Rect
+    /// </summary>
+    private RectTransform lineBottom;
+    /// <summary>
+    /// æ³¢æ•°æ–‡æœ¬çš„Rect
+    /// </summary>
+    private RectTransform waveText;
+    /// <summary>
+    /// UIåœç•™åœ¨ç”»é¢ä¸­é—´çš„æ—¶é•¿
+    /// </summary>
     private WaitForSeconds waitStayTime;
     void Awake()
     {
-        //Èç¹û½Å±¾¹ÒÔØ¶ÔÏóÉÏÓĞAnimator×é¼ş
         if (TryGetComponent(out Animator animator))
-            //Èç¹ûÓÃAnimatorÊµÏÖ¶¯Ì¬UI£¬ÔòÔÚÓÎÏ·¿ªÊ¼Ê±É¾³ı¶¯Ì¬UI½Å±¾
             if(animator.isActiveAndEnabled) Destroy((this));
-        //µĞÈË¹ÜÀíÆ÷Ã¿²¨¼ä¸ôÊ±¼ä ¼õ Á½´ÎºáÏß¡¢ÎÄ±¾¶¯»­Ê±¼äÖµ µÃµ½
+        
         waitStayTime = new WaitForSeconds(EnemyManager.Instance.TimeBetweenWaves - animationTime * 2f);
         
-        //»ñÈ¡ÉÏÏÂºáÏß¼°ÎÄ±¾µÄ¾ØĞÎ±ä»»×é¼ş
-        _lineTop = transform.Find("Line Top").GetComponent<RectTransform>();
-        _lineBottom = transform.Find("Line Bottom").GetComponent<RectTransform>();
-        _waveText = transform.Find("Wave Text").GetComponent<RectTransform>();
-        //ÉèÖÃÉÏÏÂºáÏßµÄ³õÊ¼Î»ÖÃºÍÎÄ±¾µÄ³õÊ¼Ëõ·ÅÖµ
-        _lineTop.localPosition = lineTopStartPosition;
-        _lineBottom.localPosition = lineBottomStartPosition;
-        _waveText.localScale = waveTextStartScale;
+        lineTop = transform.Find("Line Top").GetComponent<RectTransform>();
+        lineBottom = transform.Find("Line Bottom").GetComponent<RectTransform>();
+        waveText = transform.Find("Wave Text").GetComponent<RectTransform>();
+        
+        lineTop.localPosition = lineTopStartPosition;
+        lineBottom.localPosition = lineBottomStartPosition;
+        waveText.localScale = waveTextStartScale;
     }
     private void OnEnable()
     {
-        //ÆôÓÃºáÏßÒÆ¶¯Ğ­³Ì£¬ÒÆ¶¯ÉÏºáÏß
-        StartCoroutine(LineMoveCoroutine(_lineTop, lineTopTargetPosition, lineTopStartPosition));
-        //ÆôÓÃºáÏßÒÆ¶¯Ğ­³Ì£¬ÒÆ¶¯ÏÂºáÏß
-        StartCoroutine(LineMoveCoroutine(_lineBottom, lineBottomTargetPosition, lineBottomStartPosition));
-        //ÆôÓÃÎÄ±¾Ëõ·ÅĞ­³Ì£¬Ëõ·Å²¨ÊıÎÄ±¾
-        StartCoroutine(TextScaleCoroutine(_waveText, waveTextTargetScale, waveTextStartScale));
+        StartCoroutine(LineMoveCoroutine(lineTop, lineTopTargetPosition, lineTopStartPosition));
+        
+        StartCoroutine(LineMoveCoroutine(lineBottom, lineBottomTargetPosition, lineBottomStartPosition));
+        
+        StartCoroutine(TextScaleCoroutine(waveText, waveTextTargetScale, waveTextStartScale));
     }
 
     #region LINE MOVE
-    //ºáÏßÒÆ¶¯Ğ­³Ì
+    /// <summary>
+    /// çº¿çš„ç§»åŠ¨åç¨‹
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="targetPosition"></param>
+    /// <param name="startPosition"></param>
+    /// <returns></returns>
     IEnumerator LineMoveCoroutine(RectTransform rect, Vector2 targetPosition, Vector2 startPosition)
     {
-        //ÏÈ½«UI¶ÔÏóÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
         yield return StartCoroutine(UIMoveCoroutine(rect, targetPosition));
-        //UI¶ÔÏóÍ£ÁôÒ»¶ÎÊ±¼ä
         yield return waitStayTime;
-        //UI¶ÔÏóÒÆ¶¯µ½³õÊ¼Î»ÖÃ
         yield return StartCoroutine(UIMoveCoroutine(rect, startPosition));
     }
-    //UIÒÆ¶¯Ğ­³Ì
+    /// <summary>
+    /// UIç§»åŠ¨åç¨‹
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     IEnumerator UIMoveCoroutine(RectTransform rect, Vector2 position)
     {
         float t = 0f;
-        //¼ÇÂ¼¾ØĞÎ³õÊ¼Î»ÖÃ
         Vector2 localPosition = rect.localPosition;
         while (t < 1f)
         {
             t += Time.deltaTime / animationTime;
-            //¶şÎ¬ÏòÁ¿ÏßĞÔ²åÖµ£¬½«UI´ÓÆğÊ¼Î»ÖÃÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
-            //¸Ä±äUIµÄ¾ØĞÎ±ä»»×é¼şÎ»ÖÃ£¬Ê¹ÓÃlocalPosition²Å»áÆğ×÷ÓÃ
             rect.localPosition = Vector2.Lerp(localPosition, position, t);
             yield return null;
         }
@@ -87,26 +118,33 @@ public class DynamicWaveUI : MonoBehaviour
     #endregion
 
     #region TEXT SCALE
-    //ÎÄ±¾Ëõ·ÅĞ­³Ì
+    /// <summary>
+    /// æ–‡æœ¬ç¼©æ”¾åç¨‹
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="targetScale"></param>
+    /// <param name="startScale"></param>
+    /// <returns></returns>
     IEnumerator TextScaleCoroutine(RectTransform rect, Vector2 targetScale, Vector2 startScale)
     {
-        //ÏÈ½«ÎÄ±¾¾ØĞÎËõ·Åµ½Ä¿±êÖµ
+        
         yield return StartCoroutine(UIScaleCoroutine(rect, targetScale));
-        //ÎÄ±¾Í£ÁôÒ»¶ÎÊ±¼ä
         yield return waitStayTime;
-        //ÎÄ±¾¾ØĞÎËõ·Åµ½ÆğÊ¼Öµ
         yield return StartCoroutine(UIScaleCoroutine(rect, startScale));
     }
-    //UIËõ·ÅĞ­³Ì
+    /// <summary>
+    /// UIç¼©æ”¾åç¨‹
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     IEnumerator UIScaleCoroutine(RectTransform rect, Vector2 scale)
     {
         float t = 0f;
-        //¼ÇÂ¼¾ØĞÎ³õÊ¼ÕÀ·ÅÖµ
         Vector2 localScale = rect.localScale;
         while (t < 1f)
         {
             t += Time.deltaTime / animationTime;
-            //¸Ä»»¾ØĞÎ±ä»»×é¼şµÄËõ·ÅÖµ
             rect.localScale = Vector2.Lerp(localScale, scale, t);
             yield return null;
         }

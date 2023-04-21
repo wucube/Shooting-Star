@@ -5,14 +5,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ä¸»èœå•æŒ‰é’®æ§åˆ¶å™¨
+/// </summary>
 public class MainMenuUIController : MonoBehaviour
 {
     [Header("==== CANVAS ====")] 
-    //Ö÷²Ëµ¥»­²¼±äÁ¿
     [SerializeField] private Canvas mainMenuCanvas;
     
-    [Header("==== BUTTONS ====")] 
-    // ÓÎÏ·°´Å¥±äÁ¿
+    [Header("==== BUTTONS ====")]
     [SerializeField] private Button buttonStart;
     [SerializeField] private Button buttonOptions;
     [SerializeField] private Button buttonQuit;
@@ -20,7 +21,7 @@ public class MainMenuUIController : MonoBehaviour
     private void OnEnable()
     {
         buttonStart.onClick.AddListener(OnButtonStartClicked);
-        //µÇ¼Ç°´Å¥°´ÏÂµÄĞĞÎª
+
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonStart.gameObject.name,OnButtonStartClicked);
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonOptions.gameObject.name,OnButtonOptionsClicked);
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonQuit.gameObject.name,OnButtonQuitClicked);
@@ -28,36 +29,34 @@ public class MainMenuUIController : MonoBehaviour
     void OnDisable()
     {
         buttonStart.onClick.RemoveAllListeners();
-        //°´Å¥°´ÏÂĞĞÎª½Å±¾µÄ°´Å¥¹¦ÄÜ±í×ÖµäÇå¿Õ
         ButtonPressedBehavior.buttonFunctionTable.Clear();
     }
 
     private void Start()
     {
-        //Ê±¼ä¿Ì¶ÈÉèÖÃÎª1¡£Èç¹û´ÓÔİÍ£×´Ì¬»Øµ½Ö÷²Ëµ¥£¬Ê±¼ä¿Ì¶ÈÒÀ¾ÉÎª0
         Time.timeScale = 1f;
-        
-        //ÓÎÏ·×´Ì¬ÎªÔËĞĞ
         GameManager.GameState = GameState.Playing;
-        //Ö÷²Ëµ¥´ò¿ªÊ±Ñ¡ÖĞ¿ªÊ¼°´Å¥
         UIInput.Instance.SelectUI(buttonStart);
     }
 
-    //µã»÷¿ªÊ¼°´Å¥µÄ¹¦ÄÜº¯Êı
+    /// <summary>
+    /// å¼€å§‹æŒ‰é’®çš„ç‚¹å‡»äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void OnButtonStartClicked()
     {
-        //¹Ø±ÕÖ÷²Ëµ¥UI
         mainMenuCanvas.enabled = false;
-        //¼ÓÔØGamePlay³¡¾°
         SceneLoader.Instance.LoadGamePlayScene();
     }
-    //Ñ¡Ïî°´Å¥º¯Êı
+    /// <summary>
+    /// é€‰é¡¹æŒ‰é’®çš„ç‚¹å‡»äº‹ä»¶å¤„ç†å™¨
+    /// </summary>
     void OnButtonOptionsClicked()
     {
         UIInput.Instance.SelectUI(buttonOptions);
     }
-
-    //ÍË³öÓÎÏ·°´Å¥¹¦ÄÜº¯Êı
+    /// <summary>
+    /// é€€å‡ºçš„æŒ‰é’®ç‚¹å‡»äº‹ä»¶
+    /// </summary>
     void OnButtonQuitClicked()
     {
     #if UNITY_EDITOR
