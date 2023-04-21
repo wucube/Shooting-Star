@@ -4,85 +4,99 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// åœºæ™¯åŠ è½½å™¨
+/// </summary>
 public class SceneLoader : PersistentSingleton<SceneLoader>
 {
-    //?????????
+    /// <summary>
+    /// ç”¨äºåœºæ™¯åŠ è½½çš„è¿‡æ¸¡å›¾ç‰‡
+    /// </summary>
     [SerializeField] private Image transitionImage;
-    //?????????
+
+    /// <summary>
+    /// å›¾ç‰‡æ·¡å‡ºæ—¶é—´
+    /// </summary>
     [SerializeField] private float fadeTime = 2f;
-    //
-    private Color _color;
-    //³¡¾°Ãû×Ö·û´®³£Á¿
+
+    private Color color;
+    
+    //åœºæ™¯åç§°å­—ç¬¦ä¸²åœºæ™¯
     private const string Gameplay = "GamePlay";
     private const string MainMenu = "MainMenu";
     private const string Scoring = "Scoring";
     
-    //³¡¾°¼ÓÔØº¯Êı
+    /// <summary>
+    /// åŠ è½½åœºæ™¯
+    /// </summary>
+    /// <param name="sceneName"></param>
     void Load(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
-    //¼ÓÔØGamePlay³¡¾°
+    /// <summary>
+    /// åŠ è½½GamePlayåœºæ™¯
+    /// </summary>
     public void LoadGamePlayScene()
     {
         StartCoroutine(LoadingCoroutine(Gameplay));;
     }
-    //³¡¾°¼ÓÔØĞ­³Ì
+    /// <summary>
+    /// å¼‚æ­¥åŠ è½½åœºæ™¯çš„åç¨‹
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
     IEnumerator LoadingCoroutine(string sceneName)
     {
-        //???›Ê??????????????????
         var loadingOperation = SceneManager.LoadSceneAsync(sceneName);
-        //?????????????????????
-        //????????????§Ô????????????????????????????????§¹??
+        //ä¸æ¿€æ´»åŠ è½½çš„åœºæ™¯
         loadingOperation.allowSceneActivation = false;
-        
-        //???›Ê??
-        //?????????????
+        //æ¿€æ´»è¿‡æ¸¡çš„å›¾ç‰‡å¯¹è±¡
         transitionImage.gameObject.SetActive(true);
-        //?????????alpha?§³??1?????????
-        while (_color.a<1)
-        {
-            //unscaleDeltaTime????timeScale?????
-            //?????????????0??1???
-            _color.a = Mathf.Clamp01(_color.a += Time.unscaledDeltaTime / fadeTime);
-            //????alpha???????????????????
-            transitionImage.color = _color;
-            //???????????
-            yield return null;
-        }
-        //?????????????????????0.9??????????????????????????????????????
-        //??????????????????????????1
-        //??????????????????????????????????????????
-        yield return new WaitUntil(() => loadingOperation.progress >= 0.9f);
-        //???›Ê????????????????????????????
-        loadingOperation.allowSceneActivation = true;
         
-        //???›Ê??
-        while (_color.a>0)
+        while (color.a < 1)
         {
-            _color.a = Mathf.Clamp01(_color.a -= Time.unscaledDeltaTime / fadeTime);
-            transitionImage.color = _color;
+            //é€æ¸å¢åŠ å›¾ç‰‡çš„ä¸é€æ˜åº¦
+            color.a = Mathf.Clamp01(color.a += Time.unscaledDeltaTime / fadeTime);
+            transitionImage.color = color;
+
             yield return null;
         }
-        //?????????
+        //è‹¥ åŠ è½½çš„åœºæ™¯è¿›åº¦è¶…è¿‡0.9f å°±æ‰§è¡Œä¸‹ä¸€æ­¥æ“ä½œ
+        yield return new WaitUntil(() => loadingOperation.progress >= 0.9f);
+        //æ¿€æ´»åŠ è½½çš„åœºæ™¯
+        loadingOperation.allowSceneActivation = true;
+
+        while (color.a>0)
+        {   
+            //é€æ¸é™ä½å›¾ç‰‡çš„ä¸é€æ˜åº¦
+            color.a = Mathf.Clamp01(color.a -= Time.unscaledDeltaTime / fadeTime);
+            transitionImage.color = color;
+            yield return null;
+        }
+        //éšè—åœºæ™¯åŠ è½½çš„è¿‡æ¸¡å›¾ç‰‡
         transitionImage.gameObject.SetActive(false);
     }
 
-    //¼ÓÔØÖ÷²Ëµ¥³¡¾°
+    /// <summary>
+    /// åŠ è½½ä¸»èœå•åœºæ™¯
+    /// </summary>
     public void LoadMainMenuScene()
     {
-        //ÏÈÍ£ÓÃËùÓĞ¼ÓÔØĞ­³Ì
+        //å…ˆåœæ­¢æ‰€æœ‰åç¨‹
         StopAllCoroutines();
-        //ÆôÓÃ¼ÓÔØĞ­³Ì£¬¼ÓÔØÖ÷²Ëµ¥³¡¾°
+
         StartCoroutine(LoadingCoroutine(MainMenu));
     }
 
-    //¼ÓÔØ¼Æ·Ö³¡¾°
+    /// <summary>
+    /// åŠ è½½æ’è¡Œæ¦œåœºæ™¯
+    /// </summary>
     public void LoadScoringScene()
     {
-        //ÏÈÍ£ÓÃ³¡¾°¼ÓÔØÆ÷ËùÓĞĞ­³Ì
+        //å…ˆåœæ­¢æ‰€æœ‰åç¨‹
         StopAllCoroutines();
-        //ÔÙÆôÓÃ¼ÓÔØ³¡¾°Ğ­³Ì£¬¼ÓÔØ¼Æ·Ö³¡¾°
+        
         StartCoroutine(LoadingCoroutine(Scoring));
     }
 }

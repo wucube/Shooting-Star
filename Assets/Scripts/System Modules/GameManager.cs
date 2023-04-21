@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class GameManager : PersistentSingleton<GameManager>
 {
     /// <summary>
-    /// 游戏结束事
+    /// 游戏结束事件
     /// </summary>
     public static UnityAction onGameOver;
     

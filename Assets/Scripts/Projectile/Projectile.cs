@@ -64,7 +64,7 @@ public class Projectile : MonoBehaviour
     /// <summary>
     /// 子弹移动
     /// </summary>
-    public void Move()=>transform.Translate(moveDirection * (moveSpeed * Time.deltaTime));
+    public void Move() => transform.Translate(moveDirection * (moveSpeed * Time.deltaTime));
 
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {

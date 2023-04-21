@@ -12,7 +12,7 @@ public class PlayerProjectileOverdrive : PlayerProjectile
     {
         //设置子弹的目标
         SetTarget(EnemyManager.Instance.RandomEnemy);
-
+        //重置子弹的旋转角度，避免从对象池取出的子弹还保留着上次的旋转角度
         transform.rotation = Quaternion.identity;
         
         if (target == null)

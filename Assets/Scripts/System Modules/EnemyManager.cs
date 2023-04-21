@@ -3,109 +3,137 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
+/// <summary>
+/// æ•Œäººç®¡ç†å™¨
+/// </summary>
 public class EnemyManager : Singleton<EnemyManager>
 {
-    //Ëæ»úÈ¡³öÒ»¸öÄ¿±êµĞÈËµÄÊôĞÔ
+    /// <summary>
+    /// éšæœºè¿”å›å‡ºä¸€ä¸ªæ•Œäººå¯¹è±¡ï¼Œä½œä¸ºè¿½è¸ªå­å¼¹çš„ç›®æ ‡ï¼Œé¿å…ä½¿ç”¨Transfrom.Findå¯»æ‰¾åœºæ™¯å¯¹è±¡ï¼Œæ¶ˆè€—æ€§èƒ½ã€‚
+    /// </summary>
+    /// <returns></returns>
     public GameObject RandomEnemy => enemyList.Count == 0 ? null : enemyList[Random.Range(0, enemyList.Count)];
-    //»ñÈ¡µĞÈË²¨ÊıÊıÖµµÄÊôĞÔ
-    public int WaveNumber => _waveNumber;
-    //»ñÈ¡Ã¿²¨¼ä¸ôÊ±¼äµÄÊôĞÔ
+    
+    /// <summary>
+    /// æ•Œäººæ³¢æ•°
+    /// </summary>
+    public int WaveNumber => waveNumber;
+    
+    /// <summary>
+    /// æ³¢æ•°ä¹‹é—´çš„æ—¶é—´é—´éš”
+    /// </summary>
     public float TimeBetweenWaves => timeBetweenWaves;
-    //ÊÇ·ñÉú³ÉµĞÈË
+
+    /// <summary>
+    /// æ˜¯å¦ç”Ÿæˆæ•Œäºº
+    /// </summary>
     [SerializeField] private bool SpawnEnemy = true;
-    //´æ´¢²¨ÊıUI¶ÔÏó
+
+    /// <summary>
+    /// æ˜¾ç¤ºæ³¢æ•°çš„UI
+    /// </summary>
     [SerializeField] private GameObject waveUI;
-    //µĞÈËÔ¤ÖÆÌåÊı×é
+
+    /// <summary>
+    /// æ•Œäººé¢„åˆ¶ä½“åˆ—è¡¨
+    /// </summary>
     [SerializeField] private GameObject[] enemyPrefabs;
-    //µĞÈËÉú³É¼ä¸ôÊ±¼ä
+    
+    /// <summary>
+    /// ç”Ÿæˆæ•Œäººçš„é—´éš”
+    /// </summary>
     [SerializeField] private float timeBetweenSpawns = 1f;
-    //µÈ´ıÏÂÒ»²¨Ê±¼ä
+
+    /// <summary>
+    /// æ•Œäººæ³¢æ•°çš„é—´éš”
+    /// </summary>
     [SerializeField] private float timeBetweenWaves = 1f;
-    //×îĞ¡µĞÈËÊıÁ¿
+
+    /// <summary>
+    /// æœ€å°‘çš„æ•Œäººæ•°é‡
+    /// </summary>
     [SerializeField] private int minEnemyAmount = 4;
-    //×î´óµĞÈËÊıÁ¿
+
+    /// <summary>
+    /// æœ€å¤šçš„æ•Œäººæ•°é‡
+    /// </summary>
     [SerializeField] private int maxEnemyAmount = 10;
+
     
     [Header("======= Boss Settings =======")]
-    //BossÔ¤ÖÆÌå¶ÔÏó
     [SerializeField] private GameObject bossPrefab;
-    //BossÕ½²¨ÊıÊıÖµ±äÁ¿
+
+    /// <summary>
+    /// Bossçš„æ³¢æ•°
+    /// </summary>
     [SerializeField] private int bossWaveNumber;
     
-    //µĞÈË²¨Êı±äÁ¿£¬Ä¬ÈÏÎª1
-    private int _waveNumber = 1;
-    //µĞÈËÊıÁ¿
-    private int _enemyAmount;
-    //×°ÔØµĞÈËµÄÓÎÏ·¶ÔÏóÁĞ±í
+    private int waveNumber = 1;
+    private int enemyAmount;
+
+    /// <summary>
+    /// æ•Œäººåˆ—è¡¨
+    /// </summary>
     private List<GameObject> enemyList;
-    //µÈ´ıÉú³É¼ä¸ôÊ±¼ä
+    
     private WaitForSeconds waitTimeBetweenSpawns;
-    //µÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä
     private WaitForSeconds waitTimeBetweenWaves;
-    //µÈ´ıÖ±µ½Ã»ÓĞµĞÈËÊ±
+    /// <summary>
+    /// ç­‰å¾…åªåˆ°æ²¡æœ‰æ•Œäºº
+    /// </summary>
     private WaitUntil waitUntillNoEnemy;
     
     protected override void Awake()
     {
         base.Awake();
-        //³õÊ¼»¯µĞÈËÁĞ±í
         enemyList = new List<GameObject>();
-        //³õÊ¼»¯µÈ´ıÉú³É¼ä¸ôÊ±¼ä
         waitTimeBetweenSpawns = new WaitForSeconds(timeBetweenSpawns);
-        //³õÊ¼»¯µÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä
         waitTimeBetweenWaves = new WaitForSeconds(timeBetweenWaves);
-        //³õÊ¼»¯µÈ´ıÖ±µ½Ã»ÓĞµĞÈË£¬´«ÈëµĞÈËÁĞ±íÔªËØÊÇ·ñÎª0µÄÄäÃûº¯Êı
         waitUntillNoEnemy = new WaitUntil(()=>enemyList.Count == 0);
     }
-    //½«Startº¯Êı¸ÄÎªĞ­³Ì£¬ÓÎÏ·¿ªÊ¼ÔËĞĞÊ±×Ô¶¯Ö´ĞĞStartĞ­³ÌÖĞËùÓĞÄÚÈİ
+    
     IEnumerator Start()
     {
-        //ÔÊĞíÉú³ÉµĞÈËÇÒÓÎÏ·×´Ì¬²»Îª½áÊø×´Ì¬Ê±£¬Ñ­»·²Å¼ÌĞø
-        while (SpawnEnemy&&GameManager.GameState!=GameState.GameOver)
+        while (SpawnEnemy && GameManager.GameState != GameState.GameOver)
         {
-            //³¡¾°ÖĞÃ»ÓĞµĞÈËÊ±£¬ÏÔÊ¾²¨ÊıUI
             waveUI.SetActive(true);
-            //Ö´ĞĞËæ»úÉú³ÉĞ­³ÌÇ°£¬¹ÒÆğµÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä¡£ĞÂµÄµĞÈËÉú³ÉÇ°£¬ÁôµãÊ±¼ä¸øÍæ¼Ò´­Ï¢£¬½«À´ÓÃÓÚÏÔÊ¾UIµÈ
             yield return waitTimeBetweenWaves;
-            //¿ªÊ¼Éú³ÉµĞÈËÇ°£¬¹Ø±ÕµĞÈË²¨ÊıUI
             waveUI.SetActive(false);
-            //ÆôÓÃËæ»úÉú³ÉµĞÈËĞ­³Ì
             yield return StartCoroutine(nameof(RandomlySpawnCoroutine));
         }
     }
 
-    //Ëæ»úÉú³ÉµĞÈËĞ­³Ì
+    /// <summary>
+    /// éšæœºç”Ÿæˆæ•Œäººçš„åç¨‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator RandomlySpawnCoroutine()
     {
-        //µ±Ç°²¨ÊıÄ£ÉÏBossÕ½²¨ÊıµÄÓàÊıÎª0£¬¼´Ê±BossÕ½µÄ²¨Êı
-        if (_waveNumber % bossWaveNumber == 0)
+        //è‹¥æ•Œäººæ³¢æ•° å– Bossæ³¢æ•°çš„ä½™ ä¸º0 å°±ç”ŸæˆBoss
+        if (waveNumber % bossWaveNumber == 0)
         {
-            //¶ÔÏó³ØÉú³ÉÒ»¸öBoss
             var boss = PoolManager.Release(bossPrefab);
-            //BossÌí¼Óµ½µĞÈËÁĞ±íÖĞ
             enemyList.Add(boss);
         }
         else
         {
-            //×îĞ¡µĞÈËÊıÁ¿Ëæ×Å²¨ÊıÔö¼Ó¶øÔö¼Ó£¬²¨Êı³ıÒÔÕûÊı£¬¿ÉÓĞĞ§¿ØÖÆ×îĞ¡µĞÈËÊıÁ¿µÄÔö³¤ËÙ¶È¡£Ã¿¸ôÒ»²¨BossÕ½£¬µĞÈËµÄÊıÁ¿¾Í»áÔö¼ÓÒ»¸ö
-            _enemyAmount = Mathf.Clamp(_enemyAmount, minEnemyAmount + _waveNumber / bossWaveNumber, maxEnemyAmount);
-            //Ñ­»·Éú³ÉËùÓĞµĞÈË
-            for (int i = 0; i < _enemyAmount; i++)
+            //æ•Œäººæ•°é‡éšç€Bossæ³¢æ•°çš„å¢åŠ è€Œå¢åŠ 
+            enemyAmount = Mathf.Clamp(enemyAmount, minEnemyAmount + waveNumber / bossWaveNumber, maxEnemyAmount);
+            for (int i = 0; i < enemyAmount; i++)
             {
-                //¶ÔÏó³ØÊÍ·ÅµĞÈËÔ¤ÖÆÌå¼¯ºÏÖĞËæ»úÈ¡³öµÄÒ»ÖÖµĞÈË£¬Ã¿Éú³ÉÒ»¸öµĞÈË¾Í´æ·Åµ½µĞÈËÁĞ±íÖĞ
+                //å°†éšæœºç”Ÿæˆçš„æ•Œäººæ·»åŠ åˆ°æ•Œäººåˆ—è¡¨ä¸­
                 enemyList.Add(PoolManager.Release(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)]));
-                //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä
                 yield return waitTimeBetweenSpawns;
             }
         }
-        
-        //¹ÒÆğµÈ´ıÖ»µ½Ã»ÓĞµĞÈË
+
         yield return waitUntillNoEnemy;
         
-        //µ±Ç°²¨ÊıÖĞËùÓĞµĞÈËÉú³ÉÍê±Ïºó£¬µĞÈË²¨Êı+1
-        _waveNumber++;
+        waveNumber++;
     }
-    //½«µĞÈË´ÓÁĞ±íÒÆ³ı º¯Êı
+    /// <summary>
+    /// ä»æ•Œäººåˆ—è¡¨ä¸­ç§»é™¤æ•Œäºº
+    /// </summary>
+    /// <param name="enemy"></param>
     public void RemoveFromList(GameObject enemy) => enemyList.Remove(enemy);
 }
