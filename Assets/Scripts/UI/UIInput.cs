@@ -42,4 +42,9 @@ public class UIInput : Singleton<UIInput>
         playerInput.DisableAllInputs();
         UIInputModule.enabled = false;
     }
+
+    public void EnableUIInputs()
+    {
+        UIInputModule.enabled = true;
+    }
 }

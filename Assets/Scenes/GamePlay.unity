@@ -1045,7 +1045,7 @@ MonoBehaviour:
   waveTextTargetScale: {x: 1, y: 1}
 --- !u!95 &424104273
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1062,7 +1062,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &523150676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1682,57 +1683,67 @@ MonoBehaviour:
   - prefab: {fileID: 365233530202640616, guid: 43847d1f222fbf24b9cf56ad22dc3529, type: 3}
     size: 60
   - prefab: {fileID: 365233530202640616, guid: c25588d8953d30b4aa54b3450dd966a2, type: 3}
-    size: 10
-  - prefab: {fileID: 365233530202640616, guid: c90f30859aaa95a4d9f8b33b0e3fed0e, type: 3}
-    size: 10
-  - prefab: {fileID: 365233530202640616, guid: ccd569d0cce66c941875554f6b189417, type: 3}
     size: 30
+  - prefab: {fileID: 365233530202640616, guid: c90f30859aaa95a4d9f8b33b0e3fed0e, type: 3}
+    size: 30
+  - prefab: {fileID: 365233530202640616, guid: ccd569d0cce66c941875554f6b189417, type: 3}
+    size: 90
   - prefab: {fileID: 2523096243714385163, guid: 1b2c3ab1e0e61914ba3e10d026ca3023,
       type: 3}
     size: 5
   enemyProjectilePools:
   - prefab: {fileID: 3500663134958791449, guid: a80360d9297680f498135786ed398c19,
       type: 3}
-    size: 11
+    size: 15
   - prefab: {fileID: 3500663134958791449, guid: 99a1639bfb155da4b8a794a679b84a55,
       type: 3}
-    size: 11
+    size: 20
   - prefab: {fileID: 3500663134958791449, guid: a301419a2f2f38a4fbfa587cc8025d1f,
       type: 3}
-    size: 11
+    size: 20
   - prefab: {fileID: 3500663134958791449, guid: 03da395332fccb84a872b268b23fe21c,
       type: 3}
-    size: 11
+    size: 20
   - prefab: {fileID: 3500663134958791449, guid: ca2001d5ac03fa0458d2d0e5991328bf,
       type: 3}
-    size: 11
+    size: 20
   - prefab: {fileID: 3500663134958791449, guid: f5eb62d87c15dee47a71b85658b7b5cb,
       type: 3}
-    size: 11
+    size: 25
   - prefab: {fileID: 3500663134958791449, guid: 36b9c69551b74ca4c8b46dabccb4a24f,
       type: 3}
     size: 22
-  vFXPools:
-  - prefab: {fileID: 1587261729604890, guid: 600ec83cba1cec448bf41a6607229741, type: 3}
-    size: 5
+  vfxPools:
+  - prefab: {fileID: 6312347931672775765, guid: 2d55ef798e986df4db1aa2d22a470be0,
+      type: 3}
+    size: 10
   - prefab: {fileID: 2342042931496088306, guid: 97b415311529fa145aacd3eedaac728e,
       type: 3}
-    size: 6
-  - prefab: {fileID: 4801493125213720806, guid: 94d3dff6247d98e4cb4d8d6f0be5e291,
-      type: 3}
-    size: 5
-  - prefab: {fileID: 5060298685065931927, guid: 6775c68a79b34db4fa2fd4db2a4cdf74,
-      type: 3}
-    size: 16
+    size: 10
   - prefab: {fileID: 6312347931672775765, guid: bcdfcb20bdfc97f44a4f585803958b75,
       type: 3}
-    size: 5
-  - prefab: {fileID: 5060298685065931927, guid: 75cacbaea43215c48831b7a97db66c3f,
+    size: 10
+  - prefab: {fileID: 4801493125213720806, guid: 94d3dff6247d98e4cb4d8d6f0be5e291,
       type: 3}
-    size: 5
+    size: 10
   - prefab: {fileID: 7203458116342931450, guid: 975f9549f84dd594a84456abeb05e287,
       type: 3}
-    size: 5
+    size: 10
+  - prefab: {fileID: 1628744458893394, guid: 81d4a791378c9f94aab765ad78151dbf, type: 3}
+    size: 10
+  - prefab: {fileID: 1587261729604890, guid: 600ec83cba1cec448bf41a6607229741, type: 3}
+    size: 10
+  - prefab: {fileID: 2832587655287487448, guid: f0943553854878d44988f105f0edaa1f,
+      type: 3}
+    size: 10
+  - prefab: {fileID: 503199608521591234, guid: 71a21ed31d1eb374ca249dabdf3936d3, type: 3}
+    size: 10
+  - prefab: {fileID: 5060298685065931927, guid: 75cacbaea43215c48831b7a97db66c3f,
+      type: 3}
+    size: 10
+  - prefab: {fileID: 5060298685065931927, guid: 6775c68a79b34db4fa2fd4db2a4cdf74,
+      type: 3}
+    size: 20
   lootItemPools:
   - prefab: {fileID: 2019851316260838503, guid: 3281a09cc02e0e3478edeb13d697cd38,
       type: 3}

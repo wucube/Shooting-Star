@@ -27,7 +27,7 @@ public class AudioManager : PersistentSingleton<AudioManager>
     /// <param name="audioData"></param>
     public void PlaySFX(AudioData audioData)
     {
-        sfxPlayer.PlayOneShot(audioData.audioClip,audioData.volume);
+        sfxPlayer.PlayOneShot(audioData.audioClip, audioData.volume);
     }
     /// <summary>
     /// 随机音量播放声效

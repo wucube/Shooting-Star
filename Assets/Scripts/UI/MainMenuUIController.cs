@@ -12,19 +12,22 @@ public class MainMenuUIController : MonoBehaviour
 {
     [Header("==== CANVAS ====")] 
     [SerializeField] private Canvas mainMenuCanvas;
+    [SerializeField] private Canvas optionsMenuCanvas;
     
     [Header("==== BUTTONS ====")]
     [SerializeField] private Button buttonStart;
     [SerializeField] private Button buttonOptions;
     [SerializeField] private Button buttonQuit;
+    //[SerializeField] private Button buttonBack;
 
     private void OnEnable()
     {
         buttonStart.onClick.AddListener(OnButtonStartClicked);
-
+        //optionsMenuCanvas.enabled = false;
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonStart.gameObject.name,OnButtonStartClicked);
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonOptions.gameObject.name,OnButtonOptionsClicked);
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonQuit.gameObject.name,OnButtonQuitClicked);
+        //ButtonPressedBehavior.buttonFunctionTable.Add(buttonBack.gameObject.name, OnButtonBackClicked);
     } 
     void OnDisable()
     {
@@ -52,7 +55,12 @@ public class MainMenuUIController : MonoBehaviour
     /// </summary>
     void OnButtonOptionsClicked()
     {
+        mainMenuCanvas.enabled = false;
+        optionsMenuCanvas.enabled = true;
         UIInput.Instance.SelectUI(buttonOptions);
+        //UIInput.Instance.EnableUIInputs();
+        
+
     }
     /// <summary>
     /// 退出的按钮点击事件
@@ -64,5 +72,16 @@ public class MainMenuUIController : MonoBehaviour
     #else
         Application.Quit();
     #endif
+    }
+    
+    /// <summary>
+    /// 返回按钮的点击事件
+    /// </summary>
+    void OnButtonBackClicked()
+    {
+        optionsMenuCanvas.enabled = false;
+        mainMenuCanvas.enabled = true;
+        UIInput.Instance.SelectUI(buttonStart);
+        //UIInput.Instance.SelectUI(buttonOptions);
     }
 }
