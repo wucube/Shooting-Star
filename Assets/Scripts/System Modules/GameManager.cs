@@ -5,19 +5,19 @@ using UnityEngine.Events;
 
 public class GameManager : PersistentSingleton<GameManager>
 {
-    //ÉèÎª¾²Ì¬Î¯ÍĞÊ¹ÓÃ·ÃÎÊÊ¹ÓÃ£¬Ò²¿ÉÒÔ²»ÉèÖÃÍ¨¹ıµ¥ÀıÀà·ÃÎÊ
+    //è®¾ä¸ºé™æ€å§”æ‰˜ä½¿ç”¨è®¿é—®ä½¿ç”¨ï¼Œä¹Ÿå¯ä»¥ä¸è®¾ç½®é€šè¿‡å•ä¾‹ç±»è®¿é—®
     public static UnityAction onGameOver;
     
-    //ÓÎÏ·×´Ì¬ÊôĞÔ
+    //æ¸¸æˆçŠ¶æ€å±æ€§
     public static GameState GameState
     {
         get => Instance.gameState;
         set => Instance.gameState = value;
     }
-    //ÓÎÏ·×´Ì¬£¬Ä¬ÈÏÎªÓÎÏ·ÔËĞĞ×´Ì¬
+    //æ¸¸æˆçŠ¶æ€ï¼Œé»˜è®¤ä¸ºæ¸¸æˆè¿è¡ŒçŠ¶æ€
     [SerializeField] private GameState gameState = GameState.Playing;
 }
-//ÓÎÏ·×´¹«ÓĞÃ¶¾Ù
+//æ¸¸æˆçŠ¶å…¬æœ‰æšä¸¾
 public enum GameState
 {
     Playing,

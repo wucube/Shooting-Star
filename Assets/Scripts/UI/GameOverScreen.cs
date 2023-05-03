@@ -7,76 +7,76 @@ using UnityEngine.SceneManagement;
 
 public class GameOverScreen : MonoBehaviour
 {
-    //Íæ¼ÒÊäÈëÀà±äÁ¿
+    //ç©å®¶è¾“å…¥ç±»å˜é‡
     [SerializeField] private PlayerInput input;
-    //HUD»­²¼±äÁ¿
+    //HUDç”»å¸ƒå˜é‡
     [SerializeField] private Canvas HUDCanvas;
-    //È·ÈÏÓÎÏ·½áÊøÒôĞ§
+    //ç¡®è®¤æ¸¸æˆç»“æŸéŸ³æ•ˆ
     [SerializeField] private AudioData confirmGameOverSound;
-    //ÓÎÏ·½áÊø»­ÃæÍË³ö×´Ì¬ID
+    //æ¸¸æˆç»“æŸç”»é¢é€€å‡ºçŠ¶æ€ID
     private int exitStateID = Animator.StringToHash("GameOverScreenExit");
     
-    //ÓÎÏ·½áÊø»­ÃæUI»­²¼×é¼ş
+    //æ¸¸æˆç»“æŸç”»é¢UIç”»å¸ƒç»„ä»¶
     private Canvas _canvas;
-    //¶¯»­Æ÷×é¼ş£¬¿ØÖÆ¶¯»­µÄ²¥·Å
+    //åŠ¨ç”»å™¨ç»„ä»¶ï¼Œæ§åˆ¶åŠ¨ç”»çš„æ’­æ”¾
     private Animator _animator;
 
     private void Awake()
     {
-        //»ñÈ¡»­²¼
+        //è·å–ç”»å¸ƒ
         _canvas = GetComponent<Canvas>();
-        //»ñÈ¡¶¯»­Æ÷
+        //è·å–åŠ¨ç”»å™¨
         _animator = GetComponent<Animator>();
-        //½ûÓÃ»­²¼Óë¶¯»­Æ÷
+        //ç¦ç”¨ç”»å¸ƒä¸åŠ¨ç”»å™¨
         _canvas.enabled = false;
         _animator.enabled = false;
     }
 
     private void OnEnable()
     {
-        //¶©ÔÄÓÎÏ·½áÊøÎ¯ÍĞ
+        //è®¢é˜…æ¸¸æˆç»“æŸå§”æ‰˜
         GameManager.onGameOver += OnGameOver;
-        //¶©ÔÄÍæ¼Ò°´¼üÊÂ¼ş
+        //è®¢é˜…ç©å®¶æŒ‰é”®äº‹ä»¶
         input.onConfirmGameOver += OnConfirmGameOver;
     }
 
     private void OnDisable()
     {
-        //ÍË¶©ÓÎÏ·½áÊøÎ¯ÍĞ
+        //é€€è®¢æ¸¸æˆç»“æŸå§”æ‰˜
         GameManager.onGameOver -= OnGameOver;
-        //ÍË¶©Íæ¼Ò°´¼üÊÂ¼ş
+        //é€€è®¢ç©å®¶æŒ‰é”®äº‹ä»¶
         input.onConfirmGameOver -= OnConfirmGameOver;
     }
 
-    //È·ÈÏÓÎÏ·½áÊø°´¼üÊÂ¼ş´¦Àíº¯Êı 
+    //ç¡®è®¤æ¸¸æˆç»“æŸæŒ‰é”®äº‹ä»¶å¤„ç†å‡½æ•° 
     private void OnConfirmGameOver()
     {
-        //²¥·ÅÈ·ÈÏ½áÊøµÄĞ§¹ûÒô
+        //æ’­æ”¾ç¡®è®¤ç»“æŸçš„æ•ˆæœéŸ³
         AudioManager.Instance.PlaySFX(confirmGameOverSound);
-        //½ûÓÃÍæ¼ÒËùÓĞÊäÈë
+        //ç¦ç”¨ç©å®¶æ‰€æœ‰è¾“å…¥
         input.DisableAllInputs();
-        //ÓÎÏ·»­Ãæ½áÊøµÄÍË³ö¶¯»­
+        //æ¸¸æˆç”»é¢ç»“æŸçš„é€€å‡ºåŠ¨ç”»
         _animator.Play(exitStateID);
-        //¼ÓÔØ¼Æ·Ö³¡¾°
+        //åŠ è½½è®¡åˆ†åœºæ™¯
         SceneLoader.Instance.LoadScoringScene(); // TODO
     }
-    //ÓÎÏ·½áÊøÎ¯ÍĞ´¦Àíº¯Êı
+    //æ¸¸æˆç»“æŸå§”æ‰˜å¤„ç†å‡½æ•°
     void OnGameOver()
     {
-        //¹Ø±ÕHUD½çÃæ
+        //å…³é—­HUDç•Œé¢
         HUDCanvas.enabled = false;
-        //¿ªÆôÓÎÏ·½áÊø»­Ãæ
+        //å¼€å¯æ¸¸æˆç»“æŸç”»é¢
         _canvas.enabled = true;
-        //ÆôÓÃ¶¯»­Æ÷×é¼ş²¥·Å¶¯»­
+        //å¯ç”¨åŠ¨ç”»å™¨ç»„ä»¶æ’­æ”¾åŠ¨ç”»
         _animator.enabled = true;
-        //½ûÓÃÍæ¼ÒËùÓĞÊäÈë
+        //ç¦ç”¨ç©å®¶æ‰€æœ‰è¾“å…¥
         input.DisableAllInputs();
     }
     
-    //ÆôÓÃÓÎÏ·½áÊø»­ÃæÊäÈë£¬¶¯»­ÊÂ¼ş
+    //å¯ç”¨æ¸¸æˆç»“æŸç”»é¢è¾“å…¥ï¼ŒåŠ¨ç”»äº‹ä»¶
     void EnableGameOverScreenInput()
     {
-        //ÇĞ»»µ½ÓÎÏ·½áÊø¶¯×÷±í
+        //åˆ‡æ¢åˆ°æ¸¸æˆç»“æŸåŠ¨ä½œè¡¨
         input.EnableGameOverScreenInput();
     }
 }

@@ -10,36 +10,36 @@ using UnityEngine.Serialization;
 public class GameplayUIController : MonoBehaviour
 {
     [Header("====== PLAYER INPUT ======")]
-    //Íæ¼ÒÊäÈëÀà
+    //ç©å®¶è¾“å…¥ç±»
     [SerializeField] private PlayerInput playerInput;
 
     [Header("====== AUDIO DATA ======")]
-    //ÔİÍ£ÒôĞ§
+    //æš‚åœéŸ³æ•ˆ
     [SerializeField] private AudioData pauseSFX;
-    //È¡ÏûÔİÍ£ÒôĞ§
+    //å–æ¶ˆæš‚åœéŸ³æ•ˆ
     [SerializeField] private AudioData unpauseSFX;
     
     [Header("====== CANVAS ======")]
-    //HUD»­²¼
+    //HUDç”»å¸ƒ
     [SerializeField] private Canvas hUDCanvas;
-    //²Ëµ¥»­²¼
+    //èœå•ç”»å¸ƒ
     [SerializeField] private Canvas menusCanvas;
 
     [Header("====== PLAYER INPUT ======")] 
-    //ÔİÍ£²Ëµ¥µÄÈı¸ö°´Å¥×é¼ş±äÁ¿
+    //æš‚åœèœå•çš„ä¸‰ä¸ªæŒ‰é’®ç»„ä»¶å˜é‡
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button mainMenuButton;
-    //º¯Êı²ÎÊıµÄ¹şÏ£Öµ
+    //å‡½æ•°å‚æ•°çš„å“ˆå¸Œå€¼
     private int buttonPressedParameterID = Animator.StringToHash("Pressed");
     void OnEnable()
     {
-        //¶©ÔÄÍæ¼ÒÊäÈëµÄÔİÍ£Óë»Ö¸´ÊÂ¼ş
+        //è®¢é˜…ç©å®¶è¾“å…¥çš„æš‚åœä¸æ¢å¤äº‹ä»¶
         playerInput.onPause += Pause;
         playerInput.onUnpause += Unpause;
     
-        //Îª¶¯»­×´Ì¬»úĞĞÎª½Å±¾ÖĞµÄ°´Å¥¹¦ÄÜ±í×ÖµäÌí¼Ó¼üÖµ¶Ô
-        //¼ü´«Èë¸÷°´Å¥×é¼ş¹ÒÔØ¶ÔÏóµÄÃû³Æ£¬Öµ´«Èë¸÷¸ö°´Å¥¶ÔÓ¦µÄ¹¦ÄÜº¯Êı 
+        //ä¸ºåŠ¨ç”»çŠ¶æ€æœºè¡Œä¸ºè„šæœ¬ä¸­çš„æŒ‰é’®åŠŸèƒ½è¡¨å­—å…¸æ·»åŠ é”®å€¼å¯¹
+        //é”®ä¼ å…¥å„æŒ‰é’®ç»„ä»¶æŒ‚è½½å¯¹è±¡çš„åç§°ï¼Œå€¼ä¼ å…¥å„ä¸ªæŒ‰é’®å¯¹åº”çš„åŠŸèƒ½å‡½æ•° 
         ButtonPressedBehavior.buttonFunctionTable.Add(resumeButton.gameObject.name,OnResumeButtonClick);
         ButtonPressedBehavior.buttonFunctionTable.Add(optionsButton.gameObject.name,OnOptionsButtonClick);
         ButtonPressedBehavior.buttonFunctionTable.Add(mainMenuButton.gameObject.name,OnMainMenuButtonClick);
@@ -47,83 +47,83 @@ public class GameplayUIController : MonoBehaviour
 
     void OnDisable()
     {
-        //ÍË¶©Íæ¼ÒÊäÈëµÄÔİÍ£Óë»Ö¸´ÊÂ¼ş
+        //é€€è®¢ç©å®¶è¾“å…¥çš„æš‚åœä¸æ¢å¤äº‹ä»¶
         playerInput.onPause -= Pause;
         playerInput.onUnpause -= Unpause;
-        //Çå¿Õ°´Å¥º¯Êı¹¦ÄÜ±íÖĞµÄ¼üÖµ¶Ô
+        //æ¸…ç©ºæŒ‰é’®å‡½æ•°åŠŸèƒ½è¡¨ä¸­çš„é”®å€¼å¯¹
         ButtonPressedBehavior.buttonFunctionTable.Clear();
     }
 
-    //ÔİÍ£º¯Êı
+    //æš‚åœå‡½æ•°
     void Pause()
     {
-        //¹Ø±ÕHUD»­²¼
+        //å…³é—­HUDç”»å¸ƒ
         hUDCanvas.enabled = false;
-        //¿ªÆôÔİÍ£²Ëµ¥»­²¼
+        //å¼€å¯æš‚åœèœå•ç”»å¸ƒ
         menusCanvas.enabled = true;
         
-        //ÓÎÏ·×´Ì¬ÎªÔİÍ£
+        //æ¸¸æˆçŠ¶æ€ä¸ºæš‚åœ
         GameManager.GameState = GameState.Paused;
-        //µ÷ÓÃÊ±¼ä¿ØÖÆÆ÷µÄÔİÍ£º¯Êı
+        //è°ƒç”¨æ—¶é—´æ§åˆ¶å™¨çš„æš‚åœå‡½æ•°
         TimeController.Instance.Pause();
         
-        //ÇĞ»»µ½ÔİÍ£²Ëµ¥¶¯×÷±í
+        //åˆ‡æ¢åˆ°æš‚åœèœå•åŠ¨ä½œè¡¨
         playerInput.EnablePauseMenuInput();
-        //ÊäÈëÄ£Ê½ÇĞ»»µ½¶¯Ì¬¸üĞÂÄ£Ê½
+        //è¾“å…¥æ¨¡å¼åˆ‡æ¢åˆ°åŠ¨æ€æ›´æ–°æ¨¡å¼
         playerInput.SwitchToDynamicUpdateMode();
-        //µ÷ÓÃÑ¡ÖĞUIº¯Êı,ÔİÍ£²Ëµ¥´ò¿ª¾Í»áÑ¡ÖĞ»Ö¸´°´Å¥
+        //è°ƒç”¨é€‰ä¸­UIå‡½æ•°,æš‚åœèœå•æ‰“å¼€å°±ä¼šé€‰ä¸­æ¢å¤æŒ‰é’®
         UIInput.Instance.SelectUI(resumeButton);
-        //²¥·ÅÔİÍ£ÒôĞ§
+        //æ’­æ”¾æš‚åœéŸ³æ•ˆ
         AudioManager.Instance.PlaySFX(pauseSFX);
     }
     
-    //È¡ÏûÔİÍ£º¯Êı
+    //å–æ¶ˆæš‚åœå‡½æ•°
     void Unpause()
     {
-        //ÏÈÑ¡ÖĞ»Ö¸´°´Å¥
+        //å…ˆé€‰ä¸­æ¢å¤æŒ‰é’®
         resumeButton.Select();
-        //½«°´Å¥×´Ì¬ÇĞ»»µ½°´ÏÂ×´Ì¬
+        //å°†æŒ‰é’®çŠ¶æ€åˆ‡æ¢åˆ°æŒ‰ä¸‹çŠ¶æ€
         resumeButton.animator.SetTrigger(buttonPressedParameterID);
-        //²¥·ÅÈ¡ÏûÔİÍ£ÒôĞ§
+        //æ’­æ”¾å–æ¶ˆæš‚åœéŸ³æ•ˆ
         AudioManager.Instance.PlaySFX(unpauseSFX);
     }
 
-    //µã»÷»Ö¸´°´Å¥µÄ¹¦ÄÜº¯Êı
+    //ç‚¹å‡»æ¢å¤æŒ‰é’®çš„åŠŸèƒ½å‡½æ•°
     void OnResumeButtonClick()
     {
-        //Ê±¼ä¿Ì¶È»Ö¸´Õı³£
+        //æ—¶é—´åˆ»åº¦æ¢å¤æ­£å¸¸
         Time.timeScale = 1f;
-        //¿ªÆôHUD½çÃæ
+        //å¼€å¯HUDç•Œé¢
         hUDCanvas.enabled = true;
-        //Òş²ØÔİÍ£²Ëµ¥½çÃæ
+        //éšè—æš‚åœèœå•ç•Œé¢
         menusCanvas.enabled = false;
         
-        //ÓÎÏ·×´Ì¬ÎªÔËĞĞ
+        //æ¸¸æˆçŠ¶æ€ä¸ºè¿è¡Œ
         GameManager.GameState = GameState.Playing;
-        //µ÷ÓÃÊ±¼ä¹ÜÀíÆ÷»Ö¸´º¯Êı
+        //è°ƒç”¨æ—¶é—´ç®¡ç†å™¨æ¢å¤å‡½æ•°
         TimeController.Instance.Unpause();
         
-        //ÇĞ»»µ½GamePlay¶¯×÷±í
+        //åˆ‡æ¢åˆ°GamePlayåŠ¨ä½œè¡¨
         playerInput.EnableGameplayInput();
-        //ÇĞ»»µ½¹Ì¶¨¸üĞÂÄ£Ê½
+        //åˆ‡æ¢åˆ°å›ºå®šæ›´æ–°æ¨¡å¼
         playerInput.SwitchToFixedUpdateMode();
     }
     
-    //µã»÷Ñ¡Ïî°´Å¥µÄ¹¦ÄÜº¯Êı
+    //ç‚¹å‡»é€‰é¡¹æŒ‰é’®çš„åŠŸèƒ½å‡½æ•°
     void OnOptionsButtonClick()
     {
-        //Ñ¡ÖĞ Ñ¡Ïî¹¦ÄÜ°´Å¥ 
+        //é€‰ä¸­ é€‰é¡¹åŠŸèƒ½æŒ‰é’® 
         UIInput.Instance.SelectUI(optionsButton);
-        //¿ªÆôÔİÍ£²Ëµ¥¶¯×÷±í
+        //å¼€å¯æš‚åœèœå•åŠ¨ä½œè¡¨
         playerInput.EnablePauseMenuInput();
     }
 
-    //µã»÷Ö÷²Ëµ¥°´Å¥µÄ¹¦ÄÜº¯Êı
+    //ç‚¹å‡»ä¸»èœå•æŒ‰é’®çš„åŠŸèƒ½å‡½æ•°
     void OnMainMenuButtonClick()
     {
-        //ÔİÍ£²Ëµ¥¹Ø±Õ
+        //æš‚åœèœå•å…³é—­
         menusCanvas.enabled = false;
-        //¼ÓÔØÖ÷²Ëµ¥³¡¾°
+        //åŠ è½½ä¸»èœå•åœºæ™¯
         SceneLoader.Instance.LoadMainMenuScene();
         // Load Main Menu Scene
     }

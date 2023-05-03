@@ -3,86 +3,89 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç©å®¶å¯¼å¼¹
+/// </summary>
 public class PlayerMissile : PlayerProjectileOverdrive
 {
-   //ÒôĞ§±äÁ¿
+   //éŸ³æ•ˆå˜é‡
    [SerializeField] private AudioData targetAcquiredVoice = null;
    [Header("======= SPEED CHANGE ======")]
-   //ÂıËÙÒÆ¶¯Ê±µÄËÙËÙ¶È
+   //æ…¢é€Ÿç§»åŠ¨æ—¶çš„é€Ÿé€Ÿåº¦
    [SerializeField] private float lowSpeed = 8f;
-   //¸ßËÙÒÆ¶¯Ê±µÄËÙ¶È
+   //é«˜é€Ÿç§»åŠ¨æ—¶çš„é€Ÿåº¦
    [SerializeField] private float highSpeed = 25f;
-   //±äËÙµÄÑÓ³ÙÊ±¼ä
+   //å˜é€Ÿçš„å»¶è¿Ÿæ—¶é—´
    [SerializeField] private float variableSpeedDelay = 0.5f;
 
    [Header("======= EXPLOSION ======")] 
-   //±¬Õ¨ÊÓ¾õÌØĞ§¶ÔÏó
+   //çˆ†ç‚¸è§†è§‰ç‰¹æ•ˆå¯¹è±¡
    [SerializeField] private GameObject explosionVFX = null;
-   //±¬Õ¨ÒôĞ§¶ÔÏó
+   //çˆ†ç‚¸éŸ³æ•ˆå¯¹è±¡
    [SerializeField] private AudioData explosionSFX = null;
-   //µĞÈË²ã¼¶ÕÚÕÖ
+   //æ•Œäººå±‚çº§é®ç½©
    [SerializeField] private LayerMask enemyLayerMask = default;
-   //µ¼µ¯±¬Õ¨(ÉËº¦)·¶Î§°ë¾¶
+   //å¯¼å¼¹çˆ†ç‚¸(ä¼¤å®³)èŒƒå›´åŠå¾„
    [SerializeField] private float explosionRadius = 3f;
-   //±¬Õ¨ÉËº¦Öµ
+   //çˆ†ç‚¸ä¼¤å®³å€¼
    [SerializeField] private float explosionDamage = 100f;
-   //µÈ´ı±äËÙÑÓ³ÙÊ±¼ä
+   //ç­‰å¾…å˜é€Ÿå»¶è¿Ÿæ—¶é—´
    private WaitForSeconds _waitVariableSpeedDelay;
 
    protected override void Awake()
    {
       base.Awake();
-      //³õÊ¼»¯µÈ´ı±äËÙÑÓ³ÙÊ±¼ä
+      //åˆå§‹åŒ–ç­‰å¾…å˜é€Ÿå»¶è¿Ÿæ—¶é—´
       _waitVariableSpeedDelay = new WaitForSeconds(variableSpeedDelay);
    }
 
    protected override void OnEnable()
    { 
-      //»ùÀàº¯Êı£¬¿ªÆôÖÆµ¼ÏµÍ³
+      //åŸºç±»å‡½æ•°ï¼Œå¼€å¯åˆ¶å¯¼ç³»ç»Ÿ
       base.OnEnable();
-      //¿ªÆô±äËÙĞ­³Ì
+      //å¼€å¯å˜é€Ÿåç¨‹
       StartCoroutine(nameof(VariableSpeedCoroutine));
    }
-   //ÖØĞ´Åö×²º¯Êı
+   //é‡å†™ç¢°æ’å‡½æ•°
    protected override void OnCollisionEnter2D(Collision2D collision)
    {
       base.OnCollisionEnter2D(collision);
-      //¶ÔÏó³ØÉú³É±¬Õ¨ÌØĞ§
+      //å¯¹è±¡æ± ç”Ÿæˆçˆ†ç‚¸ç‰¹æ•ˆ
       var position = transform.position;
       PoolManager.Release(explosionVFX, position);
-      //²¥·Å±¬Õ¨ÒôĞ§
+      //æ’­æ”¾çˆ†ç‚¸éŸ³æ•ˆ
       AudioManager.Instance.PlayerRandomSFX(explosionSFX);
-      //ÔÚµ¼µ¯±¬Õ¨ÄÚµÄËùÓĞµĞÈËÅö×²Ìå
+      //åœ¨å¯¼å¼¹çˆ†ç‚¸å†…çš„æ‰€æœ‰æ•Œäººç¢°æ’ä½“
       var colliders = Physics2D.OverlapCircleAll(transform.position,explosionRadius,enemyLayerMask);
       foreach (var collider in colliders)
       {
-         //È¡µÃµĞÈË½Å±¾
+         //å–å¾—æ•Œäººè„šæœ¬
          if (collider.TryGetComponent<Enemy>(out Enemy enemy))
          {
-            //µ÷ÓÃµĞÈËÊÜÉËº¯Êı
+            //è°ƒç”¨æ•Œäººå—ä¼¤å‡½æ•°
             enemy.TakeDamage(explosionDamage);
          }
       }
    }
    
-   //»æÖÆ¼òµ¥¼¸ºÎÄ£ĞÍ
+   //ç»˜åˆ¶ç®€å•å‡ ä½•æ¨¡å‹
    private void OnDrawGizmosSelected()
    {
-      //ÉèÖÃÏßÌõÑÕÉ«
+      //è®¾ç½®çº¿æ¡é¢œè‰²
       Gizmos.color = Color.yellow;
-      //»­³öÒ»¸öÏß¿òÇòÌå
+      //ç”»å‡ºä¸€ä¸ªçº¿æ¡†çƒä½“
       Gizmos.DrawWireSphere(transform.position,explosionRadius);
    }
-   //±äËÙĞ­³Ì
+   //å˜é€Ÿåç¨‹
    IEnumerator VariableSpeedCoroutine()
    {
-      //ÒÆ¶¯ËÙ¶ÈÏÈµÍËÙ
+      //ç§»åŠ¨é€Ÿåº¦å…ˆä½é€Ÿ
       moveSpeed = lowSpeed;
-      //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä
+      //æŒ‚èµ·ç­‰å¾…ä¸€æ®µæ—¶é—´
       yield return _waitVariableSpeedDelay;
-      //ÒÆ¶¯ËÙ¶ÈÔÙÎª¸ßËÙ
+      //ç§»åŠ¨é€Ÿåº¦å†ä¸ºé«˜é€Ÿ
       moveSpeed = highSpeed;
-      //Èç¹ûÄ¿±ê²»Îª¿Õ£¬²¥·ÅÒ»¶ÎÌØ¶¨ÒôĞ§
+      //å¦‚æœç›®æ ‡ä¸ä¸ºç©ºï¼Œæ’­æ”¾ä¸€æ®µç‰¹å®šéŸ³æ•ˆ
       if (target != null)
          AudioManager.Instance.PlayerRandomSFX(targetAcquiredVoice);
    }

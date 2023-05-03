@@ -6,29 +6,29 @@ public class EnemyProjectile_Aiming : Projectile
 {
     void Awake()
     {
-        //Ñ°ÕÒÍæ¼Ò¶ÔÏóÎïÌå
+        //å¯»æ‰¾ç©å®¶å¯¹è±¡ç‰©ä½“
         //target = GameObject.FindGameObjectWithTag("Player");
         
-        //ÉèÖÃÍæ¼Ò¶ÔÏóÎªÄ¿±êµĞÈË
+        //è®¾ç½®ç©å®¶å¯¹è±¡ä¸ºç›®æ ‡æ•Œäºº
         SetTarget(GameObject.FindWithTag("Player"));
     }
     protected override void OnEnable()
     {
-        //ÆôÓÃĞ­³Ì»ñÈ¡¾«È·µÄÒÆ¶¯·½Ïò
+        //å¯ç”¨åç¨‹è·å–ç²¾ç¡®çš„ç§»åŠ¨æ–¹å‘
         StartCoroutine(nameof(MoveDirectionCoroutine));
         base.OnEnable();
         
     }
-    // Ê¹ÓÃĞ­³Ì »ñÈ¡¾«È·µÄÒÆ¶¯·½Ïò ¸¡µãÊı²»×¼È·
+    // ä½¿ç”¨åç¨‹ è·å–ç²¾ç¡®çš„ç§»åŠ¨æ–¹å‘ æµ®ç‚¹æ•°ä¸å‡†ç¡®
     IEnumerator MoveDirectionCoroutine()
     {
-        //¹ÒÆğÒ»Ö¡
+        //æŒ‚èµ·ä¸€å¸§
         yield return null;
         
-        //Èç¹ûÍæ¼ÒÃ»ÓĞËÀÍö£¬¼ÌĞøÖ´ĞĞ
+        //å¦‚æœç©å®¶æ²¡æœ‰æ­»äº¡ï¼Œç»§ç»­æ‰§è¡Œ
         if (target.activeSelf)
         {
-            //ĞŞ¸Ä×Óµ¯ÒÆ¶¯·½Ïò£¬Ä¿±êÎ»ÖÃ  - µ±Ç°Î»ÖÃ µÃµ½ĞÂÒÆ¶¯·½Ïò ¹éÒ»»¯ÒÆ¶¯·½Ïò£¬È·±£ÒÆ¶¯ËÙ¶È²»Ææ¹Ö
+            //ä¿®æ”¹å­å¼¹ç§»åŠ¨æ–¹å‘ï¼Œç›®æ ‡ä½ç½®  - å½“å‰ä½ç½® å¾—åˆ°æ–°ç§»åŠ¨æ–¹å‘ å½’ä¸€åŒ–ç§»åŠ¨æ–¹å‘ï¼Œç¡®ä¿ç§»åŠ¨é€Ÿåº¦ä¸å¥‡æ€ª
             moveDirection = (target.transform.position-transform.position).normalized;
         }
     }

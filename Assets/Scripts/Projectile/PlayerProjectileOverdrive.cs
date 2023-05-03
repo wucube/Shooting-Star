@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç©å®¶èƒ½é‡çˆ†å‘å­å¼¹
+/// </summary>
 public class PlayerProjectileOverdrive : PlayerProjectile
 {
-    //×Óµ¯ÖÆµ¼ÏµÍ³½Å±¾ÒıÓÃ±äÁ¿  
     [SerializeField] private ProjectileGuidanceSystem guidanceSystem;
     protected override void OnEnable()
     {
-        //ÉèÖÃ×·×ÙµĞÈËµÄËæ»úµĞÈËÄ¿±ê
+       
         SetTarget(EnemyManager.Instance.RandomEnemy);
-        //×Óµ¯¿ªÊ¼ÒÆ¶¯Ç°£¬½«×Óµ¯Ğı×ªÖµÖØÖÃ»ØÄ¬ÈÏ½Ç¶È£¬·ÀÖ¹×Óµ¯Ğı×ª»ìÂÒ
+
+        //å­å¼¹ä»å¯¹è±¡æ± å–å‡ºæ—¶é‡ç½®æ—‹è½¬è§’åº¦
         transform.rotation = Quaternion.identity;
-        //×Óµ¯Ä¿±êÎª¿Õ£¬ÔòÈÃ×Óµ¯Ö±½ÓÍùÇ°ÒÆ¶¯¼´¿É
+        
         if (target == null) base.OnEnable();
-        //×Óµ¯Ä¿±ê²»Îª¿Õ£¬Ôò×Óµ¯×·×ÙÄ¿±ê
+       
         else StartCoroutine(guidanceSystem.HomingCoroutine(target));
     }
 }

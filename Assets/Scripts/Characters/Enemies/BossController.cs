@@ -4,133 +4,133 @@ using UnityEngine;
 
 public class BossController : EnemyController
 {
-    //Á¬Ğø¿ª»ğ³ÖĞøÊ±¼ä
+    //è¿ç»­å¼€ç«æŒç»­æ—¶é—´
     [SerializeField] private float continuousFireDuration = 1.5f;
 
     [Header("======= Player Detection ========")] 
-    //¼ì²âºĞµÄ±ä»»×é¼ş±äÁ¿
+    //æ£€æµ‹ç›’çš„å˜æ¢ç»„ä»¶å˜é‡
     [SerializeField] private Transform playerDetectionTransform;
-    //¼ì²âºĞµÄ³ß´ç
+    //æ£€æµ‹ç›’çš„å°ºå¯¸
     [SerializeField] private Vector3 playerDetectionSize;
-    //Íæ¼Ò²ãÕÚÕÖ±äÁ¿
+    //ç©å®¶å±‚é®ç½©å˜é‡
     [SerializeField] private LayerMask playerLayer;
 
     [Header("======= Beam ========")] 
-    //¼¤¹âÀäÈ´Ê±¼ä
+    //æ¿€å…‰å†·å´æ—¶é—´
     [SerializeField] private float beamCooldownTime = 12f;
-    //¼¤¹âÎäÆ÷ĞîÁ¦ÒôĞ§
+    //æ¿€å…‰æ­¦å™¨è“„åŠ›éŸ³æ•ˆ
     [SerializeField] private AudioData beamChargingSFX;
-    //¼¤¹â·¢ÉäÒôĞ§
+    //æ¿€å…‰å‘å°„éŸ³æ•ˆ
     [SerializeField] private AudioData beamLaunchSFX;
-    //¼¤¹âÎäÆ÷ÊÇ·ñÀäÈ´Íê±Ï
+    //æ¿€å…‰æ­¦å™¨æ˜¯å¦å†·å´å®Œæ¯•
     private bool _isBeamReady;
-    //¼¤»î¶¯»­Trigger²ÎÊı×ª»»Îª¹şÏ£ÖµÊ¹ÓÃ
+    //æ¿€æ´»åŠ¨ç”»Triggerå‚æ•°è½¬æ¢ä¸ºå“ˆå¸Œå€¼ä½¿ç”¨
     private int launchBeamID = Animator.StringToHash("launchBeam");
-    //×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+    //æœ€å°å¼€ç«é—´éš”æ—¶é—´
     private WaitForSeconds waitForContinuousFireInterval;
     
     private WaitForSeconds waitForFireInterval;
-    //µÈ´ı¼¤¹âÀäÈ´Ê±¼ä
+    //ç­‰å¾…æ¿€å…‰å†·å´æ—¶é—´
     private WaitForSeconds _waitBeamCooldownTime;
 
-    //×Óµ¯¶ÔÏóÁĞ±í µ¯Ï»
+    //å­å¼¹å¯¹è±¡åˆ—è¡¨ å¼¹åŒ£
     private List<GameObject> magazine;
-    //´æ·Å¿ª»ğÒôĞ§
+    //å­˜æ”¾å¼€ç«éŸ³æ•ˆ
     private AudioData launchSFX;
-    //¶¯»­×é¼ş
+    //åŠ¨ç”»ç»„ä»¶
     private Animator _animator;
-    //Íæ¼ÒÎ»ÖÃ
+    //ç©å®¶ä½ç½®
     private Transform playerTransform;
 
     protected override void Awake()
     {
         base.Awake();
-        //È¡µÃbossÔ¤ÖÆÌåÉÏµÄ¶¯»­Æ÷×é¼ş
+        //å–å¾—bossé¢„åˆ¶ä½“ä¸Šçš„åŠ¨ç”»å™¨ç»„ä»¶
         _animator = GetComponent<Animator>();
         
-        //³õÊ¼»¯×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+        //åˆå§‹åŒ–æœ€å°å¼€ç«é—´éš”æ—¶é—´
         waitForContinuousFireInterval = new WaitForSeconds(minFireInterval);
-        //³õÊ¼»¯×î³¤¿ª»ğ¼ä¸ôÊ±¼ä
+        //åˆå§‹åŒ–æœ€é•¿å¼€ç«é—´éš”æ—¶é—´
         waitForFireInterval = new WaitForSeconds(maxFireInterval);
-        //µÈ´ı¼¤¹âÀäÈ´Ê±¼ä³õÊ¼»¯
+        //ç­‰å¾…æ¿€å…‰å†·å´æ—¶é—´åˆå§‹åŒ–
         _waitBeamCooldownTime = new WaitForSeconds(beamCooldownTime);
-        //³õÊ¼»¯µ¯Ï»ÁĞ±í£¬´«Èë×Óµ¯Êı×é³¤¶È¿ØÖÆÁĞ±íÈİÁ¿
+        //åˆå§‹åŒ–å¼¹åŒ£åˆ—è¡¨ï¼Œä¼ å…¥å­å¼¹æ•°ç»„é•¿åº¦æ§åˆ¶åˆ—è¡¨å®¹é‡
         magazine = new List<GameObject>(projectiles.Length);
-        //³õÊ¼»¯Íæ¼ÒÎ»ÖÃĞÅÏ¢£¬È¡µÃÍæ¼ÒµÄ±ä»»×é¼ş
+        //åˆå§‹åŒ–ç©å®¶ä½ç½®ä¿¡æ¯ï¼Œå–å¾—ç©å®¶çš„å˜æ¢ç»„ä»¶
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    //ÖØĞ´OnEnableº¯Êı
+    //é‡å†™OnEnableå‡½æ•°
     protected override void OnEnable()
     {
-        //¼¤¹âÃ»×¼±¸ºÃ
+        //æ¿€å…‰æ²¡å‡†å¤‡å¥½
         _isBeamReady = false;
-        //Í£Ö¹²¥·ÅÇ¹¿ÚÌØĞ§
+        //åœæ­¢æ’­æ”¾æªå£ç‰¹æ•ˆ
         muzzleVFX.Stop();
-        //ÆôÓÃ¼¤¹âÀäÈ´Ğ­³Ì
+        //å¯ç”¨æ¿€å…‰å†·å´åç¨‹
         StartCoroutine(nameof(BeamCooldownCoroutine));
-        //µ÷ÓÃ»ùÀàº¯Êı
+        //è°ƒç”¨åŸºç±»å‡½æ•°
         base.OnEnable();
     }
 
-    //»­³öBoss¼ì²âºĞµÄ·¶Î§
+    //ç”»å‡ºBossæ£€æµ‹ç›’çš„èŒƒå›´
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(playerDetectionTransform.position, playerDetectionSize);
     }
 
-    //¼¤¹âÎäÆ÷µÄÆôÓÃÓë·¢Éä
+    //æ¿€å…‰æ­¦å™¨çš„å¯ç”¨ä¸å‘å°„
     void ActivateBeamWeapon()
     {
-        //¼¤¹âÎäÆ÷Ã»ÓĞ×¼±¸ºÃ
+        //æ¿€å…‰æ­¦å™¨æ²¡æœ‰å‡†å¤‡å¥½
         _isBeamReady = false;
-        //Í¨Öª¶¯»­Æ÷²¥·Å·¢Éä¼¤¹âµÄ¶¯»­
+        //é€šçŸ¥åŠ¨ç”»å™¨æ’­æ”¾å‘å°„æ¿€å…‰çš„åŠ¨ç”»
         _animator.SetTrigger(launchBeamID);
-        //²¥·Å¼¤¹âÎäÆ÷ĞîÁ¦ÒôĞ§
+        //æ’­æ”¾æ¿€å…‰æ­¦å™¨è“„åŠ›éŸ³æ•ˆ
         AudioManager.Instance.PlayerRandomSFX(beamChargingSFX);
     }
 
-    //¶¯»­ÊÂ¼şº¯Êı£¬·¢Éä¼¤¹âÊ±²¥·Å·¢ÉäÒôĞ§
+    //åŠ¨ç”»äº‹ä»¶å‡½æ•°ï¼Œå‘å°„æ¿€å…‰æ—¶æ’­æ”¾å‘å°„éŸ³æ•ˆ
     void AnimationEventLaunchBeam()
     {
         AudioManager.Instance.PlayerRandomSFX(beamLaunchSFX);
     }
 
-    //¶¯»­ÊÂ¼şº¯Êı£¬Í£Ö¹·¢Éä¼¤¹â
+    //åŠ¨ç”»äº‹ä»¶å‡½æ•°ï¼Œåœæ­¢å‘å°„æ¿€å…‰
     void AnimationEventStopBeam()
     {
-        //Í£Ö¹×·»÷Íæ¼ÒĞ­³Ì
+        //åœæ­¢è¿½å‡»ç©å®¶åç¨‹
         StopCoroutine(nameof(ChasingPlayerCoroutine));
-        //ÔÙ´Î¿ªÆô¼¤¹âÎäÆ÷µÄÀäÈ´Ê±¼ä
+        //å†æ¬¡å¼€å¯æ¿€å…‰æ­¦å™¨çš„å†·å´æ—¶é—´
         StartCoroutine(nameof(BeamCooldownCoroutine));
-        //ÔÙ´Î¿ªÆô±»¹Ø±ÕµÄËæ»ú¿ª»ğĞ­³Ì
+        //å†æ¬¡å¼€å¯è¢«å…³é—­çš„éšæœºå¼€ç«åç¨‹
         StartCoroutine(nameof(RandomlyFireCoroutine));
     }
-    //×°Ìî×Óµ¯
+    //è£…å¡«å­å¼¹
     void LoadProjectiles()
     {
-        //ÏÈÇå¿Õ×Óµ¯ÁĞ±í
+        //å…ˆæ¸…ç©ºå­å¼¹åˆ—è¡¨
         magazine.Clear();
-        //Íæ¼Ò»úÌåÔÚBossÕıÇ°·½Ê±
+        //ç©å®¶æœºä½“åœ¨Bossæ­£å‰æ–¹æ—¶
         if (Physics2D.OverlapBox(playerDetectionTransform.position, playerDetectionSize, 0f, playerLayer))
         {
-            //×°Ìî1ºÅ×Óµ¯
+            //è£…å¡«1å·å­å¼¹
             magazine.Add(projectiles[0]);
-            //²¥·Å×Óµ¯·¢ÉäÒôĞ§
+            //æ’­æ”¾å­å¼¹å‘å°„éŸ³æ•ˆ
             launchSFX = projectileLaunchSFX[0];
         }
-        else //Íæ¼Ò»úÌå²»ÔÚBossÕıÇ°·½
+        else //ç©å®¶æœºä½“ä¸åœ¨Bossæ­£å‰æ–¹
         {
             if (Random.value < 0.5f)
             {
-                //×°Ìî2ºÅ×Óµ¯
+                //è£…å¡«2å·å­å¼¹
                 magazine.Add(projectiles[1]);
                 launchSFX = projectileLaunchSFX[1];
             }
             else
             {
-                //×°ÌîËùÓĞ²»Í¬½Ç¶ÈµÄ3ºÅ×Óµ¯
+                //è£…å¡«æ‰€æœ‰ä¸åŒè§’åº¦çš„3å·å­å¼¹
                 for (int i = 2; i < projectiles.Length; i++)
                     magazine.Add(projectiles[i]);
                 
@@ -139,79 +139,79 @@ public class BossController : EnemyController
         }
     }
 
-    //ÖØĞ´Ëæ»ú¿ª»ğĞ­³Ì
+    //é‡å†™éšæœºå¼€ç«åç¨‹
     protected override IEnumerator RandomlyFireCoroutine()
     {
-        //boss´¦ÓÚ»î¶¯×´Ì¬£¬¾ÍÒ»Ö±Ñ­»·
+        //bosså¤„äºæ´»åŠ¨çŠ¶æ€ï¼Œå°±ä¸€ç›´å¾ªç¯
         while (isActiveAndEnabled)
         {
-            //ÓÎÏ·½áÊøÊ±£¬Í£Ö¹Ğ­³Ì
+            //æ¸¸æˆç»“æŸæ—¶ï¼Œåœæ­¢åç¨‹
             if (GameManager.GameState == GameState.GameOver) yield break;
-            //Èç¹û¼¤¹âÎäÆ÷ÒÑÀäÈ´Íê±Ï
+            //å¦‚æœæ¿€å…‰æ­¦å™¨å·²å†·å´å®Œæ¯•
             if (_isBeamReady)
             {
-                //¼¤»î¼¤¹âÎäÆ÷
+                //æ¿€æ´»æ¿€å…‰æ­¦å™¨
                 ActivateBeamWeapon();
-                //¿ªÆô×·×ÙÍæ¼ÒĞ­³Ì
+                //å¼€å¯è¿½è¸ªç©å®¶åç¨‹
                 StartCoroutine(nameof(ChasingPlayerCoroutine));
-                //Í£Ö¹¿ª»ğĞ­³Ì
+                //åœæ­¢å¼€ç«åç¨‹
                 yield break;
             }
-            //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä
+            //æŒ‚èµ·ç­‰å¾…ä¸€æ®µæ—¶é—´
             yield return waitForFireInterval;
-            //¹ÒÆğÖ´ĞĞÁ¬Ğø¿ª»ğĞ­³Ì
+            //æŒ‚èµ·æ‰§è¡Œè¿ç»­å¼€ç«åç¨‹
             yield return StartCoroutine(nameof(ContinuousFireCoroutine));
         }
     }
 
-    //Á¬Ğø¿ª»ğĞ­³Ì
+    //è¿ç»­å¼€ç«åç¨‹
     IEnumerator ContinuousFireCoroutine()
     {
-        //µ÷ÓÃ×°Ìî×Óµ¯º¯Êı
+        //è°ƒç”¨è£…å¡«å­å¼¹å‡½æ•°
         LoadProjectiles();
-        //²¥·ÅÇ¹¿ÚÌØĞ§
+        //æ’­æ”¾æªå£ç‰¹æ•ˆ
         muzzleVFX.Play();
         
-        //³ÖĞø¿ª»ğ¼ÆÊ±Æ÷
+        //æŒç»­å¼€ç«è®¡æ—¶å™¨
         float continuousFireTimer = 0f;
-        //³ÖĞø¿ª»ğ¼ÆÊ±Æ÷ Ğ¡ÓÚ Á¬Ğø¿ª»ğ³ÖĞøÊ±¼ä£¬¾ÍÒ»Ö±¿ª»ğ
+        //æŒç»­å¼€ç«è®¡æ—¶å™¨ å°äº è¿ç»­å¼€ç«æŒç»­æ—¶é—´ï¼Œå°±ä¸€ç›´å¼€ç«
         while (continuousFireTimer < continuousFireDuration)
         {
-            //·¢Éäµ¯Ï»ÖĞµÄ×Óµ¯
+            //å‘å°„å¼¹åŒ£ä¸­çš„å­å¼¹
             foreach (var projectile in magazine)
             {
                 PoolManager.Release(projectile, muzzle.position);
             }
-            //¼ÆÊ±Æ÷Ôö¼Ó¿ª»ğ¼ä¸ôÊ±¼äÖµ
+            //è®¡æ—¶å™¨å¢åŠ å¼€ç«é—´éš”æ—¶é—´å€¼
             continuousFireTimer += minFireInterval;
-            //²¥·Å¿ª»ğÒôĞ§
+            //æ’­æ”¾å¼€ç«éŸ³æ•ˆ
             AudioManager.Instance.PlayerRandomSFX(launchSFX);
-            //¹ÒÆğµÈ´ı×îĞ¡¿ª»ğ¼ä¸ôÊ±¼ä
+            //æŒ‚èµ·ç­‰å¾…æœ€å°å¼€ç«é—´éš”æ—¶é—´
             yield return waitForContinuousFireInterval;
         }
-        //Í£Ö¹²¥·ÅÇ¹¿ÚÌØĞ§
+        //åœæ­¢æ’­æ”¾æªå£ç‰¹æ•ˆ
         muzzleVFX.Stop();
     }
 
-    //¼¤¹âÎäÆ÷ÀäÈ´Ğ­³Ì
+    //æ¿€å…‰æ­¦å™¨å†·å´åç¨‹
     IEnumerator BeamCooldownCoroutine()
     {
-        //µÈ´ı¹ÒÆğ¼¤¹âÀäÈ´Ê±¼ä
+        //ç­‰å¾…æŒ‚èµ·æ¿€å…‰å†·å´æ—¶é—´
         yield return _waitBeamCooldownTime;
-        //¼¤¹âÒÑ×¼±¸Íê³É
+        //æ¿€å…‰å·²å‡†å¤‡å®Œæˆ
         _isBeamReady = true;
     }
 
-    //×·»÷Íæ¼ÒĞ­³Ì
+    //è¿½å‡»ç©å®¶åç¨‹
     IEnumerator ChasingPlayerCoroutine()
     {
-        //Boss¼¤»îÊ±Ò»Ö±Ñ­»·
+        //Bossæ¿€æ´»æ—¶ä¸€ç›´å¾ªç¯
         while (isActiveAndEnabled)
         {
-            //ĞŞ¸ÄBossÒÆ¶¯Ê±µÄÄ¿±êÎ»ÖÃ
-            //XÖáÎª»­Ãæ×îÓÒ±ß ¼õÈ¥ BossÄ£ĞÍµÄx±ß¾àÖµ
+            //ä¿®æ”¹Bossç§»åŠ¨æ—¶çš„ç›®æ ‡ä½ç½®
+            //Xè½´ä¸ºç”»é¢æœ€å³è¾¹ å‡å» Bossæ¨¡å‹çš„xè¾¹è·å€¼
             targetPosition.x = Viewport.Instance.MaxX - paddingX;
-            //YÖáÎªÍæ¼ÒÎ»ÖÃµÄYÖá
+            //Yè½´ä¸ºç©å®¶ä½ç½®çš„Yè½´
             targetPosition.y = playerTransform.position.y;
             yield return null;
         }

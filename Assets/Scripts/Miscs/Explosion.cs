@@ -3,38 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// çˆ†ç‚¸ä¼¤å®³
+/// </summary>
 public class Explosion : MonoBehaviour
 {
-   //±¬Õ¨ÉËº¦Öµ
+   //çˆ†ç‚¸ä¼¤å®³å€¼
    [SerializeField] private float explosionDamage = 100f;
-   //±¬Õ¨·¶Î§Åö×²Ìå
+   //çˆ†ç‚¸èŒƒå›´ç¢°æ’ä½“
    [SerializeField] private Collider2D explosionCollider;
-   //µÈ´ı¹ÒÆğÊ±¼ä
+   //ç­‰å¾…æŒ‚èµ·æ—¶é—´
    private WaitForSeconds _waitExplosionTime = new WaitForSeconds(0.1f);
 
    private void OnEnable()
    {
-      //ÆôÓÃ±¬Õ¨Ğ­³Ì
+      //å¯ç”¨çˆ†ç‚¸åç¨‹
       StartCoroutine(ExplosionCoroutine());
    }
-   //´¥·¢Æ÷º¯Êı
+   //è§¦å‘å™¨å‡½æ•°
    private void OnTriggerEnter2D(Collider2D other)
    {
-      //Èç¹û»ñÈ¡µ½µĞÈËÅö×²ÌåÉÏµÄµĞÈË½Å±¾
+      //å¦‚æœè·å–åˆ°æ•Œäººç¢°æ’ä½“ä¸Šçš„æ•Œäººè„šæœ¬
       if (other.TryGetComponent(out Enemy enemy))
       {
-         //µ÷ÓÃµĞÈËÊÜÉËº¯Êı
+         //è°ƒç”¨æ•Œäººå—ä¼¤å‡½æ•°
          enemy.TakeDamage(explosionDamage);
       }
    }
-   //±¬Õ¨·¶Î§Ğ­³Ì
+   //çˆ†ç‚¸èŒƒå›´åç¨‹
    IEnumerator ExplosionCoroutine()
    {
-      //±¬Õ¨·¶Î§´¥·¢Æ÷ÆôÓÃ
+      //çˆ†ç‚¸èŒƒå›´è§¦å‘å™¨å¯ç”¨
       explosionCollider.enabled = true;
-      //¹ÒÆğµÈ´ı0.1Ãë
+      //æŒ‚èµ·ç­‰å¾…0.1ç§’
       yield return _waitExplosionTime;
-      //´¥·¢Æ÷¹Ø±Õ
+      //è§¦å‘å™¨å…³é—­
       explosionCollider.enabled = false;
    }
 }

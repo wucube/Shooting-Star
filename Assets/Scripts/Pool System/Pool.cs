@@ -2,75 +2,84 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable] //½«Î´¼Ì³ĞMonoµÄÀàÖĞµÄÔ¤ÁĞ»¯×Ö¶ÎÆØÂ¶³öÀ´
+/// <summary>
+/// å¯¹è±¡æ± 
+/// </summary>
+[System.Serializable] 
 public class Pool
 {
-    //ÓÃÓÚ»ñÈ¡ÓÎÏ·¶ÔÏóÔ¤ÖÆÌåµÄÊôĞÔĞÅÏ¢£¬ÓÎÏ·¶ÔÏóÔ¤ÖÆÌå±äÁ¿ÊÇË½ÓĞ
+    //ç”¨äºè·å–æ¸¸æˆå¯¹è±¡é¢„åˆ¶ä½“çš„å±æ€§ä¿¡æ¯ï¼Œæ¸¸æˆå¯¹è±¡é¢„åˆ¶ä½“å˜é‡æ˜¯ç§æœ‰
     public GameObject Prefab => prefab;
-    //ÓÃÓÚ»ñÈ¡ÓÎÏ·¶ÔÏóÔ¤ÖÆÌå
+    //ç”¨äºè·å–æ¸¸æˆå¯¹è±¡é¢„åˆ¶ä½“
     [SerializeField] GameObject prefab;
-    //¶ÔÏó³Ø´óĞ¡£¬¼´¼¯ºÏµÄ³¤¶È
+    //å¯¹è±¡æ± å¤§å°ï¼Œå³é›†åˆçš„é•¿åº¦
     [SerializeField] int size = 1;
-    //¶ÔÏó³Ø³ß´çÊôĞÔ
+    //å¯¹è±¡æ± å°ºå¯¸å±æ€§
     public int Size => size;
-    //¶ÔÏó³ØÔËĞĞÊ±Êµ¼Ê³ß´ç
+    //å¯¹è±¡æ± è¿è¡Œæ—¶å®é™…å°ºå¯¸
     public int RuntimeSize=>queue.Count;
     
-    //ÓÎÏ·¶ÔÏóÊı¾İ¼¯ºÏ¶ÓÁĞ
+    //æ¸¸æˆå¯¹è±¡æ•°æ®é›†åˆé˜Ÿåˆ—
     Queue<GameObject> queue;
-    //×Óµ¯ÖÆ×÷ÌåµÄ¸¸¶ÔÏó
+    //å­å¼¹åˆ¶ä½œä½“çš„çˆ¶å¯¹è±¡
     private Transform parent;
-    //³õÊ¼»¯¶ÔÏó¼¯ºÏ
+    //åˆå§‹åŒ–å¯¹è±¡é›†åˆ
     public void Initialize(Transform parent)
     {
-        //³õÊ¼»¯¶ÓÁĞ
+        //åˆå§‹åŒ–é˜Ÿåˆ—
         queue = new Queue<GameObject>();
-        //Ô¤ÖÆÌå¸¸¶ÔÏóµÄÎ»ÖÃ
+        //é¢„åˆ¶ä½“çˆ¶å¯¹è±¡çš„ä½ç½®
         this.parent = parent;
         for (int i = 0; i < size; i++)
         {
-            //¶ÓÁĞÄ©Î²Ìí¼ÓÔ¤ÖÆÌå¿ËÂ¡
+            //é˜Ÿåˆ—æœ«å°¾æ·»åŠ é¢„åˆ¶ä½“å…‹éš†
             queue.Enqueue(Copy());
         }
     }
-    //¸´ÖÆÔ¤ÖÆÌå
+    /// <summary>
+    /// å…‹éš†å¤±æ´»çš„é¢„åˆ¶ä½“
+    /// </summary>
+    /// <returns></returns>
     GameObject Copy()
     {
-        //Éú³ÉÔ¤ÖÆÌå¶ÔÏó
+        //ç”Ÿæˆé¢„åˆ¶ä½“å¯¹è±¡
         var copy = GameObject.Instantiate(prefab, parent);
-        //½ûÓÃ²¢·µ»Ø
+        //ç¦ç”¨å¹¶è¿”å›
         copy.SetActive(false);
         return copy;
     }
-    //È¡³ö¿ÉÓÃ¶ÔÏó
+    /// <summary>
+    /// å–å‡ºå¯ç”¨å¯¹è±¡
+    /// </summary>
+    /// <returns></returns>
     GameObject AvailableObject()
     {
         GameObject availableObject = null;
-        //¶ÓÁĞÖĞÓĞÔªËØ¿ÉÓÃ ¶ÓÁĞµÚÒ»¸öÔªËØ²»ÊÇÔÚÆôÓÃ×´Ì¬ÖĞ
-        //Peek()º¯Êı·µ»Ø¶ÓÁĞµÄµÚÒ»¸öÔªËØ£¬µ«²»»á½«ÔªËØ´Ó¶ÓÁĞÖĞÒÆ³ı
-        if(queue.Count > 0 &&!queue.Peek().activeSelf)
-            //È¡³ö¶ÓÁĞµÚÒ»¸öÔªËØ£¬²¢´Ó¶ÓÁĞÖĞÒÆ³ı
+        //é˜Ÿåˆ—ä¸­æœ‰å…ƒç´ å¯ç”¨ é˜Ÿåˆ—ç¬¬ä¸€ä¸ªå…ƒç´ ä¸æ˜¯åœ¨å¯ç”¨çŠ¶æ€ä¸­
+        //Peek()å‡½æ•°è¿”å›é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œä½†ä¸ä¼šå°†å…ƒç´ ä»é˜Ÿåˆ—ä¸­ç§»é™¤
+        if(queue.Count > 0 && !queue.Peek().activeSelf)
+            //å–å‡ºé˜Ÿåˆ—ç¬¬ä¸€ä¸ªå…ƒç´ ï¼Œå¹¶ä»é˜Ÿåˆ—ä¸­ç§»é™¤
             availableObject = queue.Dequeue();
-        //¶ÓÁĞÖĞÎŞÔªËØ¿ÉÓÃ
+        //é˜Ÿåˆ—ä¸­æ— å…ƒç´ å¯ç”¨
         else
-        //Éú³ÉĞÂµÄ¶ÔÏó
+        //ç”Ÿæˆæ–°çš„å¯¹è±¡
             availableObject = Copy();
         
-        //È¡³ö¶ÔÏóºóÁ¢¼´ÈëÁĞ
+        //å–å‡ºå¯¹è±¡åç«‹å³å…¥åˆ—
         queue.Enqueue(availableObject);
         return availableObject;  
     }
 
-    //Ô¤±¸Íê³ÉµÄ¶ÔÏó
+    //é¢„å¤‡å®Œæˆçš„å¯¹è±¡
     public GameObject PreparedObject()
     {
-        //´æ´¢È¡³öµÄ¿ÉÓÃ¶ÔÏó
+        //å­˜å‚¨å–å‡ºçš„å¯ç”¨å¯¹è±¡
         GameObject  preparedObject = AvailableObject();
-        //ÆôÓÃ¿ÉÓÃ¶ÔÏó
+        //å¯ç”¨å¯ç”¨å¯¹è±¡
         preparedObject.SetActive(true);
         return preparedObject;
     }
-    //Ô¤±¸Íê³ÉµÄ¶ÔÏó£¬Ö¸¶¨¶ÔÏóÎ»ÖÃ 
+    //é¢„å¤‡å®Œæˆçš„å¯¹è±¡ï¼ŒæŒ‡å®šå¯¹è±¡ä½ç½® 
     public GameObject PreparedObject(Vector3 position)
     {
         GameObject preparedObject = AvailableObject();
@@ -78,7 +87,7 @@ public class Pool
         preparedObject.transform.position = position;
         return preparedObject;
     }
-    //Ô¤±¸Íê³É¶ÔÏó£¬Ö¸¶¨¶ÔÏóµÄÎ»ÖÃÓëĞı×ª½Ç¶È
+    //é¢„å¤‡å®Œæˆå¯¹è±¡ï¼ŒæŒ‡å®šå¯¹è±¡çš„ä½ç½®ä¸æ—‹è½¬è§’åº¦
     public GameObject PreparedObject(Vector3 position,Quaternion rotation)
     {
         GameObject preparedObject = AvailableObject();
@@ -87,7 +96,7 @@ public class Pool
         preparedObject.transform.rotation = rotation;
         return preparedObject;
     }
-    //Ô¤±¸Íê³É¶ÔÏó£¬Ö¸¶¨¶ÔÏóµÄÎ»ÖÃÓëĞı×ª½Ç¶ÈºÍÕÀ·Å´óĞ¡
+    //é¢„å¤‡å®Œæˆå¯¹è±¡ï¼ŒæŒ‡å®šå¯¹è±¡çš„ä½ç½®ä¸æ—‹è½¬è§’åº¦å’Œç»½æ”¾å¤§å°
     public GameObject PreparedObject(Vector3 position, Quaternion rotation,Vector3 localScale)
     {
         GameObject preparedObject = AvailableObject();

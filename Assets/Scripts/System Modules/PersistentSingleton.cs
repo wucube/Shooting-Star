@@ -8,11 +8,11 @@ public class PersistentSingleton<T> : MonoBehaviour where T:Component
     public static T Instance { get; private set; }
     protected virtual void Awake()
     {
-        //¾²Ì¬ÊôĞÔÎª¿Õ£¬Ôò¸³Öµ·ºĞÍÀà
+        //é™æ€å±æ€§ä¸ºç©ºï¼Œåˆ™èµ‹å€¼æ³›å‹ç±»
         if (Instance == null) Instance = this as T;
-        //¾²Ì¬ÊôĞÔ²»Îª¿Õ£¬ÇÒ²»ÊÇÕâ¸ö·ºĞÍÀà£¬Ïú»ÙÔ­À´½Å±¾¹ÒÔØµÄ¶ÔÏó
+        //é™æ€å±æ€§ä¸ä¸ºç©ºï¼Œä¸”ä¸æ˜¯è¿™ä¸ªæ³›å‹ç±»ï¼Œé”€æ¯åŸæ¥è„šæœ¬æŒ‚è½½çš„å¯¹è±¡
         else if (Instance!=this) Destroy(gameObject);
-        //¼ÓÔØĞÂ³¡¾°Ê±£¬²»´İ»Ù¸Ã½Å±¾¹ÒÔØ¶ÔÏó
+        //åŠ è½½æ–°åœºæ™¯æ—¶ï¼Œä¸æ‘§æ¯è¯¥è„šæœ¬æŒ‚è½½å¯¹è±¡
         DontDestroyOnLoad(gameObject);
     }
 }

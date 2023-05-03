@@ -5,21 +5,24 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// æŒ‰é’®æŒ‰ä¸‹çš„çŠ¶æ€æœºè„šæœ¬
+/// </summary>
 public class ButtonPressedBehavior : StateMachineBehaviour
 {
-    //¹«ÓĞ¾²Ì¬×Öµä£¬¼üÎª°´Å¥Ãû×Ö£¬ÖµÎª²»´ø²ÎÊıµÄÎ¯ÍĞ - °´Å¥¹¦ÄÜ±í
+    //å…¬æœ‰é™æ€å­—å…¸ï¼Œé”®ä¸ºæŒ‰é’®åå­—ï¼Œå€¼ä¸ºä¸å¸¦å‚æ•°çš„å§”æ‰˜ - æŒ‰é’®åŠŸèƒ½è¡¨
     public static Dictionary<string, Action> buttonFunctionTable;
 
     private void Awake()
     {
-        //³õÊ¼»¯×Öµä
+        //åˆå§‹åŒ–å­—å…¸
         buttonFunctionTable = new Dictionary<string, Action>();
     }
 
-   //×´Ì¬½øÈëº¯Êı£¬½øÈë×´Ì¬µÄµÚÒ»Ö¡µ÷ÓÃ
+   //çŠ¶æ€è¿›å…¥å‡½æ•°ï¼Œè¿›å…¥çŠ¶æ€çš„ç¬¬ä¸€å¸§è°ƒç”¨
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //½ûÓÃËùÓĞÊäÈë
+        //ç¦ç”¨æ‰€æœ‰è¾“å…¥
         UIInput.Instance.DisableAllUIInputs();
     }
 
@@ -32,7 +35,7 @@ public class ButtonPressedBehavior : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //µ÷ÓÃ ²¥·Å°´ÏÂ¶¯»­µÄ°´Å¥ ¶ÔÓ¦µÄÎ¯ÍĞ
+        //è°ƒç”¨ æ’­æ”¾æŒ‰ä¸‹åŠ¨ç”»çš„æŒ‰é’® å¯¹åº”çš„å§”æ‰˜
         buttonFunctionTable[animator.gameObject.name].Invoke();
     }
 

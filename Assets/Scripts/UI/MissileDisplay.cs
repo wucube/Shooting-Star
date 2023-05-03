@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class MissileDisplay : MonoBehaviour
 {
-    //µ¼µ¯ÊıÁ¿ÎÄ±¾×é¼ş
+    //å¯¼å¼¹æ•°é‡æ–‡æœ¬ç»„ä»¶
     private static Text amountText;
-    //ÀäÈ´Í¼Æ¬×é¼ş
+    //å†·å´å›¾ç‰‡ç»„ä»¶
     private static Image cooldownImage;
     private void Awake()
     {
-        //»ñÈ¡×Ó¶ÔÏóÎÄ±¾×é¼ş
+        //è·å–å­å¯¹è±¡æ–‡æœ¬ç»„ä»¶
         amountText = transform.Find("Amount Text").GetComponent<Text>();
-        //»ñÈ¡×Ó¶ÔÏóÀäÈ´Í¼Æ¬×é¼ş
+        //è·å–å­å¯¹è±¡å†·å´å›¾ç‰‡ç»„ä»¶
         cooldownImage = transform.Find("Cooldown Image").GetComponent<Image>();
     }
-    //¸üĞÂÏÔÊ¾µ¼µ¯ÊıÁ¿
+    //æ›´æ–°æ˜¾ç¤ºå¯¼å¼¹æ•°é‡
     public static void UpdateAmountText(int amount) => amountText.text = amount.ToString();
-    //¸üĞÂÏÔÊ¾ÀäÈ´Í¼Æ¬
+    //æ›´æ–°æ˜¾ç¤ºå†·å´å›¾ç‰‡
     public static void UpdateCooldownImage(float fillAmount) => cooldownImage.fillAmount = fillAmount;
 }

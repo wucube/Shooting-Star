@@ -3,46 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
+/// <summary>
+/// è§†å£èŒƒå›´å†…ç§»åŠ¨
+/// </summary>
 public class Viewport : Singleton<Viewport>
 {
-    //Íæ¼ÒÎ»ÖÃ x¡¢yÖáÈ¡Öµ·¶Î§
+    //ç©å®¶ä½ç½® xã€yè½´å–å€¼èŒƒå›´
     float minX;
     float maxX;
     float minY;
     float maxY;
     
-    //ÊÓ¿ÚÖĞĞÄµãµÄXÖáÖµ
+    //è§†å£ä¸­å¿ƒç‚¹çš„Xè½´å€¼
     float middleX;
     
-    //¹«ÓĞÊôĞÔMaxX
+    //å…¬æœ‰å±æ€§MaxX
     public float MaxX => maxX;
     void Start()
     {
         Camera mainCamera = Camera.main;
         
-        //ÊÓ¿Ú×ø±ê×ªÊÀ½ç×ø±ê
-        Vector2 bottomLeft = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f));//ÊÓ¿Ú×óÏÂ½Ç×ø±ê×ªÊÀ½ç
-        Vector2 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f));//ÊÓ¿ÚÓÒÉÏ½Ç×ø±ê×ªÊÀ½ç
-        middleX = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, 0f)).x;//ÊÓ¿ÚÖĞĞÄµãµÄXµã×ø±ê×ªÎªÊÀ½çÏµ×ø±ê
+        //è§†å£åæ ‡è½¬ä¸–ç•Œåæ ‡
+        Vector2 bottomLeft = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f));//è§†å£å·¦ä¸‹è§’åæ ‡è½¬ä¸–ç•Œ
+        Vector2 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f));//è§†å£å³ä¸Šè§’åæ ‡è½¬ä¸–ç•Œ
+        middleX = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, 0f)).x;//è§†å£ä¸­å¿ƒç‚¹çš„Xç‚¹åæ ‡è½¬ä¸ºä¸–ç•Œç³»åæ ‡
         minX = bottomLeft.x;
         minY = bottomLeft.y;
         maxX = topRight.x;
         maxY = topRight.y;
     }
     
-    //Íæ¼ÒÒÆ¶¯ÔÚÊÓ¿Ú·¶Î§ÄÚ
+    //ç©å®¶ç§»åŠ¨åœ¨è§†å£èŒƒå›´å†…
     public Vector3 PlayerMoveablePosition(Vector3 playerPosition,float paddingX,float paddingY)
     {
-        //ÁÙÊ±±äÁ¿´æ´¢Î»ÖÃ
+        //ä¸´æ—¶å˜é‡å­˜å‚¨ä½ç½®
         Vector3 position = Vector3.zero;
-        //ÏŞÖÆÍæ¼ÒXÖáÖµµÄÒÆ¶¯·¶Î§
+        //é™åˆ¶ç©å®¶Xè½´å€¼çš„ç§»åŠ¨èŒƒå›´
         position.x = Mathf.Clamp(playerPosition.x, minX + paddingX, maxX - paddingX);
-        //ÏŞÖÆÍæ¼ÒYÖáÖµµÄÒÆ¶¯·¶Î§
+        //é™åˆ¶ç©å®¶Yè½´å€¼çš„ç§»åŠ¨èŒƒå›´
         position.y = Mathf.Clamp(playerPosition.y, minY + paddingY, maxY - paddingY);
         return position;
     }
     
-    //µĞÈËËæ»ú³öÉúÎ»ÖÃ£¬ÔÚ¾µÍ·ÍâµÄÓÒ°ë²¿·Ö
+    //æ•Œäººéšæœºå‡ºç”Ÿä½ç½®ï¼Œåœ¨é•œå¤´å¤–çš„å³åŠéƒ¨åˆ†
     public Vector3 RandomEnemySpawnPosition(float paddingX,float paddingY)
     {
         Vector3 position = Vector3.zero;
@@ -51,7 +54,7 @@ public class Viewport : Singleton<Viewport>
         return position;
     }
     
-    //µĞ»úÔÚ¾µÍ·ÄÚÓÒ°ë²¿·ÖËæ»úÎ»ÖÃ
+    //æ•Œæœºåœ¨é•œå¤´å†…å³åŠéƒ¨åˆ†éšæœºä½ç½®
     public Vector3 RandomRightHalfPosition(float paddingX,float paddingY)
     {
         Vector3 position = Vector3.zero;
@@ -59,7 +62,7 @@ public class Viewport : Singleton<Viewport>
         position.y = Random.Range(minY+paddingX, maxY - paddingY);
         return position;
     }
-    //µĞ»úËæ»úÔÚ¾µÍ·ÄÚÎ»ÖÃ
+    //æ•Œæœºéšæœºåœ¨é•œå¤´å†…ä½ç½®
     public Vector3 RandomEnemyMovePosition(float paddingX, float paddingY)
     {
         Vector3 position = Vector3.zero;

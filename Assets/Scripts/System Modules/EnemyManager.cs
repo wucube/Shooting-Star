@@ -6,106 +6,106 @@ using Random = UnityEngine.Random;
 
 public class EnemyManager : Singleton<EnemyManager>
 {
-    //Ëæ»úÈ¡³öÒ»¸öÄ¿±êµĞÈËµÄÊôĞÔ
+    //éšæœºå–å‡ºä¸€ä¸ªç›®æ ‡æ•Œäººçš„å±æ€§
     public GameObject RandomEnemy => enemyList.Count == 0 ? null : enemyList[Random.Range(0, enemyList.Count)];
-    //»ñÈ¡µĞÈË²¨ÊıÊıÖµµÄÊôĞÔ
+    //è·å–æ•Œäººæ³¢æ•°æ•°å€¼çš„å±æ€§
     public int WaveNumber => _waveNumber;
-    //»ñÈ¡Ã¿²¨¼ä¸ôÊ±¼äµÄÊôĞÔ
+    //è·å–æ¯æ³¢é—´éš”æ—¶é—´çš„å±æ€§
     public float TimeBetweenWaves => timeBetweenWaves;
-    //ÊÇ·ñÉú³ÉµĞÈË
+    //æ˜¯å¦ç”Ÿæˆæ•Œäºº
     [SerializeField] private bool SpawnEnemy = true;
-    //´æ´¢²¨ÊıUI¶ÔÏó
+    //å­˜å‚¨æ³¢æ•°UIå¯¹è±¡
     [SerializeField] private GameObject waveUI;
-    //µĞÈËÔ¤ÖÆÌåÊı×é
+    //æ•Œäººé¢„åˆ¶ä½“æ•°ç»„
     [SerializeField] private GameObject[] enemyPrefabs;
-    //µĞÈËÉú³É¼ä¸ôÊ±¼ä
+    //æ•Œäººç”Ÿæˆé—´éš”æ—¶é—´
     [SerializeField] private float timeBetweenSpawns = 1f;
-    //µÈ´ıÏÂÒ»²¨Ê±¼ä
+    //ç­‰å¾…ä¸‹ä¸€æ³¢æ—¶é—´
     [SerializeField] private float timeBetweenWaves = 1f;
-    //×îĞ¡µĞÈËÊıÁ¿
+    //æœ€å°æ•Œäººæ•°é‡
     [SerializeField] private int minEnemyAmount = 4;
-    //×î´óµĞÈËÊıÁ¿
+    //æœ€å¤§æ•Œäººæ•°é‡
     [SerializeField] private int maxEnemyAmount = 10;
     
     [Header("======= Boss Settings =======")]
-    //BossÔ¤ÖÆÌå¶ÔÏó
+    //Bossé¢„åˆ¶ä½“å¯¹è±¡
     [SerializeField] private GameObject bossPrefab;
-    //BossÕ½²¨ÊıÊıÖµ±äÁ¿
+    //Bossæˆ˜æ³¢æ•°æ•°å€¼å˜é‡
     [SerializeField] private int bossWaveNumber;
     
-    //µĞÈË²¨Êı±äÁ¿£¬Ä¬ÈÏÎª1
+    //æ•Œäººæ³¢æ•°å˜é‡ï¼Œé»˜è®¤ä¸º1
     private int _waveNumber = 1;
-    //µĞÈËÊıÁ¿
+    //æ•Œäººæ•°é‡
     private int _enemyAmount;
-    //×°ÔØµĞÈËµÄÓÎÏ·¶ÔÏóÁĞ±í
+    //è£…è½½æ•Œäººçš„æ¸¸æˆå¯¹è±¡åˆ—è¡¨
     private List<GameObject> enemyList;
-    //µÈ´ıÉú³É¼ä¸ôÊ±¼ä
+    //ç­‰å¾…ç”Ÿæˆé—´éš”æ—¶é—´
     private WaitForSeconds waitTimeBetweenSpawns;
-    //µÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä
+    //ç­‰å¾…æ¯æ³¢é—´éš”æ—¶é—´
     private WaitForSeconds waitTimeBetweenWaves;
-    //µÈ´ıÖ±µ½Ã»ÓĞµĞÈËÊ±
+    //ç­‰å¾…ç›´åˆ°æ²¡æœ‰æ•Œäººæ—¶
     private WaitUntil waitUntillNoEnemy;
     
     protected override void Awake()
     {
         base.Awake();
-        //³õÊ¼»¯µĞÈËÁĞ±í
+        //åˆå§‹åŒ–æ•Œäººåˆ—è¡¨
         enemyList = new List<GameObject>();
-        //³õÊ¼»¯µÈ´ıÉú³É¼ä¸ôÊ±¼ä
+        //åˆå§‹åŒ–ç­‰å¾…ç”Ÿæˆé—´éš”æ—¶é—´
         waitTimeBetweenSpawns = new WaitForSeconds(timeBetweenSpawns);
-        //³õÊ¼»¯µÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä
+        //åˆå§‹åŒ–ç­‰å¾…æ¯æ³¢é—´éš”æ—¶é—´
         waitTimeBetweenWaves = new WaitForSeconds(timeBetweenWaves);
-        //³õÊ¼»¯µÈ´ıÖ±µ½Ã»ÓĞµĞÈË£¬´«ÈëµĞÈËÁĞ±íÔªËØÊÇ·ñÎª0µÄÄäÃûº¯Êı
+        //åˆå§‹åŒ–ç­‰å¾…ç›´åˆ°æ²¡æœ‰æ•Œäººï¼Œä¼ å…¥æ•Œäººåˆ—è¡¨å…ƒç´ æ˜¯å¦ä¸º0çš„åŒ¿åå‡½æ•°
         waitUntillNoEnemy = new WaitUntil(()=>enemyList.Count == 0);
     }
-    //½«Startº¯Êı¸ÄÎªĞ­³Ì£¬ÓÎÏ·¿ªÊ¼ÔËĞĞÊ±×Ô¶¯Ö´ĞĞStartĞ­³ÌÖĞËùÓĞÄÚÈİ
+    //å°†Startå‡½æ•°æ”¹ä¸ºåç¨‹ï¼Œæ¸¸æˆå¼€å§‹è¿è¡Œæ—¶è‡ªåŠ¨æ‰§è¡ŒStartåç¨‹ä¸­æ‰€æœ‰å†…å®¹
     IEnumerator Start()
     {
-        //ÔÊĞíÉú³ÉµĞÈËÇÒÓÎÏ·×´Ì¬²»Îª½áÊø×´Ì¬Ê±£¬Ñ­»·²Å¼ÌĞø
+        //å…è®¸ç”Ÿæˆæ•Œäººä¸”æ¸¸æˆçŠ¶æ€ä¸ä¸ºç»“æŸçŠ¶æ€æ—¶ï¼Œå¾ªç¯æ‰ç»§ç»­
         while (SpawnEnemy&&GameManager.GameState!=GameState.GameOver)
         {
-            //³¡¾°ÖĞÃ»ÓĞµĞÈËÊ±£¬ÏÔÊ¾²¨ÊıUI
+            //åœºæ™¯ä¸­æ²¡æœ‰æ•Œäººæ—¶ï¼Œæ˜¾ç¤ºæ³¢æ•°UI
             waveUI.SetActive(true);
-            //Ö´ĞĞËæ»úÉú³ÉĞ­³ÌÇ°£¬¹ÒÆğµÈ´ıÃ¿²¨¼ä¸ôÊ±¼ä¡£ĞÂµÄµĞÈËÉú³ÉÇ°£¬ÁôµãÊ±¼ä¸øÍæ¼Ò´­Ï¢£¬½«À´ÓÃÓÚÏÔÊ¾UIµÈ
+            //æ‰§è¡Œéšæœºç”Ÿæˆåç¨‹å‰ï¼ŒæŒ‚èµ·ç­‰å¾…æ¯æ³¢é—´éš”æ—¶é—´ã€‚æ–°çš„æ•Œäººç”Ÿæˆå‰ï¼Œç•™ç‚¹æ—¶é—´ç»™ç©å®¶å–˜æ¯ï¼Œå°†æ¥ç”¨äºæ˜¾ç¤ºUIç­‰
             yield return waitTimeBetweenWaves;
-            //¿ªÊ¼Éú³ÉµĞÈËÇ°£¬¹Ø±ÕµĞÈË²¨ÊıUI
+            //å¼€å§‹ç”Ÿæˆæ•Œäººå‰ï¼Œå…³é—­æ•Œäººæ³¢æ•°UI
             waveUI.SetActive(false);
-            //ÆôÓÃËæ»úÉú³ÉµĞÈËĞ­³Ì
+            //å¯ç”¨éšæœºç”Ÿæˆæ•Œäººåç¨‹
             yield return StartCoroutine(nameof(RandomlySpawnCoroutine));
         }
     }
 
-    //Ëæ»úÉú³ÉµĞÈËĞ­³Ì
+    //éšæœºç”Ÿæˆæ•Œäººåç¨‹
     IEnumerator RandomlySpawnCoroutine()
     {
-        //µ±Ç°²¨ÊıÄ£ÉÏBossÕ½²¨ÊıµÄÓàÊıÎª0£¬¼´Ê±BossÕ½µÄ²¨Êı
+        //å½“å‰æ³¢æ•°æ¨¡ä¸ŠBossæˆ˜æ³¢æ•°çš„ä½™æ•°ä¸º0ï¼Œå³æ—¶Bossæˆ˜çš„æ³¢æ•°
         if (_waveNumber % bossWaveNumber == 0)
         {
-            //¶ÔÏó³ØÉú³ÉÒ»¸öBoss
+            //å¯¹è±¡æ± ç”Ÿæˆä¸€ä¸ªBoss
             var boss = PoolManager.Release(bossPrefab);
-            //BossÌí¼Óµ½µĞÈËÁĞ±íÖĞ
+            //Bossæ·»åŠ åˆ°æ•Œäººåˆ—è¡¨ä¸­
             enemyList.Add(boss);
         }
         else
         {
-            //×îĞ¡µĞÈËÊıÁ¿Ëæ×Å²¨ÊıÔö¼Ó¶øÔö¼Ó£¬²¨Êı³ıÒÔÕûÊı£¬¿ÉÓĞĞ§¿ØÖÆ×îĞ¡µĞÈËÊıÁ¿µÄÔö³¤ËÙ¶È¡£Ã¿¸ôÒ»²¨BossÕ½£¬µĞÈËµÄÊıÁ¿¾Í»áÔö¼ÓÒ»¸ö
+            //æœ€å°æ•Œäººæ•°é‡éšç€æ³¢æ•°å¢åŠ è€Œå¢åŠ ï¼Œæ³¢æ•°é™¤ä»¥æ•´æ•°ï¼Œå¯æœ‰æ•ˆæ§åˆ¶æœ€å°æ•Œäººæ•°é‡çš„å¢é•¿é€Ÿåº¦ã€‚æ¯éš”ä¸€æ³¢Bossæˆ˜ï¼Œæ•Œäººçš„æ•°é‡å°±ä¼šå¢åŠ ä¸€ä¸ª
             _enemyAmount = Mathf.Clamp(_enemyAmount, minEnemyAmount + _waveNumber / bossWaveNumber, maxEnemyAmount);
-            //Ñ­»·Éú³ÉËùÓĞµĞÈË
+            //å¾ªç¯ç”Ÿæˆæ‰€æœ‰æ•Œäºº
             for (int i = 0; i < _enemyAmount; i++)
             {
-                //¶ÔÏó³ØÊÍ·ÅµĞÈËÔ¤ÖÆÌå¼¯ºÏÖĞËæ»úÈ¡³öµÄÒ»ÖÖµĞÈË£¬Ã¿Éú³ÉÒ»¸öµĞÈË¾Í´æ·Åµ½µĞÈËÁĞ±íÖĞ
+                //å¯¹è±¡æ± é‡Šæ”¾æ•Œäººé¢„åˆ¶ä½“é›†åˆä¸­éšæœºå–å‡ºçš„ä¸€ç§æ•Œäººï¼Œæ¯ç”Ÿæˆä¸€ä¸ªæ•Œäººå°±å­˜æ”¾åˆ°æ•Œäººåˆ—è¡¨ä¸­
                 enemyList.Add(PoolManager.Release(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)]));
-                //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä
+                //æŒ‚èµ·ç­‰å¾…ä¸€æ®µæ—¶é—´
                 yield return waitTimeBetweenSpawns;
             }
         }
         
-        //¹ÒÆğµÈ´ıÖ»µ½Ã»ÓĞµĞÈË
+        //æŒ‚èµ·ç­‰å¾…åªåˆ°æ²¡æœ‰æ•Œäºº
         yield return waitUntillNoEnemy;
         
-        //µ±Ç°²¨ÊıÖĞËùÓĞµĞÈËÉú³ÉÍê±Ïºó£¬µĞÈË²¨Êı+1
+        //å½“å‰æ³¢æ•°ä¸­æ‰€æœ‰æ•Œäººç”Ÿæˆå®Œæ¯•åï¼Œæ•Œäººæ³¢æ•°+1
         _waveNumber++;
     }
-    //½«µĞÈË´ÓÁĞ±íÒÆ³ı º¯Êı
+    //å°†æ•Œäººä»åˆ—è¡¨ç§»é™¤ å‡½æ•°
     public void RemoveFromList(GameObject enemy) => enemyList.Remove(enemy);
 }

@@ -2,65 +2,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// å¯¹è±¡æ± ç®¡ç†å™¨
+/// </summary>
 public class PoolManager: MonoBehaviour
 {
-    //µĞÈË¶ÔÏó³ØÊı×é
     [SerializeField] private Pool[] enemyPools;
-    //Íæ¼Ò×Óµ¯³ØÊı×é
     [SerializeField] private Pool[] playerProjectilePools;
-    //µĞÈË×Óµ¯³ØÊı×é
     [SerializeField] private Pool[] enemyProjectilePools;
-    //ÊÓ¾õÌØĞ§³ØÊı×é
     [SerializeField] private Pool[] vFXPools;
-    //Õ½ÀûÆ·³ØÊı×é
     [SerializeField] private Pool[] lootItemPools;
-    //¹ØÁªÔ¤ÖÆÌåÓë¶ÔÏó³Ø
+
+    /// <summary>
+    /// å…³è”å¯¹è±¡å’Œå¯¹è±¡æ± çš„å®¹å™¨
+    /// </summary>
     static Dictionary<GameObject, Pool> dictionary;
     void Awake()
     {
-        //³õÊ¼»¯×Öµä
         dictionary = new Dictionary<GameObject, Pool>();
         
-        //³õÊ¼»¯µĞÈË³Ø¶ÔÏó
         Initialize(enemyPools);
         
-        //³õÊ¼»¯Íæ¼Ò×Óµ¯³Ø¶ÔÏó
         Initialize(playerProjectilePools);
-        //³õÊ¼»¯µĞ»ú×Óµ¯³Ø¶ÔÏó
+        
         Initialize(enemyProjectilePools);
-        //³õÊ¼»¯ÌØĞ§³Ø
+       
         Initialize(vFXPools);
-        //³õÊ¼»¯Õ½ÀûÆ·µÀ¾ß³Ø
+        
         Initialize(lootItemPools);
     }
-    #if UNITY_EDITOR
-    //±à¼­Æ÷Í£Ö¹ÔËĞĞÊ±×Ô¶¯µ÷ÓÃ
+#if UNITY_EDITOR
+    
     void OnDestroy()
     {
-        //¼ì²éµĞÈË¶ÔÏó³Ø³ß´ç
+    
         CheckPoolSize(enemyPools);
         
-        //¼ì²âÍæ¼Ò×Óµ¯³Ø³ß´ç
         CheckPoolSize(playerProjectilePools);
-        //¼ì²âµĞ»ú×Óµ¯³Ø³ß´ç
+        
         CheckPoolSize(enemyProjectilePools);
-        //¼ì²âÌØĞ§³Ø³ß´ç
+        
         CheckPoolSize(vFXPools);
-        //¼ì²âÕ½ÀûÆ·µÀ¾ß³Ø
+        
         CheckPoolSize(lootItemPools);
-        //Debug.Log("ÒÑ¾­ÆôÓÃ");
+        
     }
-    #endif
+#endif
     
-    //¼ì²é¶ÔÏó³ØÔËĞĞÊ±µÄ³ß´ç
+    /// <summary>
+    /// æ£€æŸ¥å¯¹è±¡æ± è¿è¡Œæ—¶çš„å°ºå¯¸
+    /// </summary>
+    /// <param name="pools"></param>
     void CheckPoolSize(Pool[] pools)
     {
         foreach (var pool in pools)
         {
-            //Èç¹û¶ÔÏó³ØÊµ¼ÊÔËĞĞ³ß´ç´óÓÚ¶ÔÏó³Ø³ß´ç 
             if (pool.RuntimeSize > pool.Size)
             {
-                //¿ØÖÆÌ¨´òÓ¡¾¯¸æ
+                
                 Debug.LogWarning(
                     string.Format("Pool:{0} has a runtime size{1} bigger than its inital size{2}!",
                         pool.Prefab.name,
@@ -69,84 +68,85 @@ public class PoolManager: MonoBehaviour
             }
         }
     }
-    //³õÊ¼»¯ËùÓĞ¶ÔÏó³Ø
+    
+    /// <summary>
+    /// åˆå§‹åŒ–å¯¹è±¡æ± 
+    /// </summary>
+    /// <param name="pools"></param>
     void Initialize(Pool[] pools)
     {
         foreach (var pool in pools)
         {
-            //Ìõ¼ş±àÒëÖ¸Áî£¬Ö»ÔÚUnity±à¼­Æ÷ÖĞÔËĞĞ
-        #if UNITY_EDITOR  
-            //Èç¹û×ÖµäµÄ¼üÒÑÓĞÒ»¸öÏàÍ¬Ô¤ÖÆÌå£¬Ö±½ÓÌø¹ı¡£×ÖµäµÄÃ¿¸ö¼ü±ØĞëÎ¨Ò»
+#if UNITY_EDITOR  
+           
             if (dictionary.ContainsKey(pool.Prefab))
             {
-                //¿ØÖÆÌ¨´òÓ¡¾¯¸æĞÅÏ¢
                 Debug.LogError("Same prefab in multiple pools! Prefab:"+pool.Prefab.name);
                 continue;
             }
-        #endif
-            //¶ÔÏó³ØµÄÔ¤ÖÆÌåÓë¶ÔÏó³Ø±¾Éí×÷¼üÖµ¶Ô¡£Ã¿³õÊ¼»¯Ò»¸ö¶ÔÏó³Ø£¬×Öµä¾ÍÌí¼ÓÒ»¸öÔ¤ÖÆÌåºÍ³ØµÄ¼üÖµ¶Ô
+#endif
+            
             dictionary.Add(pool.Prefab, pool);
-            //ĞÂ½¨×Óµ¯µÄ¸¸¶ÔÏó
+           
             Transform poolParent =  new GameObject("Pool:" + pool.Prefab.name).transform;
-            //×Óµ¯¸¸¶ÔÏóµÄ¸¸¶ÔÏóÎª³Ø¹ÜÀíÆ÷¶ÔÏó
+           
             poolParent.parent = transform;
-            //Éú³É¶ÔÏó³ØÖĞµÄËùÓĞĞèÒªµÄ¸´ÖÆÌå
+           
             pool.Initialize(poolParent);
         }    
     }
-    //¾²Ì¬º¯Êı¸ü·½±ã±»ÆäËûÀàµ÷ÓÃ
     /// <summary>
-    /// ¸ù¾İ´«Èë¶ÔÏóÊÍ·Å³ØÖĞÔ¤±¸Íê³ÉµÄ¶ÔÏó
+    /// å¯¹è±¡æ± é‡Šæ”¾å¯¹è±¡
     /// </summary>
-    /// <param name="prefab"></param> Ö¸¶¨ÊÍ·ÅµÄ¶ÔÏó
+    /// <param name="prefab"></param>
     /// <returns></returns>
     public static GameObject Release(GameObject prefab)
     {
-        #if UNITY_EDITOR //Ìõ¼ş±àÒë£¬Ö»ÔÚ±à¼­Æ÷ÖĞÔËĞĞ
-        //×ÖµäÖĞ²»°üº¬Ö¸¶¨¼üÖµÊ±£¬·µ»Ø¿ÕÖµ
+#if UNITY_EDITOR 
+       
         if (!dictionary.ContainsKey(prefab))
         {
             Debug.LogError("Pool Manager could Not find prefab:" + prefab.name);
             return null;
         }
-        #endif
-        //¸ù¾İ´«ÈëÔ¤ÖÆÌåµ÷ÓÃ¶ÔÓ¦¶ÔÏó³ØÖĞµÄ×¼±¸¶ÔÏóº¯Êı£¬·µ»ØÒ»¸ö¿ÉËæÊ±ÓÃµ½µÄ¶ÔÏó
+#endif
+    
         return dictionary[prefab].PreparedObject();
     }
     
     public static GameObject Release(GameObject prefab, Vector3 position)
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if(!dictionary.ContainsKey(prefab))
         {
             Debug.LogError("Pool Manager could Not find prefab:"+prefab.name);
             return null;
         }
-        #endif
+#endif
         return dictionary[prefab].PreparedObject(position);
     }
 
     public static GameObject Release(GameObject prefab,Vector3 position,Quaternion rotation)
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (!dictionary.ContainsKey(prefab))
         {
             Debug.LogError("Pool Manager could Not find prefab:" + prefab.name);
             return null;
         }
-        #endif
+#endif
         return dictionary[prefab].PreparedObject(position,rotation);
     }
 
     public static GameObject Release(GameObject prefab, Vector3 position, Quaternion rotation,Vector3 localScale)
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (!dictionary.ContainsKey(prefab))
         {
             Debug.LogError("Pool Manager could Not find prefab:" + prefab.name);
             return null;
         }
-        #endif
+#endif
         return dictionary[prefab].PreparedObject(position, rotation,localScale);
     }
 }

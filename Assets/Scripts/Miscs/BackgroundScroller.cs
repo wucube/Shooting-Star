@@ -3,25 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// èƒŒæ™¯å›¾æ»šåŠ¨
+/// </summary>
 public class BackgroundScroller : MonoBehaviour
 {
-    //±³¾°¹ö¶¯ËÙ¶È
     [SerializeField]Vector2 scrollVelocity;
-    //ÓÃÓÚ»ñÈ¡²ÄÖÊ×é¼ş
     Material material;
     void Awake()
     {
-        //µÃµ½ËÄ±ßĞÎäÖÈ¾Æ÷×é¼şµÄ²ÄÖÊ
         material = GetComponent<Renderer>().material;
     }
 
     // Update is called once per frame
     IEnumerator Start()
     {
-        //ÓÎÏ·×´Ì¬²»Îª½áÊø×´Ì¬£¬²ÅÃ¿Ö¡¾í¶¯±³¾°
         while (GameManager.GameState!=GameState.GameOver)
         {
-            //¸Ä±ä²ÄÖÊµÄÖ÷ÎÆÀíµÄOffsetÖµ
             material.mainTextureOffset += scrollVelocity * Time.deltaTime;
             yield return null;
         }
@@ -29,7 +27,6 @@ public class BackgroundScroller : MonoBehaviour
 
     // private void Update()
     // {
-    //     //¸Ä±ä²ÄÖÊµÄÖ÷ÎÆÀíµÄOffsetÖµ
     //     material.mainTextureOffset += scrollVelocity * Time.deltaTime;
     // }
     

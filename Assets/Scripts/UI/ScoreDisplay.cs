@@ -2,21 +2,21 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ScoreDisplay : MonoBehaviour
 {
-    //Unity ÎÄ±¾¶ÔÏó±äÁ¿
+    //Unity æ–‡æœ¬å¯¹è±¡å˜é‡
     private static Text _scoreText;
     private void Awake()
     {
-        //È¡µÃ·ÖÊıÎÄ±¾¶ÔÏóµÄÎÄ±¾×é¼ş
+        //å–å¾—åˆ†æ•°æ–‡æœ¬å¯¹è±¡çš„æ–‡æœ¬ç»„ä»¶
         _scoreText = GetComponent<Text>();
     }
     private void Start()
     {
-        //µ÷ÓÃÖØÖÃ·ÖÊıº¯Êı
+        //è°ƒç”¨é‡ç½®åˆ†æ•°å‡½æ•°
         ScoreManager.Instance.ResetScore();
     }
     
-    //¸üĞÂÎÄ±¾¾²Ì¬º¯Êı£¬±ãÓÚ±»ÆäËûÀàµ÷ÓÃ
+    //æ›´æ–°æ–‡æœ¬é™æ€å‡½æ•°ï¼Œä¾¿äºè¢«å…¶ä»–ç±»è°ƒç”¨
     public static void UpdateText(int score)=>_scoreText.text = score.ToString();
-    //ÎÄ±¾Ëõ·Å¾²Ì¬º¯Êı£¬ĞŞ¸Ä·ÖÊıÎÄ±¾¾ØĞÎ±ä»»×é¼şµÄËõ·ÅÖµ
+    //æ–‡æœ¬ç¼©æ”¾é™æ€å‡½æ•°ï¼Œä¿®æ”¹åˆ†æ•°æ–‡æœ¬çŸ©å½¢å˜æ¢ç»„ä»¶çš„ç¼©æ”¾å€¼
     public static void ScaleText(Vector3 targetScale) => _scoreText.rectTransform.localScale = targetScale;
 }

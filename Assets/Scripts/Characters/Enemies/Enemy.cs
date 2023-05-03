@@ -6,56 +6,45 @@ using UnityEngine.SceneManagement;
 
 public class Enemy : Character
 {
-    //?????????????¡Â????
     [SerializeField] private int scorePoint = 100;
-    //????????????
     [SerializeField] private int deathEnergyBonus = 3;
     
-    //ÑªÁ¿ÒòËØ
+    //è¡€é‡å› ç´ 
     [SerializeField] protected int healthFactor;
 
-    //Õ½ÀûÆ·Éú³ÉÆ÷½Å±¾
+    //æˆ˜åˆ©å“ç”Ÿæˆå™¨è„šæœ¬
     private LootSpawner lootSpawner;
 
     protected virtual void Awake()
     {
-        //È¡µÃÕ½ÀûÆ·Éú³ÉÆ÷
+        //å–å¾—æˆ˜åˆ©å“ç”Ÿæˆå™¨
         lootSpawner = GetComponent<LootSpawner>();
     }
 
     protected override void OnEnable()
     {
-        //ÉèÖÃµĞÈË×î´óÑªÁ¿
+        //è®¾ç½®æ•Œäººæœ€å¤§è¡€é‡
         SetHealth();
         base.OnEnable();
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        //????§İ?????????
         if (other.gameObject.TryGetComponent<Player>(out Player player))
         {
-            //???????
             player.Die();
-            //?§İ?????
             Die();
         }
     }
-    //ÖØĞ´½ÇÉ«ËÀÍöº¯Êı
+    //é‡å†™è§’è‰²æ­»äº¡å‡½æ•°
     public override void Die()
     {
-        //????????????¡Â?
         ScoreManager.Instance.AddScore(scorePoint);
-        //????????????????????????????????????
         PlayerEnergy.Instance.Obtain(deathEnergyBonus);
-        //??????§Ò???????????????
         EnemyManager.Instance.RemoveFromList(gameObject);
-        //µ÷ÓÃÉú³ÉÆ÷µÄÉú³Éº¯Êı
         lootSpawner.Spawn(transform.position);
-        
-        //????????????????
         base.Die();
     }
-    //ÉèÖÃµĞÈË×î´óÑªÁ¿º¯Êı£¬×î´óÑªÁ¿¼ÓÉÏµĞÈË²¨ÊıÏà¹ØµÄÊıÖµ
+    //è®¾ç½®æ•Œäººæœ€å¤§è¡€é‡å‡½æ•°ï¼Œæœ€å¤§è¡€é‡åŠ ä¸Šæ•Œäººæ³¢æ•°ç›¸å…³çš„æ•°å€¼
     protected virtual void SetHealth() => maxHealth += (int)(EnemyManager.Instance.WaveNumber / healthFactor);
 }

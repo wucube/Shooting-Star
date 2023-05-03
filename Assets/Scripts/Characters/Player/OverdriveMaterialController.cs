@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 能量爆发的材质控制
+/// </summary>
 public class OverdriveMaterialController : MonoBehaviour
 {
     [SerializeField] Material overdriveMaterial;

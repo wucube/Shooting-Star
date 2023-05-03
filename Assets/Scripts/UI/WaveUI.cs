@@ -10,14 +10,14 @@ public class WaveUI : MonoBehaviour
 
    void Awake()
    {
-      //ÉèÖÃ»­²¼×é¼şµÄÊÀ½çÏà»ú
+      //è®¾ç½®ç”»å¸ƒç»„ä»¶çš„ä¸–ç•Œç›¸æœº
       GetComponent<Canvas>().worldCamera = Camera.main;
-      //È¡µÃÎÄ±¾¶ÔÏó×é¼ş£¬ÎÄ±¾¶ÔÏóÔÚ²¨ÊıUIÖĞÖ»ÓĞÒ»¸ö
+      //å–å¾—æ–‡æœ¬å¯¹è±¡ç»„ä»¶ï¼Œæ–‡æœ¬å¯¹è±¡åœ¨æ³¢æ•°UIä¸­åªæœ‰ä¸€ä¸ª
       _waveText = GetComponentInChildren<Text>();
    }
    private void OnEnable()
    {
-      //ĞŞ¸Ä²¨ÊıÎÄ±¾µÄÖµ
+      //ä¿®æ”¹æ³¢æ•°æ–‡æœ¬çš„å€¼
       _waveText.text = "- WAVE 0" + EnemyManager.Instance.WaveNumber + " -";
    }
 }

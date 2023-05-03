@@ -8,136 +8,136 @@ using Random = UnityEngine.Random;
 public class ScoringUIController : MonoBehaviour
 {
     [Header("===== BACKGROUND ======")]
-    //±³¾°Í¼Æ¬Image×é¼ş
+    //èƒŒæ™¯å›¾ç‰‡Imageç»„ä»¶
     [SerializeField] private Image background;
-    //ËùÓĞÒªÏÔÊ¾µÄÍ¼Æ¬Êı×é
+    //æ‰€æœ‰è¦æ˜¾ç¤ºçš„å›¾ç‰‡æ•°ç»„
     [SerializeField] private Sprite[] backgroundImages;
 
     [Header("===== SCORING SCREEN ======")] 
-    //»ı·Ö»­Ãæ»­²¼×é¼ş
+    //ç§¯åˆ†ç”»é¢ç”»å¸ƒç»„ä»¶
     [SerializeField] private Canvas scoringScreenCanvas;
-    //Íæ¼Ò·ÖÊıÎÄ±¾×é¼ş
+    //ç©å®¶åˆ†æ•°æ–‡æœ¬ç»„ä»¶
     [SerializeField] private Text playerScoreText;
-    //Ö÷²Ëµ¥°´Å¥×é¼ş
+    //ä¸»èœå•æŒ‰é’®ç»„ä»¶
     [SerializeField] private Button buttonMainMenu;
-    //¸ß·ÖÅÅĞĞ°ñÈİÆ÷
+    //é«˜åˆ†æ’è¡Œæ¦œå®¹å™¨
     [SerializeField] private Transform highScoreLeaderboardContainer;
 
     [Header("===== HIGH SCORE SCREEN ======")]
-    //ĞÂ¸ß·ÖUI»­²¼×é¼ş
+    //æ–°é«˜åˆ†UIç”»å¸ƒç»„ä»¶
     [SerializeField] private Canvas newHighScoreScreenCanvas;
-    //°´Å¥±äÁ¿
+    //æŒ‰é’®å˜é‡
     [SerializeField] private Button buttonCancel;
     [SerializeField] private Button buttonSubmit;
-    //ÎÄ±¾ÊäÈë¿ò±äÁ¿
+    //æ–‡æœ¬è¾“å…¥æ¡†å˜é‡
     [SerializeField] private InputField playerNameInputField;
 
     private void Start()
     {
-        //Ò»½øÈë¼Æ·Ö³¡¾°£¬¾Í»áÏÔÊ¾¹â±ê
+        //ä¸€è¿›å…¥è®¡åˆ†åœºæ™¯ï¼Œå°±ä¼šæ˜¾ç¤ºå…‰æ ‡
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        //µ÷ÓÃËæ»úÏÔÊ¾±³¾°Í¼Æ¬º¯Êı
+        //è°ƒç”¨éšæœºæ˜¾ç¤ºèƒŒæ™¯å›¾ç‰‡å‡½æ•°
         ShowRandomBackground();
-        //Íæ¼ÒÊÇ·ñÈ¡µÃÁËĞÂ¸ß·Ö
+        //ç©å®¶æ˜¯å¦å–å¾—äº†æ–°é«˜åˆ†
         if (ScoreManager.Instance.HasNewHighScore)
         {
-            //ÏÔÊ¾ĞÂ¸ß·Ö»­Ãæ
+            //æ˜¾ç¤ºæ–°é«˜åˆ†ç”»é¢
             ShowNewHighScoreScreen();
         }
-        else //Ã»ÓĞÈ¡µÃĞÂ¸ß·Ö»­Ãæ£¬ÏÔÊ¾µÃ·ÖUI
+        else //æ²¡æœ‰å–å¾—æ–°é«˜åˆ†ç”»é¢ï¼Œæ˜¾ç¤ºå¾—åˆ†UI
             ShowScoringScreen();
-        //µÇ¼Ç°´Å¥¹¦ÄÜº¯Êı
+        //ç™»è®°æŒ‰é’®åŠŸèƒ½å‡½æ•°
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonMainMenu.gameObject.name,OnButtonMainMenuClicked);
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonSubmit.gameObject.name,OnButtonSubmitClicked);
-        //È¡Ïû°´Å¥¹¦ÄÜ¾ÍÊÇ¹Ø±ÕĞÂ¸ß·Ö»­Ãæ
+        //å–æ¶ˆæŒ‰é’®åŠŸèƒ½å°±æ˜¯å…³é—­æ–°é«˜åˆ†ç”»é¢
         ButtonPressedBehavior.buttonFunctionTable.Add(buttonCancel.gameObject.name,HideNewHighScoreScreen);
-        //ÓÎÏ·½øÈë¼Æ·Ö×´Ì¬
+        //æ¸¸æˆè¿›å…¥è®¡åˆ†çŠ¶æ€
         GameManager.GameState = GameState.Scoring;
     }
-    //ÏÔÊ¾ĞÂ¸ß·Ö»­Ãæ
+    //æ˜¾ç¤ºæ–°é«˜åˆ†ç”»é¢
     void ShowNewHighScoreScreen()
     {
-        //¿ªÆôUI»­²¼
+        //å¼€å¯UIç”»å¸ƒ
         newHighScoreScreenCanvas.enabled = true;
-        //Ñ¡ÖĞÈ¡Ïû°´Å¥
+        //é€‰ä¸­å–æ¶ˆæŒ‰é’®
         UIInput.Instance.SelectUI(buttonCancel);
     }
 
     private void OnDisable()
     {
-        //Çå¿Õ°´Å¥¹¦ÄÜ±í×Öµä
+        //æ¸…ç©ºæŒ‰é’®åŠŸèƒ½è¡¨å­—å…¸
         ButtonPressedBehavior.buttonFunctionTable.Clear();
     }
 
-    //ÏÔÊ¾Ëæ»ú±³¾°Í¼Æ¬
+    //æ˜¾ç¤ºéšæœºèƒŒæ™¯å›¾ç‰‡
     void ShowRandomBackground()
     {
-        //Ëæ»úÒ»ÕÅ±³¾°Í¼Æ¬Êı×éÖĞµÄÍ¼Æ¬£¬¸³Öµ¸ø±³¾°Í¼Æ¬×é¼şµÄsprite
+        //éšæœºä¸€å¼ èƒŒæ™¯å›¾ç‰‡æ•°ç»„ä¸­çš„å›¾ç‰‡ï¼Œèµ‹å€¼ç»™èƒŒæ™¯å›¾ç‰‡ç»„ä»¶çš„sprite
         background.sprite = backgroundImages[Random.Range(0, backgroundImages.Length)];
         
     }
     
-    //¹Ø±ÕĞÂ·Ö»­ÃæUI
+    //å…³é—­æ–°åˆ†ç”»é¢UI
     void HideNewHighScoreScreen()
     {
-        //Òş²ØUI»­Ãæ
+        //éšè—UIç”»é¢
         newHighScoreScreenCanvas.enabled = false;
-        //±£´æÍæ¼ÒµÃ·ÖÊı¾İ
+        //ä¿å­˜ç©å®¶å¾—åˆ†æ•°æ®
         ScoreManager.Instance.SavePlayerScoreData();
-        //ÏÔÊ¾Ëæ»ú±³¾°
+        //æ˜¾ç¤ºéšæœºèƒŒæ™¯
         ShowRandomBackground();
-        //ÏÔÊ¾Ëæ»ú»­Ãæ
+        //æ˜¾ç¤ºéšæœºç”»é¢
         ShowScoringScreen();
         
     }
-    //ÏÔÊ¾»ı·Ö»­Ãæ
+    //æ˜¾ç¤ºç§¯åˆ†ç”»é¢
     void ShowScoringScreen()
     {
-        //¿ªÆô¼Æ·Ö»­ÃæUI
+        //å¼€å¯è®¡åˆ†ç”»é¢UI
         scoringScreenCanvas.enabled = true;
-        //ÏÔÊ¾Íæ¼Ò×îÖÕµÃ·Ö
+        //æ˜¾ç¤ºç©å®¶æœ€ç»ˆå¾—åˆ†
         playerScoreText.text = ScoreManager.Instance.Score.ToString();
-        //Ñ¡ÖĞÖ÷²Ëµ¥°´Å¥
+        //é€‰ä¸­ä¸»èœå•æŒ‰é’®
         UIInput.Instance.SelectUI(buttonMainMenu);
        
-        //¸üĞÂ¸ß·ÖÅÅĞĞ°ñ
+        //æ›´æ–°é«˜åˆ†æ’è¡Œæ¦œ
         
         UpdateHighScoreLeaderboard();
     }
 
-    //¸üĞÂ¸ß·ÖÅÅĞĞ°ñÊı¾İ
+    //æ›´æ–°é«˜åˆ†æ’è¡Œæ¦œæ•°æ®
     void UpdateHighScoreLeaderboard()
     {
-        //¶ÁÈ¡²¢¼ÇÂ¼Íæ¼ÒµÃ·ÖÊı¾İÁĞ±í
+        //è¯»å–å¹¶è®°å½•ç©å®¶å¾—åˆ†æ•°æ®åˆ—è¡¨
         var playerScoreList = ScoreManager.Instance.LoadPlayerScoreData().list;
-        //½«ÁĞ±íÊı¾İÒ»Ò»ÏÔÊ¾ÔÚUIÉÏ
+        //å°†åˆ—è¡¨æ•°æ®ä¸€ä¸€æ˜¾ç¤ºåœ¨UIä¸Š
         for (int i = 0; i < highScoreLeaderboardContainer.childCount; i++)
         {
-            //Î»´ÎÈ¡µÃÃ¿¸öUI×Ó¶ÔÏó
+            //ä½æ¬¡å–å¾—æ¯ä¸ªUIå­å¯¹è±¡
             var child = highScoreLeaderboardContainer.GetChild(i);
-            //UI×Ó¶ÔÏóÕÒµ½×Ô¼ºµÄÎÄ±¾×Ó¶ÔÏó£¬Íæ¼ÒÊı¾İ¸³Öµ¸øÎÄ±¾×é¼ş
+            //UIå­å¯¹è±¡æ‰¾åˆ°è‡ªå·±çš„æ–‡æœ¬å­å¯¹è±¡ï¼Œç©å®¶æ•°æ®èµ‹å€¼ç»™æ–‡æœ¬ç»„ä»¶
             child.Find("Rank").GetComponent<Text>().text = (i + 1).ToString();
             child.Find("Score").GetComponent<Text>().text = playerScoreList[i].score.ToString();
             child.Find("Name").GetComponent<Text>().text = playerScoreList[i].playerName;
         }
     }
-    //Ö÷²Ëµ¥°´Å¥¹¦ÄÜº¯Êı
+    //ä¸»èœå•æŒ‰é’®åŠŸèƒ½å‡½æ•°
     void OnButtonMainMenuClicked()
     {
-        //¹Ø±Õ¼Æ·ÖUIµÄ»­²¼
+        //å…³é—­è®¡åˆ†UIçš„ç”»å¸ƒ
         scoringScreenCanvas.enabled = false;
-        //¼ÓÔØÖ÷²Ëµ¥³¡¾°
+        //åŠ è½½ä¸»èœå•åœºæ™¯
         SceneLoader.Instance.LoadMainMenuScene();
     }
 
-    //ÌáÇ°°´Å¥¹¦ÄÜº¯Êı
+    //æå‰æŒ‰é’®åŠŸèƒ½å‡½æ•°
     void OnButtonSubmitClicked()
     {
-        //ÎÄ±¾ÊäÈëÄÚÈİ·Ç¿Õ
+        //æ–‡æœ¬è¾“å…¥å†…å®¹éç©º
         if (!string.IsNullOrEmpty(playerNameInputField.text))
         {
-            //ĞŞ¸Äµ±Ç°Íæ¼ÒĞÕÃû£¬´«ÈëÎÄ±¾ÊäÈë¿òÄÚÈİ
+            //ä¿®æ”¹å½“å‰ç©å®¶å§“åï¼Œä¼ å…¥æ–‡æœ¬è¾“å…¥æ¡†å†…å®¹
             ScoreManager.Instance.SetPlayerName(playerNameInputField.text);
         }
         HideNewHighScoreScreen();

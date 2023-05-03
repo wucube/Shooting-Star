@@ -5,38 +5,41 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
+/// <summary>
+/// UIè¾“å…¥æ§åˆ¶
+/// </summary>
 public class UIInput : Singleton<UIInput>
 {
-    //Íæ¼ÒÊäÈëÀà±äÁ¿
+    //ç©å®¶è¾“å…¥ç±»å˜é‡
     [SerializeField] private PlayerInput playerInput;
-    //ÊäÈëÏµÍ³µÄUIÊäÈëÄ£¿é±äÁ¿
+    //è¾“å…¥ç³»ç»Ÿçš„UIè¾“å…¥æ¨¡å—å˜é‡
     private InputSystemUIInputModule UIInputModule;
 
     protected override void Awake()
     {
         base.Awake();
-        //È¡µÃÊäÈëÏµÍ³µÄUIÊäÈëÄ£¿é
+        //å–å¾—è¾“å…¥ç³»ç»Ÿçš„UIè¾“å…¥æ¨¡å—
         UIInputModule = GetComponent<InputSystemUIInputModule>();
-        //ÏÈ½ûÓÃUIÊäÈë×é¼ş
+        //å…ˆç¦ç”¨UIè¾“å…¥ç»„ä»¶
         UIInputModule.enabled = false;
     }
-    //Ñ¡ÖĞUIº¯Êı
-    //SelectableÀàÊÇËùÓĞ¿É±»Ñ¡ÖĞµÄUnity UIÀàµÄ»ùÀà
+    //é€‰ä¸­UIå‡½æ•°
+    //Selectableç±»æ˜¯æ‰€æœ‰å¯è¢«é€‰ä¸­çš„Unity UIç±»çš„åŸºç±»
     public void SelectUI(Selectable UIObject)
     {
-        //Ñ¡ÖĞUI
+        //é€‰ä¸­UI
         UIObject.Select();
-        //½«UIÉèÖÃµ½ÕıÈ·µÄ×´Ì¬
+        //å°†UIè®¾ç½®åˆ°æ­£ç¡®çš„çŠ¶æ€
         UIObject.OnSelect(null);
-        //UIÊäÈëÄ£¿éÆôÓÃ£¬¿ÉÒÔ½ÓÊÕUIÊäÈë
+        //UIè¾“å…¥æ¨¡å—å¯ç”¨ï¼Œå¯ä»¥æ¥æ”¶UIè¾“å…¥
         UIInputModule.enabled = true;
     }
-    //½ûÓÃËùÓĞUIÊäÈëº¯Êı
+    //ç¦ç”¨æ‰€æœ‰UIè¾“å…¥å‡½æ•°
     public void DisableAllUIInputs()
     {
-        //½ûÓÃËùÓĞÍæ¼ÒÊäÈë
+        //ç¦ç”¨æ‰€æœ‰ç©å®¶è¾“å…¥
         playerInput.DisableAllInputs();
-        //½ûÓÃÊäÈëÄ£¿é×é¼ş
+        //ç¦ç”¨è¾“å…¥æ¨¡å—ç»„ä»¶
         UIInputModule.enabled = false;
     }
 }

@@ -4,34 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// ç©å®¶èƒ½é‡çˆ†å‘
+/// </summary>
 public class PlayerOverdrive : MonoBehaviour
 {
-    //ÄÜÁ¿±¬·¢¿ªÆôÓë¹Ø±ÕµÄ¾²Ì¬Î¯ÍĞ
+    //èƒ½é‡çˆ†å‘å¼€å¯ä¸å…³é—­çš„é™æ€å§”æ‰˜
     public static UnityAction on  =delegate { };
     public static UnityAction off = delegate { };
 
-    //ÄÜÁ¿±¬·¢µÄÊÓ¾õÌØĞ§
+    //èƒ½é‡çˆ†å‘çš„è§†è§‰ç‰¹æ•ˆ
     [SerializeField] private GameObject triggerVFX;
     [SerializeField] private GameObject engineVFXNormal;
     [SerializeField] private GameObject engineVFXOverdrive;
-    //ÄÜÁ¿±¬·¢¿ªÆôÓë¹Ø±ÕµÄÒôĞ§
+    //èƒ½é‡çˆ†å‘å¼€å¯ä¸å…³é—­çš„éŸ³æ•ˆ
     [SerializeField] private AudioData onSFX;
     [SerializeField] private AudioData offSFX;
     
     private void Awake()
     {
-        //¶©ÔÄonÓëoffÎ¯ÍĞ
+        //è®¢é˜…onä¸offå§”æ‰˜
         on += On;
         off += Off;
     }
-    //½Å±¾ÉúÃüÖÜÆÚµÄ¿ªÊ¼Óë½áÊø¶©ÔÄ¡¢ÍË¶©Î¯ÍĞ£¬ÒòÎªÎ¯ÍĞÊÇÀà³ÉÔ±£¬¿ÉÒÔÕâÑù×ö
+    //è„šæœ¬ç”Ÿå‘½å‘¨æœŸçš„å¼€å§‹ä¸ç»“æŸè®¢é˜…ã€é€€è®¢å§”æ‰˜ï¼Œå› ä¸ºå§”æ‰˜æ˜¯ç±»æˆå‘˜ï¼Œå¯ä»¥è¿™æ ·åš
     private void OnDestroy()
     {
-        //ÍË¶©onÓëoffÎ¯ÍĞ
+        //é€€è®¢onä¸offå§”æ‰˜
         on -= On;
         off -= Off;
     }
-    //onÎ¯ÍĞ´¦Àíº¯Êı
+    //onå§”æ‰˜å¤„ç†å‡½æ•°
     void On()
     {
         triggerVFX.SetActive(true);
@@ -39,7 +42,7 @@ public class PlayerOverdrive : MonoBehaviour
         engineVFXOverdrive.SetActive(true);
         AudioManager.Instance.PlayerRandomSFX(onSFX);
     }
-    //offÎ¯ÍĞ´¦Àíº¯Êı
+    //offå§”æ‰˜å¤„ç†å‡½æ•°
     void Off()
     {
         engineVFXOverdrive.SetActive(false);

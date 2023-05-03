@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class EnemyBeam : MonoBehaviour
 {
-    //¼¤¹âÉËº¦Öµ
+    //æ¿€å…‰ä¼¤å®³å€¼
     [SerializeField] private float damage = 50f;
-    //¼¤¹âÍ¾ÖĞÊ±µÄÊÓ¾õÌØĞ§
+    //æ¿€å…‰é€”ä¸­æ—¶çš„è§†è§‰ç‰¹æ•ˆ
     [SerializeField] private GameObject hitVFX;
 
      void OnCollisionStay2D(Collision2D collision)
     {
-        //ÈôÅö×²¶ÔÏóÉÏÄÜ»ñÈ¡µ½Íæ¼Ò½Å±¾
+        //è‹¥ç¢°æ’å¯¹è±¡ä¸Šèƒ½è·å–åˆ°ç©å®¶è„šæœ¬
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
         {
-            //µ÷ÓÃÍæ¼ÒÊÜÉËº¯Êı
+            //è°ƒç”¨ç©å®¶å—ä¼¤å‡½æ•°
             player.TakeDamage(damage);
-            //¶ÔÏó³ØÉú³ÉÃüÖĞÊÓ¾õÌØĞ§
+            //å¯¹è±¡æ± ç”Ÿæˆå‘½ä¸­è§†è§‰ç‰¹æ•ˆ
             PoolManager.Release(hitVFX, collision.GetContact(0).point,
                 Quaternion.LookRotation(collision.GetContact(0).normal));
         }

@@ -1,10 +1,13 @@
 
 using UnityEngine;
 
+/// <summary>
+/// è´å¡å°”æ›²çº¿
+/// </summary>
 public class BezierCurve
 {
     /// <summary>
-    /// ·µ»Ø¶ş´Î±´Èû¶ûÇúÏßÉÏµÄµã¡£
+    /// è¿”å›äºŒæ¬¡è´å¡å°”æ›²çº¿ä¸Šçš„ç‚¹ã€‚
     /// </summary>
     public static Vector3 QuadraticPoint(Vector3 startPoint, Vector3 endPoint, Vector3 controlPoint, float by)
     {
@@ -20,7 +23,7 @@ public class BezierCurve
     }
 
     /// <summary>
-    /// ·µ»ØÈı´Î±´Èû¶ûÇúÏßÉÏµÄµã¡£
+    /// è¿”å›ä¸‰æ¬¡è´å¡å°”æ›²çº¿ä¸Šçš„ç‚¹ã€‚
     /// </summary>
     public static Vector3 CubicPoint(Vector3 startPoint, Vector3 endPoint, Vector3 controlPointStart, Vector3 controlPointEnd, float t)
     {

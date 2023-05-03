@@ -2,35 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æŠ¤ç›¾æˆ˜åˆ©å“
+/// </summary>
 public class ShieldPickUp : LootItem
 {
-   //ÂúÑªÊ±µÄÊ°È¡µÀ¾ßÒôĞ§
    [SerializeField] private AudioData fullHealthPickUpSFX;
-   //ÂúÑªÊ±µÄ»Ö¸´½±Àø±ä¸ü
    [SerializeField] private int fullHealthScoreBonus = 200;
-   //Î´ÂúÑªÊ±µÄÑªÁ¿»Ö¸´
    [SerializeField] private float shieldBonus = 20f;
    protected override void PickUp()
    {
-      //ÈôÍæ¼ÒÑªÁ¿È«Âú
       if (player.IsFullHealth)
       {
-         //²¥·ÅÂúÑªÊ±µÄÊ°È¡µÀ¾ßÒôĞ§
+
          pickUpSFX = fullHealthPickUpSFX;
-         //Ê°È¡ÎÄ±¾ÎªÔö¼Ó·ÖÊı
+         
          lootMessage.text = $"SCORE + {fullHealthScoreBonus}";
-         //Ôö¼ÓÍæ¼Ò·ÖÀà
+         
          ScoreManager.Instance.AddScore(fullHealthScoreBonus);
       }
-      else //Íæ¼ÒÑªÁ¿Î´Âú
+      else 
       {
-         //²¥·ÅÄ¬ÈÏÒôĞ§
          pickUpSFX = defaultPickUpSFX;
-         //Ê°È¡ÎÄ±¾Îª»¤¶ÜÖµ»Ö¸´
+     
          lootMessage.text = $"SHIELD + {shieldBonus}";
-         //»Ö¸´Íæ¼ÒÑªÁ¿
+        
          player.RestoreHealth(shieldBonus); 
       }
+
       base.PickUp();
    }
 }

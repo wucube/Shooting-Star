@@ -2,29 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+/// <summary>
+/// UIäº‹ä»¶è§¦å‘å™¨
+/// </summary>
 public class UIEventTrigger : MonoBehaviour,IPointerEnterHandler,IPointerDownHandler,ISelectHandler,ISubmitHandler
 {
-    //Ñ¡ÖĞÒôĞ§
+    //é€‰ä¸­éŸ³æ•ˆ
     [SerializeField] private AudioData selectSFX;
-    //Ìá½»Ê±µÄÒôĞ§±äÁ¿
+    //æäº¤æ—¶çš„éŸ³æ•ˆå˜é‡
     [SerializeField] private AudioData submitSFX;
-    //ÏµÍ³¼ì²âµ½Êó±êĞüÍ£ÔÚ½Å±¾¹ÒÔØ¶ÔÏóÉÏ¾Í»áµ÷ÓÃ¸Ãº¯Êı
+    //ç³»ç»Ÿæ£€æµ‹åˆ°é¼ æ ‡æ‚¬åœåœ¨è„šæœ¬æŒ‚è½½å¯¹è±¡ä¸Šå°±ä¼šè°ƒç”¨è¯¥å‡½æ•°
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //µ÷ÓÃÒôÆµ¹ÜÀíÆ÷µÄ²¥·ÅÒôĞ§º¯Êı
+        //è°ƒç”¨éŸ³é¢‘ç®¡ç†å™¨çš„æ’­æ”¾éŸ³æ•ˆå‡½æ•°
         AudioManager.Instance.PlaySFX(selectSFX);
     }
-    //Êó±ê°´ÏÂÊ±µ÷ÓÃµÄº¯Êı
+    //é¼ æ ‡æŒ‰ä¸‹æ—¶è°ƒç”¨çš„å‡½æ•°
     public void OnPointerDown(PointerEventData eventData)
     {
         AudioManager.Instance.PlaySFX(submitSFX);
     }
-    //Êó±êÑ¡ÖĞÊ±µ÷ÓÃµÄº¯Êı
+    //é¼ æ ‡é€‰ä¸­æ—¶è°ƒç”¨çš„å‡½æ•°
     public void OnSelect(BaseEventData eventData)
     {
         AudioManager.Instance.PlaySFX(selectSFX);
     }
-    //Êó±êÌáÇ°Ê±µ÷ÓÃµÄº¯Êı
+    //é¼ æ ‡æå‰æ—¶è°ƒç”¨çš„å‡½æ•°
     public void OnSubmit(BaseEventData eventData)
     {
         AudioManager.Instance.PlaySFX(submitSFX);

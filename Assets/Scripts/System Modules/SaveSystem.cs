@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Windows;
+
 using File = System.IO.File;
 
 public static class SaveSystem
@@ -62,12 +62,12 @@ public static class SaveSystem
         }
     }
 
-    //¼ì²â´æµµÎÄ¼şÊÇ·ñ´æÔÚ
+    //æ£€æµ‹å­˜æ¡£æ–‡ä»¶æ˜¯å¦å­˜åœ¨
     public static bool SaveFileExists(string saveFileName)
     {
-        //»ñÈ¡´æµµÎÄ¼şÂ·¾¶
+        //è·å–å­˜æ¡£æ–‡ä»¶è·¯å¾„
         var path = Path.Combine(Application.persistentDataPath, saveFileName);
-        //¼ì²âÎÄ¼şÊÇ·ñ´æÔÚ
+        //æ£€æµ‹æ–‡ä»¶æ˜¯å¦å­˜åœ¨
         return File.Exists(path);
     }
 }

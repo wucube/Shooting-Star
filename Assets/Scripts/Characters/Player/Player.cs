@@ -8,199 +8,199 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : Character
 {
-    //HUDÑªÌõ±äÁ¿
+    //HUDè¡€æ¡å˜é‡
     [SerializeField] StatsBar_HUD statsBar_HUD;
-    //ÊÇ·ñÔÙÉúÉúÃüÖµ
+    //æ˜¯å¦å†ç”Ÿç”Ÿå‘½å€¼
     [SerializeField] bool regenerateHealth = true;
-    //ÉúÃüÖµÔÙÉúÊ±¼ä
+    //ç”Ÿå‘½å€¼å†ç”Ÿæ—¶é—´
     [SerializeField] float healthRegenerateTime;
-    //ÉúÃüÖµÔÙÉú°Ù·Ö±È
+    //ç”Ÿå‘½å€¼å†ç”Ÿç™¾åˆ†æ¯”
     [SerializeField, Range(0f, 1f)] float healthRegeneratePercent;
     
     [Header("------ INPUT -------")] 
-    //Íæ¼ÒÊäÈëÀàµÄÒıÓÃ±äÁ¿
+    //ç©å®¶è¾“å…¥ç±»çš„å¼•ç”¨å˜é‡
     [SerializeField] PlayerInput input;
 
     [Header("------ MOVE -------")]
-    //»úÌåÒÆ¶¯ËÙ¶È
+    //æœºä½“ç§»åŠ¨é€Ÿåº¦
     [SerializeField] float moveSpeed = 10f;
-    //»úÌå±ßÔµ¾à»úÌåÖĞĞÄµãµÄ¾àÀë
+    //æœºä½“è¾¹ç¼˜è·æœºä½“ä¸­å¿ƒç‚¹çš„è·ç¦»
     private float _paddingX;
     private float _paddingY;
     
-    //¼ÓËÙÊ±¼ä
+    //åŠ é€Ÿæ—¶é—´
     [SerializeField] float accelerationTime = 3f;
-    //¼õËÙÊ±¼ä
+    //å‡é€Ÿæ—¶é—´
     [SerializeField] float decelerationTime = 3f;
-    //»úÌåĞı×ª½Ç¶È
+    //æœºä½“æ—‹è½¬è§’åº¦
     [SerializeField] float moveRotationAngle = 50f;
 
-    //Íæ¼ÒÑªÁ¿ÊÇ·ñÈ«ÂúÊôĞÔ
+    //ç©å®¶è¡€é‡æ˜¯å¦å…¨æ»¡å±æ€§
     public bool IsFullHealth => health == maxHealth;
-    //Íæ¼ÒÎäÆ÷ÍşÁ¦ÊÇ·ñÂú¼¶ÊôĞÔ
+    //ç©å®¶æ­¦å™¨å¨åŠ›æ˜¯å¦æ»¡çº§å±æ€§
     public bool IsFullPower => weaponPower == 2;
 
     [FormerlySerializedAs("projectile")]
     [Header("------ FIRE -------")]
-    //×Óµ¯ÎïÌå
+    //å­å¼¹ç‰©ä½“
     [SerializeField] GameObject projectile1;
     [SerializeField] GameObject projectile2;
     [SerializeField] GameObject projectile3;
-    //ÄÜÁ¿±¬·¢×Óµ¯Ô¤ÖÆÌå
+    //èƒ½é‡çˆ†å‘å­å¼¹é¢„åˆ¶ä½“
     [SerializeField] private GameObject projectileOverdrive;
     
-    //Ç¹¿ÚÌØĞ§
+    //æªå£ç‰¹æ•ˆ
     [SerializeField] private ParticleSystem muzzleVFX;
     
-    //×Óµ¯Éú³ÉÎ»ÖÃ  Ç¹¿Ú
+    //å­å¼¹ç”Ÿæˆä½ç½®  æªå£
     [SerializeField] Transform muzzleMiddle;
     [SerializeField] Transform muzzleTop;
     [SerializeField] Transform muzzleBottom;
-    //×Óµ¯·¢ÉäµÄÒôÆµÊı¾İ±äÁ¿
+    //å­å¼¹å‘å°„çš„éŸ³é¢‘æ•°æ®å˜é‡
     [SerializeField] AudioData projectileSFX;
-    //ÎäÆ÷ÍşÁ¦
+    //æ­¦å™¨å¨åŠ›
     [SerializeField, Range(0, 2)] int weaponPower = 0;
     
-    //¿ª»ğ¼ä¸ô
+    //å¼€ç«é—´éš”
     [SerializeField] float fireInterval = 0.2f;
 
     [Header("------ DODGE -------")] 
-    //ÉÁ±ÜÒôÆµÊı¾İ
+    //é—ªé¿éŸ³é¢‘æ•°æ®
     [SerializeField] private AudioData dodgeSFX;
-    //ÉÁ±ÜÄÜÁ¿ÏûºÄÖµ
+    //é—ªé¿èƒ½é‡æ¶ˆè€—å€¼
     [SerializeField, Range(0, 100)] private int dodgeEnergyCost = 25;
-    //×î´ó¹ö×ª½Ç
+    //æœ€å¤§æ»šè½¬è§’
     [SerializeField] private float maxRoll = 360f;
-    //·­¹öËÙ¶È
+    //ç¿»æ»šé€Ÿåº¦
     [SerializeField] private float rollSpeed = 360f;
-    //ÉÁ±ÜÊ±Ä£ĞÍËõ·Å×îĞ¡Öµ
+    //é—ªé¿æ—¶æ¨¡å‹ç¼©æ”¾æœ€å°å€¼
     [SerializeField] private Vector3 dodgeScale = new Vector3(0.5f, 0.5f, 0.5f);
 
 
     [Header("------ OVERDRIVE -------")]
-    //ÄÜÁ¿±¬·¢Ê±µÄÉÁ±ÜÒòÊı±äÁ¿
+    //èƒ½é‡çˆ†å‘æ—¶çš„é—ªé¿å› æ•°å˜é‡
     [SerializeField] private int overdriveDodgeFactor = 2;
-    //ÄÜÁ¿±¬·¢Ê±µÄËÙ¶ÈÒòÊı±äÁ¿
+    //èƒ½é‡çˆ†å‘æ—¶çš„é€Ÿåº¦å› æ•°å˜é‡
     [SerializeField] private float overdriveSpeedFactor = 1.2f;
-    //ÄÜÁ¿±¬·¢Ê±µÄ¿ª»ğÒòÊı±äÁ¿
+    //èƒ½é‡çˆ†å‘æ—¶çš„å¼€ç«å› æ•°å˜é‡
     [SerializeField] private float overdriveFireFactor = 1.2f;
    
-    //Íæ¼ÒÎŞµĞ³ÖĞøÊ±¼ä
+    //ç©å®¶æ— æ•ŒæŒç»­æ—¶é—´
     readonly float InvincibleTime = 1f;
     
-    //ÊÇ·ñÕıÔÚÉÁ±ÜÖĞ
+    //æ˜¯å¦æ­£åœ¨é—ªé¿ä¸­
     private bool _isDodging = false;
-    //Íæ¼ÒÊÇ·ñ´¦ÓÚÄÜÁ¿±¬·¢
+    //ç©å®¶æ˜¯å¦å¤„äºèƒ½é‡çˆ†å‘
     private bool _isOverdriving = false;
-    //×Óµ¯Ê±¼ä»Ö¸´¹ı³ÌÊ±¼ä£¬Ö»¶Á±äÁ¿
+    //å­å¼¹æ—¶é—´æ¢å¤è¿‡ç¨‹æ—¶é—´ï¼Œåªè¯»å˜é‡
     private readonly float slowMotionDuration = 1f;
     
-    //´æ´¢µ±Ç°µÄ¹ö×ª½Ç
+    //å­˜å‚¨å½“å‰çš„æ»šè½¬è§’
     private float _currentRoll;
-    //ÉÁ±Ü³ÖĞøÊ±¼ä
+    //é—ªé¿æŒç»­æ—¶é—´
     private float _dodgeDuration;
     
-    //¼ÇÂ¼Ğ­³ÌÑ­»·ÖĞÊ±¼ä
+    //è®°å½•åç¨‹å¾ªç¯ä¸­æ—¶é—´
     private float _t;
-    //Íæ¼ÒÒÆ¶¯·½Ïò
+    //ç©å®¶ç§»åŠ¨æ–¹å‘
     private Vector2 _moveDirection;
-    //ÓÃÓÚ¼ÇÂ¼Íæ¼Ò¸ÕÌå³õÊ¼ËÙ¶È
+    //ç”¨äºè®°å½•ç©å®¶åˆšä½“åˆå§‹é€Ÿåº¦
     private Vector2 _previousVelocity;
-    //ÓÃÓÚ¼ÇÂ¼Íæ¼Ò³õÊ¼ËÄÔªÊı
+    //ç”¨äºè®°å½•ç©å®¶åˆå§‹å››å…ƒæ•°
     private Quaternion _previousRotation;
     
-    //Ğ­³ÌµÄ×Óµ¯Éú³ÉµÈ´ı¹ÒÆğÊ±¼ä
+    //åç¨‹çš„å­å¼¹ç”Ÿæˆç­‰å¾…æŒ‚èµ·æ—¶é—´
     WaitForSeconds waitForFireInterval;
-    //µÈ´ıÄÜÁ¿±¬·¢Ê±µÄ¿ª»ğ¼ä¸ô
+    //ç­‰å¾…èƒ½é‡çˆ†å‘æ—¶çš„å¼€ç«é—´éš”
     WaitForSeconds waitForOverdriveFireInterval;
-    //µÈ´ıÉúÃüÖµÔÙÉúÊ±¼ä
+    //ç­‰å¾…ç”Ÿå‘½å€¼å†ç”Ÿæ—¶é—´
     WaitForSeconds waitHealthRegenerateTime;
-    //µÈ´ı¼õËÙÊ±¼ä
+    //ç­‰å¾…å‡é€Ÿæ—¶é—´
     WaitForSeconds waitDecelerationTime;
-    //µÈ´ıÎŞµĞÊ±¼ä
+    //ç­‰å¾…æ— æ•Œæ—¶é—´
     private WaitForSeconds waitInvincibleTime;
-    //µÈ´ıÏÂÒ»´Î¹Ì¶¨Ö¡¸üĞÂ
+    //ç­‰å¾…ä¸‹ä¸€æ¬¡å›ºå®šå¸§æ›´æ–°
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
-    //ÓÃÓÚ´æ´¢´ø²ÎÊıµÄÒÆ¶¯Ğ­³Ìº¯ÊıµÄ±äÁ¿
+    //ç”¨äºå­˜å‚¨å¸¦å‚æ•°çš„ç§»åŠ¨åç¨‹å‡½æ•°çš„å˜é‡
     Coroutine moveCoroutine;
-    //ÉúÃüÖµ»Ö¸´Ğ­³Ì±äÁ¿
+    //ç”Ÿå‘½å€¼æ¢å¤åç¨‹å˜é‡
     Coroutine healthRegenerateCoroutine;
 
     Rigidbody2D _rigidbody;
-    //2DÅö×²Ìå±äÁ¿
+    //2Dç¢°æ’ä½“å˜é‡
     private  Collider2D _collider;
      
-    //µ¼µ¯ÏµÍ³±äÁ¿
+    //å¯¼å¼¹ç³»ç»Ÿå˜é‡
     private MissileSystem _missile;
     
     void Awake()
     {
-        //»ñÈ¡¸ÕÌå×é¼şµÄÒıÓÃ
+        //è·å–åˆšä½“ç»„ä»¶çš„å¼•ç”¨
         _rigidbody = GetComponent<Rigidbody2D>();
-        //»ñÈ¡Íæ¼ÒÅö×²Ìå×é¼şµÄÒıÓÃ
+        //è·å–ç©å®¶ç¢°æ’ä½“ç»„ä»¶çš„å¼•ç”¨
         _collider = GetComponent<Collider2D>();
-        //È¡µÃµ¼µ¯½Å±¾ÏµÍ³ÊµÀı
+        //å–å¾—å¯¼å¼¹è„šæœ¬ç³»ç»Ÿå®ä¾‹
         _missile = GetComponent<MissileSystem>();
         
-        //Í¨¹ıÄ£ĞÍ¶ÔÏóµÄäÖÈ¾Æ÷×é¼şÈ¡µÃÄ£ĞÍ³ß´ç
+        //é€šè¿‡æ¨¡å‹å¯¹è±¡çš„æ¸²æŸ“å™¨ç»„ä»¶å–å¾—æ¨¡å‹å°ºå¯¸
         var size = transform.GetChild(0).GetComponent<Renderer>().bounds.size;
-        //Ä£ĞÍÖĞĞÄµ½±ß¾àÖµ ÎªÄ£ĞÍ³¤¿íµÄÒ»°ë
+        //æ¨¡å‹ä¸­å¿ƒåˆ°è¾¹è·å€¼ ä¸ºæ¨¡å‹é•¿å®½çš„ä¸€åŠ
         _paddingX = size.x / 2f;
         _paddingY = size.y / 2f;
         
-        //³õÊ¼»¯ÉÁ±ÜÊ±¼ä
+        //åˆå§‹åŒ–é—ªé¿æ—¶é—´
         _dodgeDuration = maxRoll / rollSpeed;
         
         _rigidbody.gravityScale = 0f;
-        //³õÊ¼»¯µÈ´ıÄÜÁ¿±¬·¢µÄ¿ª»ğÊ±¼ä¼ä¸ô£¬²ÎÊıÎª ¿ª»ğ¼ä¸ôÊ±¼ä ³ıÒÔ ÄÜÁ¿±¬·¢¿ª»ğÒòÊı£¬Êµ¼Ê¿ª»ğ¼ä¸ôÊ±¼äËõ¶Ì
+        //åˆå§‹åŒ–ç­‰å¾…èƒ½é‡çˆ†å‘çš„å¼€ç«æ—¶é—´é—´éš”ï¼Œå‚æ•°ä¸º å¼€ç«é—´éš”æ—¶é—´ é™¤ä»¥ èƒ½é‡çˆ†å‘å¼€ç«å› æ•°ï¼Œå®é™…å¼€ç«é—´éš”æ—¶é—´ç¼©çŸ­
         waitForOverdriveFireInterval = new WaitForSeconds(fireInterval/=overdriveFireFactor);
         
         waitForFireInterval = new WaitForSeconds(fireInterval);
-        //³õÊ¼»¯ÉúÃüÖµÔÙÉúÊ±¼ä
+        //åˆå§‹åŒ–ç”Ÿå‘½å€¼å†ç”Ÿæ—¶é—´
         waitHealthRegenerateTime = new WaitForSeconds(healthRegenerateTime);
-        //³õÊ¼»¯µÈ´ı¼õËÙÊ±¼ä£¬´«ÈëÍæ¼Ò¼õËÙÊ±¼ä
+        //åˆå§‹åŒ–ç­‰å¾…å‡é€Ÿæ—¶é—´ï¼Œä¼ å…¥ç©å®¶å‡é€Ÿæ—¶é—´
         waitDecelerationTime = new WaitForSeconds(decelerationTime);
         
-        //³õÊ¼»¯µÈ´ıÎŞµĞÊ±¼ä
+        //åˆå§‹åŒ–ç­‰å¾…æ— æ•Œæ—¶é—´
         waitInvincibleTime = new WaitForSeconds(InvincibleTime);
     }
     
-    //º¯ÊıÖØĞ´
+    //å‡½æ•°é‡å†™
     protected override void OnEnable()
     {
         base.OnEnable();
-        //Íæ¼ÒÊäÈëÀàµÄÒÆ¶¯ºÍÍ£Ö¹ÒÆ¶¯µÄÊÂ¼ş¶©ÔÄ¶ÔÓ¦´¦Àíº¯Êı
+        //ç©å®¶è¾“å…¥ç±»çš„ç§»åŠ¨å’Œåœæ­¢ç§»åŠ¨çš„äº‹ä»¶è®¢é˜…å¯¹åº”å¤„ç†å‡½æ•°
         input.onMove += Move;
         input.onStopMove += StopMove;
-        //Íæ¼ÒÊäÈëÀàµÄ¿ª»ğÍ£»ğÊÂ¼ş¶©ÔÄ¶ÔÓ¦ÊÂ¼ş´¦ÀíÆ÷
+        //ç©å®¶è¾“å…¥ç±»çš„å¼€ç«åœç«äº‹ä»¶è®¢é˜…å¯¹åº”äº‹ä»¶å¤„ç†å™¨
         input.onFire += Fire;
         input.onStopFire += StopFire;
-        //¶©ÔÄÍæ¼ÒÊäÈëÀàµÄÉÁ±ÜÊÂ¼ş
+        //è®¢é˜…ç©å®¶è¾“å…¥ç±»çš„é—ªé¿äº‹ä»¶
         input.onDodge += Dodge;
-        //¶©ÔÄÊäÈë¹ÜÀíÀàµÄÄÜÁ¿±¬·¢ÊÂ¼ş
+        //è®¢é˜…è¾“å…¥ç®¡ç†ç±»çš„èƒ½é‡çˆ†å‘äº‹ä»¶
         input.onOverdrive += Overdrive;
-        //¶©ÔÄ·¢Éäµ¼µ¯ÊÂ¼ş
+        //è®¢é˜…å‘å°„å¯¼å¼¹äº‹ä»¶
         input.onLaunchMissile += LaunchMissile;
-        //¶©ÔÄÄÜÁ¿±¬·¢ÏµÍ³µÄ¿ªÆôÓë¹Ø±ÕÎ¯ÍĞ
+        //è®¢é˜…èƒ½é‡çˆ†å‘ç³»ç»Ÿçš„å¼€å¯ä¸å…³é—­å§”æ‰˜
         PlayerOverdrive.on += OverdriveOn;
         PlayerOverdrive.off += OverdriveOff;
     }
     void OnDisable()
     {
-        //Íæ¼ÒÊäÈëÀàµÄÒÆ¶¯ºÍÍ£Ö¹ÒÆ¶¯ÊÂ¼şÍË¶©¶ÔÓ¦ÊÂ¼ş´¦ÀíÆ÷
+        //ç©å®¶è¾“å…¥ç±»çš„ç§»åŠ¨å’Œåœæ­¢ç§»åŠ¨äº‹ä»¶é€€è®¢å¯¹åº”äº‹ä»¶å¤„ç†å™¨
         input.onMove -= Move;
         input.onStopMove -= StopMove;
-        //Íæ¼ÒÊäÈëÀàµÄ¿ª»ğÍ£»ğÊÂ¼şÍË¶©¶ÔÓ¦ÊÂ¼ş´¦ÀíÆ÷
+        //ç©å®¶è¾“å…¥ç±»çš„å¼€ç«åœç«äº‹ä»¶é€€è®¢å¯¹åº”äº‹ä»¶å¤„ç†å™¨
         input.onFire -= Fire;
         input.onStopFire -= StopFire;
-        //ÍË¶©Íæ¼ÒÊäÈëÀàµÄÉÁ±ÜÊÂ¼ş
+        //é€€è®¢ç©å®¶è¾“å…¥ç±»çš„é—ªé¿äº‹ä»¶
         input.onDodge -= Dodge;
-        //ÍË¶©ÄÜÁ¿±¬·¢ÊÂ¼ş
+        //é€€è®¢èƒ½é‡çˆ†å‘äº‹ä»¶
         input.onOverdrive -= Overdrive;
-        //ÍË¶©·¢Éäµ¼µ¯ÊÂ¼ş
+        //é€€è®¢å‘å°„å¯¼å¼¹äº‹ä»¶
         input.onLaunchMissile -= LaunchMissile;
-        //ÍË¶©ÄÜÁ¿±¬·¢ÏµÍ³µÄ¿ªÆô¹Ø±ÕÎ¯ÍĞ
+        //é€€è®¢èƒ½é‡çˆ†å‘ç³»ç»Ÿçš„å¼€å¯å…³é—­å§”æ‰˜
         PlayerOverdrive.on -= OverdriveOn;
         PlayerOverdrive.off -= OverdriveOff;
     }
@@ -208,105 +208,105 @@ public class Player : Character
     // Start is called before the first frame update
     void Start()
     {
-        //ĞŞ¸Ä¸ÕÌåµÄÖØÁ¦Ëõ·ÅÖµÎª0£¬²»ÖÃÖØÁ¦Îª0£¬ ÓÎÏ·ÔËĞĞÊ±Ö÷½Ç¸Õ×¹»ú 
+        //ä¿®æ”¹åˆšä½“çš„é‡åŠ›ç¼©æ”¾å€¼ä¸º0ï¼Œä¸ç½®é‡åŠ›ä¸º0ï¼Œ æ¸¸æˆè¿è¡Œæ—¶ä¸»è§’åˆšå æœº 
         _rigidbody.gravityScale = 0f;
         
-        //³õÊ¼»¯×Óµ¯Éú³ÉµÈ´ı¹ÒÆğÊ±¼ä
+        //åˆå§‹åŒ–å­å¼¹ç”Ÿæˆç­‰å¾…æŒ‚èµ·æ—¶é—´
         waitForFireInterval = new WaitForSeconds(fireInterval);
-        //³õÊ¼»¯»ØÑªµÈ´ı¹ÒÆğÊ±¼ä
+        //åˆå§‹åŒ–å›è¡€ç­‰å¾…æŒ‚èµ·æ—¶é—´
         waitHealthRegenerateTime = new WaitForSeconds(healthRegenerateTime);
         
-        //³õÊ¼»¯HUDÑªÌõ
+        //åˆå§‹åŒ–HUDè¡€æ¡
         statsBar_HUD.Initialize(health, maxHealth);
         
-        //Player½Å±¾ÔËĞĞÊ±£¬¼¤»îGameplay¶¯×÷±í
+        //Playerè„šæœ¬è¿è¡Œæ—¶ï¼Œæ¿€æ´»GameplayåŠ¨ä½œè¡¨
         input.EnableGameplayInput();
     }
 
-    //ÖØĞ´ÊÜÉËº¯Êı
+    //é‡å†™å—ä¼¤å‡½æ•°
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        //Íæ¼ÒÊÜÉËÊ±ÎäÆ÷ÍşÁ¦ÏÂ½µ
+        //ç©å®¶å—ä¼¤æ—¶æ­¦å™¨å¨åŠ›ä¸‹é™
         PowerDown();
         
-        //¸üĞÂHUDÑªÌõ×´Ì¬
+        //æ›´æ–°HUDè¡€æ¡çŠ¶æ€
         statsBar_HUD.UpdateStats(health, maxHealth);
-        //µ÷ÓÃ×Óµ¯Ê±¼äº¯Êı
+        //è°ƒç”¨å­å¼¹æ—¶é—´å‡½æ•°
         TimeController.Instance.BulletTime(slowMotionDuration);
         
-        //Íæ¼ÒÓÎÏ·¶ÔÏó´¦ÓÚ»î¶¯×´Ì¬
+        //ç©å®¶æ¸¸æˆå¯¹è±¡å¤„äºæ´»åŠ¨çŠ¶æ€
         if (gameObject.activeSelf)
         {
-            //ÊÜÉËÊ±µ÷ÓÃMoveº¯Êı
+            //å—ä¼¤æ—¶è°ƒç”¨Moveå‡½æ•°
             Move(_moveDirection);
-            //¿ªÆôÍæ¼ÒÎŞµĞÊ±¼äĞ­³Ì
+            //å¼€å¯ç©å®¶æ— æ•Œæ—¶é—´åç¨‹
             StartCoroutine(InvincibleCoroutine());
             
-            //ÉúÃüÔÙÉú¿ª¹Ø¿ªÆô
+            //ç”Ÿå‘½å†ç”Ÿå¼€å…³å¼€å¯
             if (regenerateHealth)
             {
-                //Èç¹ûÔÙÉúĞ­³Ì²»Îª¿Õ£¬ÏÈÍ£ÓÃÔÙÉúĞ­³Ì£¬È·±£Ã¿´Îµ÷ÓÃĞ­³ÌÊ±£¬ÏÈÇ°µÄ»ØÑªĞ­³ÌÒÑ¾­Í£ÓÃ
+                //å¦‚æœå†ç”Ÿåç¨‹ä¸ä¸ºç©ºï¼Œå…ˆåœç”¨å†ç”Ÿåç¨‹ï¼Œç¡®ä¿æ¯æ¬¡è°ƒç”¨åç¨‹æ—¶ï¼Œå…ˆå‰çš„å›è¡€åç¨‹å·²ç»åœç”¨
                 if (healthRegenerateCoroutine != null)
                     StopCoroutine(healthRegenerateCoroutine);
-                //ÆôÓÃÉúÃüÔÙÉúĞ­³Ì£¬´«ÈëÔÙÉúÊ±¼äÓëÉúÃü»Ö¸´°Ù·Ö±ÈÁ¿
+                //å¯ç”¨ç”Ÿå‘½å†ç”Ÿåç¨‹ï¼Œä¼ å…¥å†ç”Ÿæ—¶é—´ä¸ç”Ÿå‘½æ¢å¤ç™¾åˆ†æ¯”é‡
                 healthRegenerateCoroutine =
                     StartCoroutine(HealthRegenerateCoroutine(waitHealthRegenerateTime, healthRegeneratePercent));
             }
         }
     }
-    //ÖØĞ´»ØÑªº¯Êı
+    //é‡å†™å›è¡€å‡½æ•°
     public override void RestoreHealth(float value)
     {
-        //µ÷ÓÃ»ùÀàº¯Êı
+        //è°ƒç”¨åŸºç±»å‡½æ•°
         base.RestoreHealth(value);
-        //¸üĞÂÑªÌõ×´Ì¬
+        //æ›´æ–°è¡€æ¡çŠ¶æ€
         statsBar_HUD.UpdateStats(health, maxHealth);
     }
-    //ÖØĞ´ËÀÍöº¯Êı
+    //é‡å†™æ­»äº¡å‡½æ•°
     public override void Die()
     {
-        //µ÷ÓÃÓÎÏ·¹ÜÀíÆ÷µÄÓÎÏ·½áÊøÎ¯ÍĞ
+        //è°ƒç”¨æ¸¸æˆç®¡ç†å™¨çš„æ¸¸æˆç»“æŸå§”æ‰˜
         GameManager.onGameOver?.Invoke();
-        //ÓÎÏ·×´Ì¬Îª½áÊø
+        //æ¸¸æˆçŠ¶æ€ä¸ºç»“æŸ
         GameManager.GameState = GameState.GameOver;
         
-        //ÏÈ¸üĞÂÑªÌõ×´Ì¬£¬µ±Ç°×´Ì¬ÖµÎª0£¬ÑªÌõÇå¿Õ
+        //å…ˆæ›´æ–°è¡€æ¡çŠ¶æ€ï¼Œå½“å‰çŠ¶æ€å€¼ä¸º0ï¼Œè¡€æ¡æ¸…ç©º
         statsBar_HUD.UpdateStats(0f, maxHealth);
         base.Die();
     }
 
-    //ÎŞµĞÊ±¼äĞ­³Ì
+    //æ— æ•Œæ—¶é—´åç¨‹
     IEnumerator InvincibleCoroutine()
     {
-        //Íæ¼ÒÅö×²Ìå´¥·¢Æ÷¿ªÆôÒ»¶ÎÊ±¼äºóÔÙ¹Ø±Õ
+        //ç©å®¶ç¢°æ’ä½“è§¦å‘å™¨å¼€å¯ä¸€æ®µæ—¶é—´åå†å…³é—­
         _collider.isTrigger = true;
         yield return waitInvincibleTime;
         _collider.isTrigger = false;
     }
     #region MOVE
 
-    //ÒÆ¶¯ÊÂ¼ş´¦Àíº¯Êı
+    //ç§»åŠ¨äº‹ä»¶å¤„ç†å‡½æ•°
     void Move(Vector2 moveInput)
     {
-        //¸ÕÌåËÙ¶È µÈÓÚ ´«Èë¶şÎ¬ÏòÁ¿ * ÒÆ¶¯ËÙ¶È
+        //åˆšä½“é€Ÿåº¦ ç­‰äº ä¼ å…¥äºŒç»´å‘é‡ * ç§»åŠ¨é€Ÿåº¦
         //_rigidbody.velocity = moveInput * moveSpeed;
         
-        //½«´ø²ÎÊıµÄĞ­³ÌÓÃĞ­³Ì±äÁ¿´æ´¢ÆğÀ´£¬µ÷ÓÃÒÆ¶¯Ğ­³ÌÇ°ÏÈÍ£Ö¹ÉÏÒ»¸öÒÆ¶¯Ğ­³Ì£¬·ñÔòÉÏ¸öĞ­³Ì»áÏÈÖ´ĞĞÏÂÈ¥
+        //å°†å¸¦å‚æ•°çš„åç¨‹ç”¨åç¨‹å˜é‡å­˜å‚¨èµ·æ¥ï¼Œè°ƒç”¨ç§»åŠ¨åç¨‹å‰å…ˆåœæ­¢ä¸Šä¸€ä¸ªç§»åŠ¨åç¨‹ï¼Œå¦åˆ™ä¸Šä¸ªåç¨‹ä¼šå…ˆæ‰§è¡Œä¸‹å»
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         
-        //Íæ¼ÒÒÆ¶¯·½ÏòÎªÒÆ¶¯ÊäÈë²ÎÊı¹éÒ»»¯Ö®ºóµÄÖµ
+        //ç©å®¶ç§»åŠ¨æ–¹å‘ä¸ºç§»åŠ¨è¾“å…¥å‚æ•°å½’ä¸€åŒ–ä¹‹åçš„å€¼
         _moveDirection = moveInput.normalized;
-        //Ğı×ª½Ç¶È£¬moveInputµÄYÖµÔÚ-1ºÍ 1Ö®¼ä
+        //æ—‹è½¬è§’åº¦ï¼ŒmoveInputçš„Yå€¼åœ¨-1å’Œ 1ä¹‹é—´
         Quaternion moveRotation = Quaternion.AngleAxis(moveRotationAngle * moveInput.y, Vector3.right);
-        //µ÷ÓÃÒÆ¶¯Ğ­³Ì£¬¶ÔmoveInput×ö¹éÒ»»¯£¬Ê¹¼üÅÌÓëÊÖ±úÊäÈëµÄ¶şÎ¬ÏòÁ¿±£³ÖÒ»ÖÂ
+        //è°ƒç”¨ç§»åŠ¨åç¨‹ï¼Œå¯¹moveInputåšå½’ä¸€åŒ–ï¼Œä½¿é”®ç›˜ä¸æ‰‹æŸ„è¾“å…¥çš„äºŒç»´å‘é‡ä¿æŒä¸€è‡´
         moveCoroutine = StartCoroutine(MoveCoroutine(accelerationTime, _moveDirection * moveSpeed, moveRotation));
-        //ÏÈÍ£ÓÃÍæ¼Ò¼õËÙĞ­³Ì
+        //å…ˆåœç”¨ç©å®¶å‡é€Ÿåç¨‹
         StopCoroutine(nameof(DecelerationCoroutine));
-        //ÆôÓÃ·¶Î§ÒÆ¶¯ÏŞÖÆÒÆ¶¯Ğ­³Ì
+        //å¯ç”¨èŒƒå›´ç§»åŠ¨é™åˆ¶ç§»åŠ¨åç¨‹
         StartCoroutine(nameof(MoveRangeLimitationCoroutine));
     }
-    //Í£Ö¹ÒÆ¶¯ÊÂ¼ş
+    //åœæ­¢ç§»åŠ¨äº‹ä»¶
     void StopMove()
     {
         // if (moveCoroutine != null)
@@ -315,39 +315,39 @@ public class Player : Character
         // moveCoroutine = StartCoroutine(MoveCoroutine(decelerationTime, Vector2.zero, Quaternion.identity));
         // StopCoroutine(nameof(DecelerationCoroutine));
         
-        //¸ÕÌåËÙ¶ÈÎª0
+        //åˆšä½“é€Ÿåº¦ä¸º0
        // _rigidbody.velocity = Vector2.zero;
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         _moveDirection=Vector2.zero;
-        //µ÷ÓÃÒÆ¶¯Ğ­³Ì£¬´«Èë¼õËÙÊ±¼ä£¬¸ÕÌåËÙ¶ÈÖğ½¥Îª0£¬»úÌåĞı×ª¸´Ô­
+        //è°ƒç”¨ç§»åŠ¨åç¨‹ï¼Œä¼ å…¥å‡é€Ÿæ—¶é—´ï¼Œåˆšä½“é€Ÿåº¦é€æ¸ä¸º0ï¼Œæœºä½“æ—‹è½¬å¤åŸ
         moveCoroutine = StartCoroutine(MoveCoroutine(decelerationTime,Vector2.zero,quaternion.identity));
-        //Í£ÓÃÍæ¼Ò»úÌå¼õËÙĞ­³Ì
+        //åœç”¨ç©å®¶æœºä½“å‡é€Ÿåç¨‹
         StopCoroutine(nameof(DecelerationCoroutine));
     }
     
-    //ÒÆ¶¯Ğ­³Ì£¬Íæ¼Ò¸ÕÌåËÙ¶È´Ó0µ½×î´óËÙ¶È£¬×î´óËÙ¶Èµ½0
+    //ç§»åŠ¨åç¨‹ï¼Œç©å®¶åˆšä½“é€Ÿåº¦ä»0åˆ°æœ€å¤§é€Ÿåº¦ï¼Œæœ€å¤§é€Ÿåº¦åˆ°0
     IEnumerator MoveCoroutine(float time,Vector2 moveVelocity,Quaternion moveRotation)
     {
-        //¼ÇÂ¼Ê±¼ä
+        //è®°å½•æ—¶é—´
         _t = 0f;
-        //¼ÇÂ¼Íæ¼Ò¸ÕÌåËÙ¶ÈÖµÓëĞı×ª½Ç¶È
+        //è®°å½•ç©å®¶åˆšä½“é€Ÿåº¦å€¼ä¸æ—‹è½¬è§’åº¦
         _previousVelocity = _rigidbody.velocity;
         _previousRotation = transform.rotation;
-        //µ±tĞ¡ÓÚÖ¸¶¨Ê±¼ä£¬Ò»Ö±Ñ­»·
+        //å½“tå°äºæŒ‡å®šæ—¶é—´ï¼Œä¸€ç›´å¾ªç¯
         while (_t < time) 
         {
-            //Ê±¼äÀÛ¼Ó
+            //æ—¶é—´ç´¯åŠ 
             _t += Time.fixedDeltaTime;
-            //ÏßĞÔ²åÖµ¸Ä±ä¸ÕÌåËÙ¶È
+            //çº¿æ€§æ’å€¼æ”¹å˜åˆšä½“é€Ÿåº¦
             _rigidbody.velocity = Vector2.Lerp(_previousVelocity, moveVelocity, _t / time);
-            //ÏßĞÔ²åÖµ¸Ä±äÍæ¼ÒµÄĞı×ª½Ç¶È
+            //çº¿æ€§æ’å€¼æ”¹å˜ç©å®¶çš„æ—‹è½¬è§’åº¦
             transform.rotation = Quaternion.Lerp(_previousRotation, moveRotation, _t / time);
-            //¹ÒÆğµÈ´ıÏÂÒ»´Î¹Ì¶¨¸üĞÂ
+            //æŒ‚èµ·ç­‰å¾…ä¸‹ä¸€æ¬¡å›ºå®šæ›´æ–°
             yield return  _waitForFixedUpdate;
         }
     }
     /// <summary>
-    /// ÏŞÖÆÍæ¼ÒÒÆ¶¯·¶Î§
+    /// é™åˆ¶ç©å®¶ç§»åŠ¨èŒƒå›´
     /// </summary>
     /// <returns></returns>
     IEnumerator MoveRangeLimitationCoroutine()
@@ -358,12 +358,12 @@ public class Player : Character
             yield return null;
         }
     }
-    //Íæ¼Ò»úÌå¼õËÙĞ­³Ì
+    //ç©å®¶æœºä½“å‡é€Ÿåç¨‹
     IEnumerator DecelerationCoroutine()
     {
-        //¹ÒÆğµÈ´ı¼õËÙÊ±¼ä
+        //æŒ‚èµ·ç­‰å¾…å‡é€Ÿæ—¶é—´
         yield return waitDecelerationTime;
-        //Í£ÓÃÒÆ¶¯ÏŞÎ»ÖÃÏŞÖÆĞ­³Ì
+        //åœç”¨ç§»åŠ¨é™ä½ç½®é™åˆ¶åç¨‹
         StopCoroutine(nameof(MoveRangeLimitationCoroutine));
     }
 
@@ -371,28 +371,28 @@ public class Player : Character
 
     #region FIRE
 
-    //¿ª»ğº¯Êı
+    //å¼€ç«å‡½æ•°
     void Fire()
     {
-        //²¥·ÅÇ¹¿ÚÌØĞ§
+        //æ’­æ”¾æªå£ç‰¹æ•ˆ
         muzzleVFX.Play();
         StartCoroutine(nameof(FireCoroutine));
     }
-    //Í£»ğº¯Êı
+    //åœç«å‡½æ•°
     void StopFire()
     {
-        //Í£²¥Ç¹¿ÚÌØĞ§
+        //åœæ’­æªå£ç‰¹æ•ˆ
         muzzleVFX.Stop();
         
         StopCoroutine(nameof(FireCoroutine));
     }
     
-    //×Óµ¯Éú³ÉĞ­³Ì
+    //å­å¼¹ç”Ÿæˆåç¨‹
     IEnumerator FireCoroutine()
     {
         while (true)
         {
-            //Î´²ÉÓÃ¶ÔÏó³ØÉú³É×Óµ¯
+            //æœªé‡‡ç”¨å¯¹è±¡æ± ç”Ÿæˆå­å¼¹
             //switch (weaponPower)
             //{
             //    case 0:
@@ -408,9 +408,9 @@ public class Player : Character
             //        Instantiate(projectile3, muzzleBottom.position, Quaternion.identity);
             //        break;
             //}
-            switch (weaponPower) // ¸ù¾İÎäÆ÷ÍşÁ¦Éú³É²»Í¬×Óµ¯
+            switch (weaponPower) // æ ¹æ®æ­¦å™¨å¨åŠ›ç”Ÿæˆä¸åŒå­å¼¹
             {
-                //´¦ÓÚÄÜÁ¿±¬·¢×´Ì¬£¬×Óµ¯³ØÉú³ÉÌØÊâ×Óµ¯£¬·ñÔòÉú³ÉÆÕÍ¨×Óµ¯
+                //å¤„äºèƒ½é‡çˆ†å‘çŠ¶æ€ï¼Œå­å¼¹æ± ç”Ÿæˆç‰¹æ®Šå­å¼¹ï¼Œå¦åˆ™ç”Ÿæˆæ™®é€šå­å¼¹
                 case 0:
                     PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile1, muzzleMiddle.position);
                     break;
@@ -424,9 +424,9 @@ public class Player : Character
                     PoolManager.Release(_isOverdriving ? projectileOverdrive : projectile3, muzzleBottom.position);
                     break;
             }
-            //·¢ÉäÒ»´Î×Óµ¯£¬¾Í²¥·ÅÒ»´ÎËæ»úÒôĞ§
+            //å‘å°„ä¸€æ¬¡å­å¼¹ï¼Œå°±æ’­æ”¾ä¸€æ¬¡éšæœºéŸ³æ•ˆ
             AudioManager.Instance.PlayerRandomSFX(projectileSFX);
-            //Èç¹û´¦ÓÚÄÜÁ¿±¬·¢×´Ì¬£¬ÔòµÈ´ı¹ÒÆğÄÜÁ¿±¬·¢¿ª»ğ¼ä¸ôÊ±¼ä£¬·ñÔò¹ÒÆğµÈ´ıÆÕÍ¨¿ª»ğ¼ä¸ôÊ±¼ä
+            //å¦‚æœå¤„äºèƒ½é‡çˆ†å‘çŠ¶æ€ï¼Œåˆ™ç­‰å¾…æŒ‚èµ·èƒ½é‡çˆ†å‘å¼€ç«é—´éš”æ—¶é—´ï¼Œå¦åˆ™æŒ‚èµ·ç­‰å¾…æ™®é€šå¼€ç«é—´éš”æ—¶é—´
             yield return _isOverdriving ? waitForOverdriveFireInterval : waitForFireInterval;
         }
     }
@@ -434,32 +434,32 @@ public class Player : Character
     #endregion
 
     #region DODGE
-    //ÉÁ±ÜÊÂ¼ş´¦Àíº¯Êı
+    //é—ªé¿äº‹ä»¶å¤„ç†å‡½æ•°
     void Dodge()
     {
-        //¼ÙÈçÕıÔÚÉÁ±ÜÖĞÇÒÄÜÁ¿²»×ãÒÔÉÁ±ÜÊ±£¬Ö±½Ó·µ»Ø
+        //å‡å¦‚æ­£åœ¨é—ªé¿ä¸­ä¸”èƒ½é‡ä¸è¶³ä»¥é—ªé¿æ—¶ï¼Œç›´æ¥è¿”å›
         if (_isDodging||!PlayerEnergy.Instance.IsEnough(dodgeEnergyCost)) return;
-        //¿ªÆôÉÁ±ÜĞ­³Ì
+        //å¼€å¯é—ªé¿åç¨‹
         StartCoroutine(nameof(DodgeCoroutine));
     }
-    //ÉÁ±ÜĞ­³Ì  
+    //é—ªé¿åç¨‹  
     IEnumerator DodgeCoroutine()
     {
-        //ÉÁ±Ü¿ªÆô£¬ÕıÔÚÉÁ±Ü Îª True
+        //é—ªé¿å¼€å¯ï¼Œæ­£åœ¨é—ªé¿ ä¸º True
         _isDodging = true;
-        //²¥·ÅÉÁ±ÜÒôĞ§
+        //æ’­æ”¾é—ªé¿éŸ³æ•ˆ
         AudioManager.Instance.PlayerRandomSFX(dodgeSFX);
-        //ÏûºÄÄÜÁ¿
+        //æ¶ˆè€—èƒ½é‡
         PlayerEnergy.Instance.Use(dodgeEnergyCost);
-        //Ê¹Åö×²Ìå±äÎª´¥·¢Æ÷£¬Åö×²º¯ÊıÊ§Ğ§£¬Íæ¼ÒÎŞµĞ
+        //ä½¿ç¢°æ’ä½“å˜ä¸ºè§¦å‘å™¨ï¼Œç¢°æ’å‡½æ•°å¤±æ•ˆï¼Œç©å®¶æ— æ•Œ
         _collider.isTrigger = true;
-        //»úÌå¿ªÊ¼·­¹öÇ°£¬ÖØÖÃµ±Ç°¹ö×ª½Ç£¬ÉèÖÃÎª0
+        //æœºä½“å¼€å§‹ç¿»æ»šå‰ï¼Œé‡ç½®å½“å‰æ»šè½¬è§’ï¼Œè®¾ç½®ä¸º0
         _currentRoll = 0f;
-        //ÁÙÊ±±äÁ¿´æ´¢Íæ¼Òµ±Ç°Ëõ·ÅÖµ
+        //ä¸´æ—¶å˜é‡å­˜å‚¨ç©å®¶å½“å‰ç¼©æ”¾å€¼
         var scale = transform.localScale;
-        //µ÷ÓÃ×Óµ¯Ê±¼äº¯Êı
+        //è°ƒç”¨å­å¼¹æ—¶é—´å‡½æ•°
         TimeController.Instance.BulletTime(slowMotionDuration,slowMotionDuration);
-        //ÈÃÍæ¼ÒÑØ×ÅXÖáĞı×ª ¸Ä±äÄ£ĞÍµÄ´óĞ¡£¬Ä£ĞÍËõ·ÅÖµÔÚ1µ½0.5Ö®¼ä±ä»»
+        //è®©ç©å®¶æ²¿ç€Xè½´æ—‹è½¬ æ”¹å˜æ¨¡å‹çš„å¤§å°ï¼Œæ¨¡å‹ç¼©æ”¾å€¼åœ¨1åˆ°0.5ä¹‹é—´å˜æ¢
 
         // * Mathod 01
         
@@ -485,7 +485,7 @@ public class Player : Character
         //     yield return null;
         // }
 
-        // * Mathod 02 Ê¹ÓÃ´¿ĞÔ²åÖµÊµÏÖÄ£ĞÍËõ·Å
+        // * Mathod 02 ä½¿ç”¨çº¯æ€§æ’å€¼å®ç°æ¨¡å‹ç¼©æ”¾
         // var t1 = 0f;
         // var t2 = 0f;
         // while (currentRoll < maxRoll)
@@ -506,23 +506,23 @@ public class Player : Character
         //     yield return null;
         // }
         
-        // * Method 03 ¶ş½×±´Èû¶ûÇúÏß²åÖµ·¨ 
+        // * Method 03 äºŒé˜¶è´å¡å°”æ›²çº¿æ’å€¼æ³• 
 
-        //µ±Ç°¹ö×ª½Ç Ğ¡ÓÚ ×î´ó¹ö×ª½ÇÊ±£¬Ò»ÆğÑ­»·
+        //å½“å‰æ»šè½¬è§’ å°äº æœ€å¤§æ»šè½¬è§’æ—¶ï¼Œä¸€èµ·å¾ªç¯
         while (_currentRoll < maxRoll)
         {
-            //µ±Ç°¹ö×ª½ÇÀÛ¼Ó
+            //å½“å‰æ»šè½¬è§’ç´¯åŠ 
             _currentRoll += rollSpeed * Time.deltaTime;
-            //»úÌåÈÆXÖáĞı×ªµ½¹ö×ª½ÇÎ»ÖÃ
+            //æœºä½“ç»•Xè½´æ—‹è½¬åˆ°æ»šè½¬è§’ä½ç½®
             transform.rotation = Quaternion.AngleAxis(_currentRoll, Vector3.right);
-            //Ä£ĞÍËõ·ÅÖµÔÚ1µ½0.2Ö®¼ä±ä»»£¬ÓÃ¶ş´Î±´Èü¶ûÇúÏß²åÖµËã·¨¡£±´Èü¶ûÇúÏß²»»á´©¹ı×îĞ¡µã£¬×îĞ¡Ëõ·ÅÖµÒª¸üĞ¡µã
+            //æ¨¡å‹ç¼©æ”¾å€¼åœ¨1åˆ°0.2ä¹‹é—´å˜æ¢ï¼Œç”¨äºŒæ¬¡è´èµ›å°”æ›²çº¿æ’å€¼ç®—æ³•ã€‚è´èµ›å°”æ›²çº¿ä¸ä¼šç©¿è¿‡æœ€å°ç‚¹ï¼Œæœ€å°ç¼©æ”¾å€¼è¦æ›´å°ç‚¹
             transform.localScale =
                 BezierCurve.QuadraticPoint(Vector3.one, Vector3.one, dodgeScale, _currentRoll / maxRoll);
             yield return null;
         }
-        //´¥·¢Æ÷»Ö¸´ÎªÅö×²Ìå£¬Åö×²º¯ÊıÉúĞ§£¬Íæ¼ÒÊ§È¥ÎŞµĞĞ§¹û
+        //è§¦å‘å™¨æ¢å¤ä¸ºç¢°æ’ä½“ï¼Œç¢°æ’å‡½æ•°ç”Ÿæ•ˆï¼Œç©å®¶å¤±å»æ— æ•Œæ•ˆæœ
         _collider.isTrigger = false;
-        //ÉÁ±Ü¶¯×÷Íê³É£¬ÊÇ·ñÕıÔÚÉÁ±ÜÎª false
+        //é—ªé¿åŠ¨ä½œå®Œæˆï¼Œæ˜¯å¦æ­£åœ¨é—ªé¿ä¸º false
         _isDodging = false;
     }
 
@@ -530,66 +530,66 @@ public class Player : Character
 
     #region OVERDRIVE
 
-    //ÄÜÁ¿±¬·¢ÊÂ¼ş´¦Àíº¯Êı
+    //èƒ½é‡çˆ†å‘äº‹ä»¶å¤„ç†å‡½æ•°
     void Overdrive()
     {
-        //Íæ¼ÒÄÜÁ¿²»ÂúÊ±Ö±½Ó·µ»Ø
+        //ç©å®¶èƒ½é‡ä¸æ»¡æ—¶ç›´æ¥è¿”å›
         if(!PlayerEnergy.Instance.IsEnough(PlayerEnergy.Max)) return;
-        //µ÷ÓÃÄÜÁ¿±¬·¢ÏµÍ³ OnÎ¯ÍĞ£¬¿ªÆôÄÜÁ¿±¬·¢
+        //è°ƒç”¨èƒ½é‡çˆ†å‘ç³»ç»Ÿ Onå§”æ‰˜ï¼Œå¼€å¯èƒ½é‡çˆ†å‘
         PlayerOverdrive.on.Invoke();
     }
-    //¿ªÆôÄÜÁ¿±¬·¢º¯Êı
+    //å¼€å¯èƒ½é‡çˆ†å‘å‡½æ•°
     void OverdriveOn()
     {
-        //ÄÜÁ¿±¬·¢´¦ÓÚ¿ªÆô
+        //èƒ½é‡çˆ†å‘å¤„äºå¼€å¯
         _isOverdriving = true;
-        //ÉÁ±ÜÄÜÁ¿ÏûºÄÌáÉı
+        //é—ªé¿èƒ½é‡æ¶ˆè€—æå‡
         dodgeEnergyCost *= overdriveDodgeFactor;
-        //ÒÆ¶¯ËÙ¶ÈÌáÉı
+        //ç§»åŠ¨é€Ÿåº¦æå‡
         moveSpeed *= overdriveSpeedFactor;
-        //µ÷ÓÃ×Óµ¯Ê±¼äº¯Êı,Ê±¼ä±äÂıºóÔÙ»Ö¸´
+        //è°ƒç”¨å­å¼¹æ—¶é—´å‡½æ•°,æ—¶é—´å˜æ…¢åå†æ¢å¤
         TimeController.Instance.BulletTime(slowMotionDuration,slowMotionDuration);
     }
-    //¹Ø±ÕÄÜÁ¿±¬·¢º¯Êı
+    //å…³é—­èƒ½é‡çˆ†å‘å‡½æ•°
     void OverdriveOff()
     {
-        //ÄÜÁ¿±¬·¢´¦ÓÚ¹Ø±Õ
+        //èƒ½é‡çˆ†å‘å¤„äºå…³é—­
         _isOverdriving = false;
-        //ÉÁ±ÜÄÜÁ¿ÏûºÄ»Ö¸´
+        //é—ªé¿èƒ½é‡æ¶ˆè€—æ¢å¤
         dodgeEnergyCost /= overdriveDodgeFactor;
-        //ÒÆ¶¯ËÙ¶È»Ö¸´
+        //ç§»åŠ¨é€Ÿåº¦æ¢å¤
         moveSpeed /= overdriveSpeedFactor;
     }
     #endregion
 
     #region MISSILE
-    //·¢Éäµ¼µ¯ÊÂ¼ş´¦ÀíÆ÷
+    //å‘å°„å¯¼å¼¹äº‹ä»¶å¤„ç†å™¨
     void LaunchMissile()
     {
-        //µ÷ÓÃµ¼µ¯ÏµÍ³µÄ·¢Éäº¯Êı
+        //è°ƒç”¨å¯¼å¼¹ç³»ç»Ÿçš„å‘å°„å‡½æ•°
         _missile.Launch(muzzleMiddle);
     }
-    //Íæ¼ÒÊ³È¡µ¼µ¯º¯Êı
+    //ç©å®¶é£Ÿå–å¯¼å¼¹å‡½æ•°
     public void PickUpMissile()
     {
-        //µ÷ÓÃµ¼µ¯ÏµÍ³µÄÊ°È¡º¯Êı
+        //è°ƒç”¨å¯¼å¼¹ç³»ç»Ÿçš„æ‹¾å–å‡½æ•°
         _missile.PickUp();
     }
     #endregion
 
     #region WEAPON POWER
 
-    //ÎäÆ÷ÍşÁ¦ÌáÉıº¯Êı
+    //æ­¦å™¨å¨åŠ›æå‡å‡½æ•°
     public void PowerUp()
     {
-        //ÎäÆ÷ÍşÁ¦×î¸ßÎª2
+        //æ­¦å™¨å¨åŠ›æœ€é«˜ä¸º2
         weaponPower = Mathf.Min(weaponPower + 1,2);
     }
 
-    //ÎäÆ÷ÍşÁ¦ÏÂ½µº¯Êı
+    //æ­¦å™¨å¨åŠ›ä¸‹é™å‡½æ•°
     void PowerDown()
     {
-        //ÎäÆ÷ÍşÁ¦µÍÎª0
+        //æ­¦å™¨å¨åŠ›ä½ä¸º0
         weaponPower = Mathf.Max(--weaponPower, 0);
     }
 

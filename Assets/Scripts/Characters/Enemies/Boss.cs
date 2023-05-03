@@ -5,55 +5,55 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    //Boss HUDÑªÌõ±äÁ¿
+    //Boss HUDè¡€æ¡å˜é‡
     private BossHealthBar _healthBar;
-    //HUDÑªÌõ¶ÔÏóµÄ»­²¼×é¼ş
+    //HUDè¡€æ¡å¯¹è±¡çš„ç”»å¸ƒç»„ä»¶
     private Canvas _healthBarCanvas;
     protected override void Awake()
     {
         base.Awake();
-        //»ñÈ¡ÑªÌõ¶ÔÏó
+        //è·å–è¡€æ¡å¯¹è±¡
         _healthBar = FindObjectOfType<BossHealthBar>();
-        //»ñÈ¡HUDÑªÌõ¶ÔÏó»­²¼
+        //è·å–HUDè¡€æ¡å¯¹è±¡ç”»å¸ƒ
         _healthBarCanvas = _healthBar.GetComponentInChildren<Canvas>();
     }
 
-    //ÖØĞ´OnEnableº¯Êı
+    //é‡å†™OnEnableå‡½æ•°
     protected override void OnEnable()
     {
         base.OnEnable();
-        //³õÊ¼»¯Boss HUDÑªÌõ
+        //åˆå§‹åŒ–Boss HUDè¡€æ¡
         _healthBar.Initialize(health,maxHealth);
-        //¿ªÆôHUDÑªÌõ»­²¼
+        //å¼€å¯HUDè¡€æ¡ç”»å¸ƒ
         _healthBarCanvas.enabled = true;
     }
     
-    //ÖØĞ´µĞÈËÀàµÄÅö×²º¯Êı
+    //é‡å†™æ•Œäººç±»çš„ç¢°æ’å‡½æ•°
     protected override void OnCollisionEnter2D(Collision2D other)
     {
-        //Íæ¼Ò×²ÉÏBoss»ú
+        //ç©å®¶æ’ä¸ŠBossæœº
        if(other.gameObject.TryGetComponent<Player>(out Player player))
-           //Ö»ÓĞÍæ¼Ò»áËÀµô
+           //åªæœ‰ç©å®¶ä¼šæ­»æ‰
            player.Die();
     }
 
-    //ÖØĞ´ËÀÍöº¯Êı
+    //é‡å†™æ­»äº¡å‡½æ•°
     public override void Die()
     {
-        //¹Ø±Õboss HUD»­²¼
+        //å…³é—­boss HUDç”»å¸ƒ
         _healthBarCanvas.enabled = false;
         base.Die();
     }
 
-    //ÖØĞ´ÊÜÉËº¯Êı
+    //é‡å†™å—ä¼¤å‡½æ•°
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        //boss HUDÑªÌõÏÔÊ¾
+        //boss HUDè¡€æ¡æ˜¾ç¤º
         _healthBar.UpdateStats(health,maxHealth);
     }
 
-    //ÖØĞ´ÉèÖÃÑªÁ¿×î´óÖµº¯Êı£¬Boss×î´óÑªÁ¿+µĞÈË²¨Êı*½¡¿µÖµÒòËØ
+    //é‡å†™è®¾ç½®è¡€é‡æœ€å¤§å€¼å‡½æ•°ï¼ŒBossæœ€å¤§è¡€é‡+æ•Œäººæ³¢æ•°*å¥åº·å€¼å› ç´ 
     protected override void SetHealth()=>maxHealth += EnemyManager.Instance.WaveNumber * healthFactor;
 
 }

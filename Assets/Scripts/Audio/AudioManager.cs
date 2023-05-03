@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class AudioManager : PersistentSingleton<AudioManager>
 {
-    //ÒôÔ´×é¼ş±äÁ¿£¬ÒôĞ§²¥·ÅÆ÷
+    //éŸ³æºç»„ä»¶å˜é‡ï¼ŒéŸ³æ•ˆæ’­æ”¾å™¨
     [SerializeField] private AudioSource sFXPlayer;
-    //×îĞ¡Òô¸ß³£Á¿
+    //æœ€å°éŸ³é«˜å¸¸é‡
     private const float MinPitch = 0.9f;
-    //×î´óÒô¸ß³£Á¿
+    //æœ€å¤§éŸ³é«˜å¸¸é‡
     private const float MaxPitch = 1.1f;
 
-    //ÒôĞ§²¥·Åº¯Êı ÊÊÓÃÓÚ²¥·ÅUIÒôĞ§
+    //éŸ³æ•ˆæ’­æ”¾å‡½æ•° é€‚ç”¨äºæ’­æ”¾UIéŸ³æ•ˆ
     public void PlaySFX(AudioData audioData)
     {
         sFXPlayer.PlayOneShot(audioData.audioClip,audioData.volume);
     }
-    //Ëæ»ú²¥·Å²»Í¬ÒôĞ§£¬ÏàÍ¬ÒôĞ§²»Í¬Òô¸ß ÊÊÓÃÓÚ»áÁ¬ĞøÖØ¸´²¥·ÅµÄÒôĞ§£¬Èç×Óµ¯·¢ÉäÒôĞ§
+    //éšæœºæ’­æ”¾ä¸åŒéŸ³æ•ˆï¼Œç›¸åŒéŸ³æ•ˆä¸åŒéŸ³é«˜ é€‚ç”¨äºä¼šè¿ç»­é‡å¤æ’­æ”¾çš„éŸ³æ•ˆï¼Œå¦‚å­å¼¹å‘å°„éŸ³æ•ˆ
     public void PlayerRandomSFX(AudioData audioData)
     {
-        //Ëæ»ú²¥·Å²»Í¬Òô¸ßµÄÒôĞ§
+        //éšæœºæ’­æ”¾ä¸åŒéŸ³é«˜çš„éŸ³æ•ˆ
         sFXPlayer.pitch = Random.Range(MinPitch, MaxPitch);
         PlaySFX(audioData);
     }
-    //Ëæ»ú²¥·Å²»Í¬ÒôĞ§º¯ÊıÖØÔØ£¬´«ÈëÒôÆµÊı¾İ¼¯ºÏ
+    //éšæœºæ’­æ”¾ä¸åŒéŸ³æ•ˆå‡½æ•°é‡è½½ï¼Œä¼ å…¥éŸ³é¢‘æ•°æ®é›†åˆ
     public void PlayerRandomSFX(AudioData[] audioData)
     {
-        //´ÓÒôÆµÊı¾İ¼¯ºÏÖĞËæ»úÒ»¸öÒôÆµ×ÊÁÏ²¢²¥·Å
+        //ä»éŸ³é¢‘æ•°æ®é›†åˆä¸­éšæœºä¸€ä¸ªéŸ³é¢‘èµ„æ–™å¹¶æ’­æ”¾
         PlayerRandomSFX(audioData[Random.Range(0,audioData.Length)]);
     }
 }

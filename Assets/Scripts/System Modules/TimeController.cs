@@ -3,107 +3,110 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ—¶é—´æ§åˆ¶å™¨
+/// </summary>
 public class TimeController : Singleton<TimeController>
 {
-    //½øÈë×Óµ¯Ê±¼äµÄÊ±¼ä¿Ì¶ÈÖµ
+    //è¿›å…¥å­å¼¹æ—¶é—´çš„æ—¶é—´åˆ»åº¦å€¼
     [SerializeField, Range(0f, 1f)] private float bulletTimeScale = 0.1f;
-    //´æ´¢Ä¬ÈÏ¹Ì¶¨Ö¡Ê±¼äµÄÖµ
+    //å­˜å‚¨é»˜è®¤å›ºå®šå¸§æ—¶é—´çš„å€¼
     private float _defaultFixedDeltaTime;
-    //ÓÎÏ·ÔİÍ£Ç°µÄÊ±¼ä¿Ì¶È
+    //æ¸¸æˆæš‚åœå‰çš„æ—¶é—´åˆ»åº¦
     private float _timeScaleBeforePause;
-    //ÏßĞÔ²åÖµµÚÈı²ÎÊı t
+    //çº¿æ€§æ’å€¼ç¬¬ä¸‰å‚æ•° t
     private float _t;
     protected override void Awake()
     {
         base.Awake();
-        //¸³ÓèÄ¬ÈÏ¹Ì¶¨Ö¡Ê±¼äµÄÖµ
+        //èµ‹äºˆé»˜è®¤å›ºå®šå¸§æ—¶é—´çš„å€¼
         _defaultFixedDeltaTime = Time.fixedDeltaTime;
     }
-    //ÔİÍ£º¯Êı
+    //æš‚åœå‡½æ•°
     public void Pause()
     {
-        //ÏÈ¼ÇÂ¼µ±Ç°Ö¡µÄÊ±¼ä¿Ì¶È
+        //å…ˆè®°å½•å½“å‰å¸§çš„æ—¶é—´åˆ»åº¦
         _timeScaleBeforePause = Time.timeScale;
-        //Ê±¼ä¿Ì¶ÈÎª0
+        //æ—¶é—´åˆ»åº¦ä¸º0
         Time.timeScale = 0f;
     }
-    //È¡ÏûÔİÍ£º¯Êı
+    //å–æ¶ˆæš‚åœå‡½æ•°
     public void Unpause()
     {
-        //°´ÏÂÔİÍ£¼üÊ±µÄÊ±¼ä¿Ì¶ÈÖµ¸³Óèµ±Ç°Ê±¼ä¿Ì¶È
+        //æŒ‰ä¸‹æš‚åœé”®æ—¶çš„æ—¶é—´åˆ»åº¦å€¼èµ‹äºˆå½“å‰æ—¶é—´åˆ»åº¦
         Time.timeScale = _timeScaleBeforePause;
     }
-    //×Óµ¯Ê±¼äĞ­³Ì
+    //å­å¼¹æ—¶é—´åç¨‹
     public void BulletTime(float duration)
     {
-        //ĞŞ¸ÄÊ±¼ä¿Ì¶È
+        //ä¿®æ”¹æ—¶é—´åˆ»åº¦
         Time.timeScale = bulletTimeScale;
-        //ÆôÓÃÊ±¼ä¿Ì¶È»Ö¸´Ğ­³Ì
+        //å¯ç”¨æ—¶é—´åˆ»åº¦æ¢å¤åç¨‹
         StartCoroutine(SlowOutCoroutine(duration));
     }
-    //×Óµ¯Ê±¼äº¯Êı£¬Ê±¼äÏÈ±äÂı£¬ÔÙ»Ö¸´
+    //å­å¼¹æ—¶é—´å‡½æ•°ï¼Œæ—¶é—´å…ˆå˜æ…¢ï¼Œå†æ¢å¤
     public void BulletTime(float inDuration, float outDuration)
     {
-        //µ÷ÓÃÊ±¼ä¿Ì¶ÈÏÈ¼õÉÙÔÙ»Ö¸´µÄĞ­³Ì
+        //è°ƒç”¨æ—¶é—´åˆ»åº¦å…ˆå‡å°‘å†æ¢å¤çš„åç¨‹
         StartCoroutine(SlowInAndOutCoroutine(inDuration, outDuration));
     }
-    //×Óµ¯Ê±¼äº¯Êı£¬Ê±¼ä±äÂıºó³ÖĞøÒ»¶ÎÊ±¼äÔÙ»Ö¸´
+    //å­å¼¹æ—¶é—´å‡½æ•°ï¼Œæ—¶é—´å˜æ…¢åæŒç»­ä¸€æ®µæ—¶é—´å†æ¢å¤
     public void BulletTime(float inDuration, float keepingDuration, float outDuration)
     {
-        //µ÷ÓÃÊ±¼ä¿Ì¶È¼õÉÙºó³ÖĞøÒ»¶ÎÊ±¼äÔÙ»Ö¸´µÄĞ­³Ì
+        //è°ƒç”¨æ—¶é—´åˆ»åº¦å‡å°‘åæŒç»­ä¸€æ®µæ—¶é—´å†æ¢å¤çš„åç¨‹
         StartCoroutine(SlowInKeepAndOutDuration(inDuration, keepingDuration, outDuration));
     }
-    //Ê±¼ä±äÂıº¯Êı 
+    //æ—¶é—´å˜æ…¢å‡½æ•° 
     public void SlowIn(float duration)
     {
-        //µ÷ÓÃÊ±¼ä±äÂıĞ­³Ì
+        //è°ƒç”¨æ—¶é—´å˜æ…¢åç¨‹
         StartCoroutine(SlowInCoroutine(duration));
     }
-    //Ê±¼ä»Ö¸´º¯Êı
+    //æ—¶é—´æ¢å¤å‡½æ•°
     public void SlowOut(float duration)
     {
-        //µ÷ÓÃÊ±¼ä»Ö¸´Ğ­³Ì
+        //è°ƒç”¨æ—¶é—´æ¢å¤åç¨‹
         StartCoroutine(SlowOutCoroutine(duration));
     }
-    //Ê±¼ä±äÂıºó³ÖĞøÒ»¶ÎÊ±¼äÔÙ»Ö¸´ Ğ­³Ì
+    //æ—¶é—´å˜æ…¢åæŒç»­ä¸€æ®µæ—¶é—´å†æ¢å¤ åç¨‹
     IEnumerator SlowInKeepAndOutDuration(float inDuration, float keepingDuration, float outDuration)
     {
-        //ÏÈ¹ÒÆğÖ´ĞĞÊ±¼ä¿Ì¶È¼õÉÙĞ­³Ì
+        //å…ˆæŒ‚èµ·æ‰§è¡Œæ—¶é—´åˆ»åº¦å‡å°‘åç¨‹
         yield return StartCoroutine(SlowInCoroutine(inDuration));
-        //¹ÒÆğµÈ´ıÒ»¶ÎÊ±¼ä WaitForSecondsRealtime£¬²»ÊÜÊ±¼ä¿Ì¶ÈÓ°Ïì
+        //æŒ‚èµ·ç­‰å¾…ä¸€æ®µæ—¶é—´ WaitForSecondsRealtimeï¼Œä¸å—æ—¶é—´åˆ»åº¦å½±å“
         yield return new WaitForSecondsRealtime(keepingDuration);
-        //ÔÙÖ´ĞĞÊ±¼ä¿Ì¶È»Ö¸´Ğ­³Ì
+        //å†æ‰§è¡Œæ—¶é—´åˆ»åº¦æ¢å¤åç¨‹
         StartCoroutine(SlowOutCoroutine(outDuration));
     }
-    //»ºÂı¼õÉÙÊ±¼ä¿Ì¶ÈÔÙ»ºÂıÔö¼ÓÊ±¼ä¿Ì¶ÈµÄĞ­³Ì
+    //ç¼“æ…¢å‡å°‘æ—¶é—´åˆ»åº¦å†ç¼“æ…¢å¢åŠ æ—¶é—´åˆ»åº¦çš„åç¨‹
     IEnumerator SlowInAndOutCoroutine(float inDuration, float outDuration)
     {
-        //ÏÈ¹ÒÆğÖ´ĞĞÊ±¼ä¿Ì¶È¼õÉÙĞ­³Ì
+        //å…ˆæŒ‚èµ·æ‰§è¡Œæ—¶é—´åˆ»åº¦å‡å°‘åç¨‹
         yield return StartCoroutine(SlowInCoroutine(inDuration));
-        //ÔÙÖ´ĞĞÊ±¼ä¿Ì¶È»Ö¸´Ğ­³Ì
+        //å†æ‰§è¡Œæ—¶é—´åˆ»åº¦æ¢å¤åç¨‹
         StartCoroutine(SlowOutCoroutine(outDuration));
     }
-    //»ºÂı»Ö¸´Ê±¼ä¿Ì¶ÈĞ­³Ì ¸¡µãĞÍ²ÎÊı´æ´¢¹ı³Ì³ÖĞøÊ±¼ä
+    //ç¼“æ…¢æ¢å¤æ—¶é—´åˆ»åº¦åç¨‹ æµ®ç‚¹å‹å‚æ•°å­˜å‚¨è¿‡ç¨‹æŒç»­æ—¶é—´
     IEnumerator SlowOutCoroutine(float duration)
     {
         _t = 0f;
         while (_t<1f)
         {
-            //Èç¹ûÓÎÏ·×´Ì¬Îª·ÇÔİÍ£×´Ì¬£¬ÔòĞŞ¸ÄÊ±¼ä¿Ì¶ÈÖµ
+            //å¦‚æœæ¸¸æˆçŠ¶æ€ä¸ºéæš‚åœçŠ¶æ€ï¼Œåˆ™ä¿®æ”¹æ—¶é—´åˆ»åº¦å€¼
             if (GameManager.GameState!=GameState.Paused)
             {
-                //Time.unscaledDeltaTime ²»ÊÜÊ±¼ä¿Ì¶ÈÖµÓ°ÏìµÄÖ¡¼äÖµ
+                //Time.unscaledDeltaTime ä¸å—æ—¶é—´åˆ»åº¦å€¼å½±å“çš„å¸§é—´å€¼
                 _t += Time.unscaledDeltaTime / duration;
-                //ĞŞ¸ÄÊ±¼ä¿Ì¶È
+                //ä¿®æ”¹æ—¶é—´åˆ»åº¦
                 Time.timeScale = Mathf.Lerp(bulletTimeScale, 1f, _t);
-                //ĞŞ¸Ä¹Ì¶¨Ö¡Ê±¼ä£¬Ä¬ÈÏ¹Ì¶¨Ö¡Ê±¼äÖµ ³Ë ĞŞ¸ÄºóµÄÊ±¼ä¿Ì¶ÈÖµ
+                //ä¿®æ”¹å›ºå®šå¸§æ—¶é—´ï¼Œé»˜è®¤å›ºå®šå¸§æ—¶é—´å€¼ ä¹˜ ä¿®æ”¹åçš„æ—¶é—´åˆ»åº¦å€¼
                 Time.fixedDeltaTime = _defaultFixedDeltaTime * Time.timeScale;
             }
-            //¹ÒÆğÖ±µ½ÏÂÒ»Ö¡¼ÌĞøÑ­»·
+            //æŒ‚èµ·ç›´åˆ°ä¸‹ä¸€å¸§ç»§ç»­å¾ªç¯
             yield return null;
         }
     }
-    //»ºÂı¼õÉÙÊ±¼ä¿Ì¶ÈĞ­³Ì
+    //ç¼“æ…¢å‡å°‘æ—¶é—´åˆ»åº¦åç¨‹
     IEnumerator SlowInCoroutine(float duration)
     {
         _t = 0f;
@@ -111,7 +114,7 @@ public class TimeController : Singleton<TimeController>
         {
             if (GameManager.GameState!=GameState.Paused)
             {
-                //Time.unscaledDeltaTime ²»ÊÜÊ±¼ä¿Ì¶ÈÖµÓ°ÏìµÄÖ¡¼äÖµ
+                //Time.unscaledDeltaTime ä¸å—æ—¶é—´åˆ»åº¦å€¼å½±å“çš„å¸§é—´å€¼
                 _t += Time.unscaledDeltaTime / duration;
                 Time.timeScale = Mathf.Lerp(1f, bulletTimeScale, _t);
                 Time.fixedDeltaTime = _defaultFixedDeltaTime * Time.timeScale;

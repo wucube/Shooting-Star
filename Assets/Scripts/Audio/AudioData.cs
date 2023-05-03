@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[System.Serializable] //使类中公有变量曝露到编辑器中
+
+[System.Serializable]
 public class AudioData
 {
-    //音频剪辑文件
+    //闊抽鍓緫鏂囦欢
     public AudioClip audioClip;
-    //音量大小
+    //闊抽噺澶у皬
     public float volume;
 }

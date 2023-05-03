@@ -4,54 +4,49 @@ using System.Data.SqlTypes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// åˆ†æ•°ç®¡ç†å™¨
+/// </summary>
 public class ScoreManager : PersistentSingleton<ScoreManager>
 {
     #region SCORE DISPLAY
-
-    //¹«ÓĞÍæ¼ÒµÃ·ÖÊôĞÔ
     public int Score => _score;
-    //Íæ¼ÒµÃ·Ö
     private int _score;
-    //??????????¡Â?
+    
+    /// <summary>
+    /// å½“å‰åˆ†æ•°
+    /// </summary>
     private int _currentScore;
-    //????????????
+    
     [SerializeField] private Vector3 scoreTextScale = new Vector3(1.2f, 1.2f, 1f);
-    //???????¨²???????????????????????????????0
+   
     public void ResetScore()
     {
-        //???¡Â??0
         _score = 0;
-        //????¡Â??0
         _currentScore = 0;
-        //????¡Â???????
+
         ScoreDisplay.UpdateText(_score);
     }
-    //????¡Â????
+    
     public void AddScore(int scorePoint)
     {
-        //??????? ???? ????¡Â??
         _currentScore += scorePoint;
-        //???¡Â???????§¿??
         StartCoroutine(nameof(AddScoreCoroutine));
-        //????¡Â????
         ScoreDisplay.UpdateText(_score);
     }
-    //????????§¿????????????????????£???????
+   
     IEnumerator AddScoreCoroutine()
     {
-        //???????????????????????
         ScoreDisplay.ScaleText(scoreTextScale);
-        //???¡Â? §³?? ????¡Â?? ???
         while (_score<_currentScore)
         {
-            //???¡Â???????1??
             _score += 1;
-            //???¡¤?????????
+           
             ScoreDisplay.UpdateText(_score);
-            //??????????
+         
             yield return null;
         }
-        //????????????????????????1
+        
         ScoreDisplay.ScaleText(Vector3.one);
     }
 
@@ -59,69 +54,65 @@ public class ScoreManager : PersistentSingleton<ScoreManager>
 
     #region HIGH SCORE SYSTEM
 
-    //Íæ¼Ò·ÖÊı ×Ô¼ÒÒåÀà
+    /// <summary>
+    /// ç©å®¶åˆ†æ•°ç±»
+    /// </summary>
     [System.Serializable] public class PlayerScore
     {
-        //Íæ¼ÒµÃ·Ö
         public int score;
-        //Íæ¼ÒID
         public string playerName;
-        //¹¹Ôìº¯Êı±ãÓÚ³õÊ¼»¯
         public PlayerScore(int score, string playerName)
         {
             this.score = score;
             this.playerName = playerName;
         }
     }
-    //Íæ¼ÒµÃ·ÖÊı¾İÀà
-    [System.Serializable] public class PlayerScoreData
+   
+    /// <summary>
+    /// ç©å®¶åˆ†æ•°æ•°æ®
+    /// </summary>
+    [System.Serializable] 
+    public class PlayerScoreData
     {
-         //Íæ¼ÒµÃ·ÖÀàÁĞ±í
          public List<PlayerScore> list = new List<PlayerScore>();
     }
     
-    //´æµµÎÄ¼şÃû×Ö·û´®
     private readonly string SaveFileName = "player_score.json";
-    //Íæ¼ÒID
+    
     private string playerName = "No Name";
 
-    //ÅĞ¶ÏÊÇ·ñÈ¡µÃĞÂ¸ß·Ö µ±Ç°µÃ·ÖÖµÊÇ·ñ´óÓÚÍæ¼ÒµÃ·ÖÁĞ±íÖĞµÚÊ®Î»µÄµÃ·ÖÖµ
     public bool HasNewHighScore => _score > LoadPlayerScoreData().list[9].score;
-    //ÉèÖÃÍæ¼ÒÃû³Æ±äÁ¿
+
     public void SetPlayerName(string newName)
     {
         playerName = newName;
     }
-    //´æ´¢Íæ¼ÒµÃ·ÖÊı¾İ
     public void SavePlayerScoreData()
     {
-        //¶ÁÈ¡Íæ¼ÒµÃ·ÖÊı¾İ²¢¼ÇÂ¼
         var playerScoreData = LoadPlayerScoreData();
-        //¼ÇÂ¼±¾ÂÖÍæ¼ÒµÃ·ÖºÍID
+       
         playerScoreData.list.Add(new PlayerScore(_score,playerName));
-        //¶ÔÁĞ±íÖĞµÄµÃ·ÖÊı¾İ½øĞĞÅÅĞò
+        
         playerScoreData.list.Sort((x,y)=>y.score.CompareTo(x.score));
-        //µ÷ÓÃ´æµµÏµÍ³±£´æº¯Êı£¬´æ´¢ÅÅĞòºóµÄÍæ¼ÒµÃ·ÖÊı¾İÁĞ±í
+        
         SaveSystem.SaveByJson(SaveFileName,playerScoreData);
     }
-    //¼ÓÔØÍæ¼ÒµÃ·ÖÊı¾İ
+    
     public PlayerScoreData LoadPlayerScoreData()
     {
-        //ĞÂÍæ¼ÒµÃ·ÖÊı¾İÁĞ±í
+       
         var playerScoreData = new PlayerScoreData();
-        //Èô´æµµÎÄ¼ş´æÔÚ
+  
         if(SaveSystem.SaveFileExists(SaveFileName))
-            //µ÷ÓÃ´æµµÏµÍ³ ¶ÁÈ¡Íæ¼ÒÊı¾İ
             playerScoreData = SaveSystem.LoadFromJson<PlayerScoreData>(SaveFileName);
-        else //Èô´æµµÎÄ¼ş²»´æÔÚ£¬¼´Íæ¼ÒµÚÒ»´Î½øĞĞÓÎÏ·
+        else 
         {
             while (playerScoreData.list.Count<10)
-                //ĞÂ½¨Íæ¼ÒµÃ·ÖÊı¾İ£¬´æÈëÁĞ±íÖĞ
                 playerScoreData.list.Add(new PlayerScore(0,playerName));
-            //´æ´¢Íæ¼ÒµÃ·ÖÁĞ±í
+            
             SaveSystem.SaveByJson(SaveFileName,playerScoreData);
         }
-        //·µ»ØÍæ¼ÒµÃ·ÖÊı¾İ
+        
         return playerScoreData;
     }
     

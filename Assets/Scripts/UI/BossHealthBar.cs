@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class BossHealthBar : StatsBar_HUD
 {
-    //ÖØĞ´ÉèÖÃÎÄ±¾°Ù·Ö±Èº¯Êı£¬ÏÔÊ¾Ğ¡ÊıµãºóÁ½Î»
+    //é‡å†™è®¾ç½®æ–‡æœ¬ç™¾åˆ†æ¯”å‡½æ•°ï¼Œæ˜¾ç¤ºå°æ•°ç‚¹åä¸¤ä½
     protected override void SetPercentText()
     {
-        // P¼´percentage£¬2 ´ú±íĞ¡ÊıÎ»ÊıÎª2
+        // På³percentageï¼Œ2 ä»£è¡¨å°æ•°ä½æ•°ä¸º2
         percentText.text = targetFillAmount.ToString("P2");
     }
 }

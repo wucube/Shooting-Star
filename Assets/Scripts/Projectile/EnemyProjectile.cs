@@ -6,9 +6,9 @@ public class EnemyProjectile : Projectile
 {
     void Awake()
     {
-        //ĞŞÕıÎ´ÒÔÖ±Ïß·ÉÍù×ó±ßµÄ×Óµ¯£¬ĞŞÕıÆäĞı×ª½Ç¶È
+        //ä¿®æ­£æœªä»¥ç›´çº¿é£å¾€å·¦è¾¹çš„å­å¼¹ï¼Œä¿®æ­£å…¶æ—‹è½¬è§’åº¦
          if(moveDirection!=Vector2.left)
-             //Quaternion.FromToRotation() ¸ù¾İ´«ÈëµÄ¿ªÊ¼Óë½áÊøÁ½¸ö·½Ïò·µ»ØÒ»¸öĞı×ªÖµ
+             //Quaternion.FromToRotation() æ ¹æ®ä¼ å…¥çš„å¼€å§‹ä¸ç»“æŸä¸¤ä¸ªæ–¹å‘è¿”å›ä¸€ä¸ªæ—‹è½¬å€¼
              transform.rotation = Quaternion.FromToRotation(Vector2.left, moveDirection);
     }
 }
